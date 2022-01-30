@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Abstraction\Abstraction.csproj" />
+      <ProjectReference Include="..\Abstraction\Abstraction.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -5,10 +5,10 @@ namespace Abstraction.Models
     public class Location
     {
         [Required]
-        public string Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [Required]
-        public string Longitude { get; set; }
+        public double Longitude { get; set; }
 
         [Required]
         public string PostalCode { get; set; }

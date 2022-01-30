@@ -19,9 +19,9 @@ namespace Adapters.FuelStation
                     Location = new Location
                     {
                         Address = pdv.Adresse,
-                        Latitude = pdv.Latitude,
+                        Latitude = (double)decimal.Parse(pdv.Latitude, CultureInfo.InvariantCulture) / 100000.0,
                         City = pdv.Ville,
-                        Longitude = pdv.Longitude,
+                        Longitude = (double)decimal.Parse(pdv.Longitude, CultureInfo.InvariantCulture) / 100000.0,
                         PostalCode = pdv.Cp,
                     },
                     Services = GetServices(pdv),
@@ -34,11 +34,11 @@ namespace Adapters.FuelStation
         private Prices GetPrices(Pdv pdv)
         {
             var prices = new Prices();
-            if(pdv.Prix.HasValue)
+            if (pdv.Prix.HasValue)
             {
                 pdv.Prix.Value.PrixElementArray?.ForEach(prix =>
                 {
-                    var val = (double) decimal.Parse(prix.Valeur, CultureInfo.InvariantCulture);
+                    var val = (double)decimal.Parse(prix.Valeur, CultureInfo.InvariantCulture);
                     switch (prix.Nom)
                     {
                         case PrixNom.E10:

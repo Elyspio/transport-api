@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Abstraction\Abstraction.csproj" />
+      <ProjectReference Include="..\Abstraction\Abstraction.csproj" />
       <ProjectReference Include="..\Adapters\Adapters.csproj" />
       <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>

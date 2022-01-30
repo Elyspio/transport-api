@@ -21,7 +21,6 @@ var useBuilder = () =>
         {
             // Use HTTP/3
             listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-            listenOptions.UseHttps();
         });
     });
 
@@ -31,8 +30,7 @@ var useBuilder = () =>
     {
         options.AddPolicy("Cors", b =>
         {
-            b.AllowCredentials();
-            b.WithOrigins("localhost", "127.0.0.1", "elyspio.fr");
+            b.AllowAnyOrigin();
             b.AllowAnyHeader();
             b.AllowAnyMethod();
         });
