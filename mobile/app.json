@@ -32,7 +32,8 @@
 			"barStyle": "dark-content"
 		},
 		"platforms": [
-			"android"
+			"android",
+			"web"
 		]
 	}
 }
