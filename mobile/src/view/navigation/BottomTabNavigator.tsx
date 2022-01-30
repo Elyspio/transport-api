@@ -1,52 +1,50 @@
 import "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import * as React from "react";
 
-import TabOneScreen from "../screens/TabOneScreen";
-import TabTwoScreen from "../screens/TabTwoScreen";
+import StationsScreen from "../screens/StationsScreen";
+import LocationScreen from "../screens/TabTwoScreen";
 import StoreScreen from "../screens/StoreScreen";
 import { theme } from "../constants/Colors";
+import linkingConfiguration from "./LinkingConfiguration";
 
-const BottomTab = createMaterialTopTabNavigator();
+export type Routes = typeof linkingConfiguration["config"]["screens"]["Root"]["screens"];
+
+const BottomTab = createMaterialTopTabNavigator<Routes>();
 
 export default function BottomTabNavigator() {
 	return (
 		<BottomTab.Navigator
-			initialRouteName="Data"
+			initialRouteName="Stations"
 			tabBarPosition={"bottom"}
 			tabBarOptions={{
 				activeTintColor: theme.colors.primary,
 				inactiveTintColor: theme.colors.text,
+				showIcon: true,
 			}}
 		>
 			<BottomTab.Screen
-				name="TabOne"
-				component={TabOneScreen}
+				name="Stations"
+				component={StationsScreen}
 				options={{
-					tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name={"map-marked"} color={color} />,
 				}}
 			/>
 			<BottomTab.Screen
-				name="TabTwo"
-				component={TabTwoScreen}
+				name="Location"
+				component={LocationScreen}
 				options={{
-					tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+					tabBarIcon: ({ color }) => <MaterialIcons size={24} name="place" color={color} />,
 				}}
 			/>
 			<BottomTab.Screen
 				name="Data"
 				component={StoreScreen}
 				options={{
-					tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name="database" color={color} />,
 				}}
 			/>
 		</BottomTab.Navigator>
 	);
-}
-
-// You can explore the built-in icon families and icons on the web at:
-// https://icons.expo.fyi/
-function TabBarIcon(props: { name: string; color: string }) {
-	return <Ionicons size={25} {...props} />;
 }

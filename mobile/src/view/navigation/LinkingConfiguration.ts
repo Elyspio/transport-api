@@ -6,14 +6,19 @@ export default {
 		screens: {
 			Root: {
 				screens: {
-					TabOne: {
+					Stations: {
 						screens: {
 							TabOneScreen: "one",
 						},
 					},
-					TabTwo: {
+					Location: {
 						screens: {
 							TabTwoScreen: "two",
+						},
+					},
+					Data: {
+						screens: {
+							Data: "data",
 						},
 					},
 				},
