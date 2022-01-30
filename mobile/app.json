@@ -1,0 +1,38 @@
+{
+	"expo": {
+		"name": "alarm-calendar-link",
+		"slug": "alarm-calendar-link",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/images/icon.png",
+		"scheme": "myapp",
+		"userInterfaceStyle": "automatic",
+		"splash": {
+			"image": "./assets/images/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#FFFFFF"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": [
+			"**/*"
+		],
+		"ios": {
+			"supportsTablet": true
+		},
+		"web": {
+			"favicon": "./assets/images/favicon.png"
+		},
+		"android": {
+			"permissions": []
+		},
+		"androidNavigationBar": {
+			"visible": "immersive",
+			"barStyle": "dark-content"
+		},
+		"platforms": [
+			"android"
+		]
+	}
+}
