@@ -1,0 +1,32 @@
+version: "3"
+services:
+
+    # app
+    transport-api:
+        image: elyspio/transport-api:latest
+        container_name: transport-api
+        restart: always
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=external"
+            - "traefik.http.middlewares.transport-api-prefix.stripprefix.prefixes=/transport"
+            - "traefik.http.routers.transport-api.middlewares=transport-api-prefix@docker"
+            - "traefik.http.routers.transport-api.rule=PathPrefix(`/transport`)"
+            - "traefik.http.services.transport-api.loadbalancer.server.port=4000"
+            - "traefik.http.routers.transport-api.entrypoints=external"
+        volumes:
+            - "./config/front/conf.js:/back/wwwroot/conf.js"
+            - "./config/back/appsettings.json:/back/appsettings.json"
+
+        networks:
+            - transport-api
+            - external
+       
+
+
+networks:
+    transport-api:
+        name: "transport-api"
+    external:
+        external: true
+
