@@ -7,10 +7,18 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import { RootStackParamList } from "../../core/types/navigation";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
+import { useAppDispatch } from "../../store";
+import { initLocation } from "../../store/location/location.action";
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+	const dispatch = useAppDispatch();
+
+	React.useEffect(() => {
+		dispatch(initLocation());
+	}, [dispatch]);
+
 	return (
 		<NavigationContainer linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 			<RootNavigator />

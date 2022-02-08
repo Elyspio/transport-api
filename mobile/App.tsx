@@ -8,11 +8,13 @@ import { store } from "./src/store";
 import { Provider as PaperProvider } from "react-native-paper";
 import { theme } from "./src/view/constants/Colors";
 import { useColorScheme } from "react-native";
-import "react-native-url-polyfill/auto"
+import "react-native-url-polyfill/auto";
+
 export default function App() {
 	const isLoadingComplete = useCachedResources();
 	const colorScheme = useColorScheme();
 	console.log(process.env);
+
 	if (!isLoadingComplete) {
 		return null;
 	} else {

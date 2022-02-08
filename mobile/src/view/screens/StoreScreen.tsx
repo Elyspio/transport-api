@@ -1,16 +1,16 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
 import { useAppSelector } from "../../store";
-import { Divider, Surface, Text } from "react-native-paper";
+import { Divider, Paragraph, Surface } from "react-native-paper";
 
 export function StoreScreen() {
 	const store = useAppSelector((s) => s);
 
 	return (
 		<Surface style={styles.container}>
-			<Text style={styles.title}>Store</Text>
+			<Paragraph style={styles.title}>Store</Paragraph>
 			<Divider style={{ marginBottom: 30 }} />
-			<Text> {JSON.stringify(store, null, 4)}</Text>
+			<Paragraph> {JSON.stringify(store, null, 4)}</Paragraph>
 		</Surface>
 	);
 }

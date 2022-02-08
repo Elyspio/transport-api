@@ -25,7 +25,10 @@
 			"favicon": "./assets/images/favicon.png"
 		},
 		"android": {
-			"permissions": []
+			"permissions": [
+				"ACCESS_COARSE_LOCATION",
+				"ACCESS_FINE_LOCATION"
+			]
 		},
 		"androidNavigationBar": {
 			"visible": "immersive",

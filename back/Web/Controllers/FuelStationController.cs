@@ -29,6 +29,4 @@ public class FuelStationController : ControllerBase
         return Ok(await client.GetFuelStations(latitude, longitude, radius));
 
     }
-
-
 }

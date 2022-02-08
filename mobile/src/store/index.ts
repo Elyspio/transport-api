@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { exampleReducer } from "./example";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { reducer as locationReducer } from "./location/location.reducer";
+import { reducer as stationsReducer } from "./stations/stations.reducer";
 
 export const store = configureStore({
 	devTools: true,
 	reducer: {
-		example: exampleReducer,
+		location: locationReducer,
+		stations: stationsReducer,
 	},
 });
 

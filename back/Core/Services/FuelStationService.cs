@@ -20,7 +20,7 @@ namespace Core.Services
             return stations.FindAll(station =>
             {
                 var distance = Calculate(lat, lon, station.Location.Latitude, station.Location.Longitude);
-                return distance < 1000;
+                return distance < radius * 1000;
             });
 
         }
