@@ -1,12 +1,16 @@
 import * as React from "react";
-import { StyleSheet, View, VirtualizedList } from "react-native";
+import { Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { Caption, Divider, Paragraph, Surface, Title, ToggleButton } from "react-native-paper";
 import { getFuelStations } from "../../store/stations/stations.action";
 import Slider from "@react-native-community/slider";
 import { FuelStationData, Prices } from "../../core/apis/backend/generated";
+import { theme } from "../constants/Colors";
+import { Services } from "../../core/services";
 
 const fuelTypes: (keyof Prices)[] = ["e10", "gazole"];
+
+// https://www.waze.com/fr/live-map/directions?to=ll.45.78127997%2C4.82977867&from=ll.45.7935651%2C4.8451191
 
 export function StationsScreen() {
 	const coords = useAppSelector((s) => s.location.data?.coords);
@@ -34,21 +38,31 @@ export function StationsScreen() {
 				})
 			);
 		}
-	}, [coords]);
+	}, [dispatch, coords, radius]);
+
+	const onFuelStationClick = React.useCallback(
+		(station: FuelStationData) => () => {
+			return Services.waze.openWaze({
+				longitude: station.location.longitude,
+				latitude: station.location.latitude,
+			});
+		},
+		[]
+	);
 
 	return (
 		<Surface style={styles.container}>
-			<View style={{ paddingTop: 50 }}>
+			<View style={{ paddingTop: 30 }}>
 				<Title>Stations</Title>
 				<Divider style={styles.separator} />
 			</View>
 
 			<View>
-				<View style={{ marginBottom: "auto", display: "flex", flexDirection: "row", alignItems: "center" }}>
+				<View style={styles.innerContainer}>
 					<Paragraph style={{ paddingRight: 20 }}>Radius: {radius}</Paragraph>
 
 					<Slider
-						style={{ width: 235, height: 50 }}
+						style={{ width: width * 0.6, height: 50 }}
 						step={1}
 						minimumValue={1}
 						maximumValue={9}
@@ -58,7 +72,7 @@ export function StationsScreen() {
 						maximumTrackTintColor="#000000"
 					/>
 				</View>
-				<View style={{ marginBottom: "auto", display: "flex", flexDirection: "row", alignItems: "center" }}>
+				<View style={styles.innerContainer}>
 					<Paragraph style={{ width: 95 }}>Sort by </Paragraph>
 
 					<ToggleButton.Row onValueChange={(value: any) => setSortBy(value)} value={sortBy}>
@@ -68,23 +82,21 @@ export function StationsScreen() {
 				</View>
 			</View>
 
-			{/*<Paragraph>nb pdv : {data.length}</Paragraph>*/}
-
-			<Divider style={{ ...styles.separator, marginBottom: 25, marginTop: 25 }} />
+			<Divider style={{ ...styles.separator, marginVertical: 25 }} />
 
 			<VirtualizedList
 				data={data}
 				initialNumToRender={4}
 				renderItem={({ item }) => (
-					<View style={{ width: 350, marginTop: 10, marginBottom: 10 }}>
+					<View style={styles.item} onTouchStart={onFuelStationClick(item)}>
 						<Paragraph>{item.location.address}</Paragraph>
-						{Object.keys(item.prices)
-							.filter((key) => item.prices[key as keyof Prices])
-							.map((key) => (
-								<Caption>
-									{key}: {item.prices[key as keyof Prices]}
-								</Caption>
-							))}
+						<Caption>City: {item.location.city}</Caption>
+						{item.prices.gazole && <Caption>Gazole: {item.prices.gazole} €</Caption>}
+						{item.prices.e10 && <Caption>E10: {item.prices.e10} €</Caption>}
+						{item.prices.sp98 && <Caption>SP98: {item.prices.sp98} €</Caption>}
+						{item.prices.sp95 && <Caption>SP95: {item.prices.sp95} €</Caption>}
+						{item.prices.e85 && <Caption>E85: {item.prices.e85} €</Caption>}
+						{item.prices.gpLc && <Caption>GPL: {item.prices.gpLc} €</Caption>}
 					</View>
 				)}
 				keyExtractor={(item: FuelStationData) => item.id.toString()}
@@ -97,12 +109,15 @@ export function StationsScreen() {
 
 export default StationsScreen;
 
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
 	},
+	innerContainer: { marginBottom: "auto", display: "flex", flexDirection: "row", alignItems: "center" },
 	title: {
 		fontSize: 20,
 		fontWeight: "bold",
@@ -110,6 +125,13 @@ const styles = StyleSheet.create({
 	separator: {
 		marginVertical: 30,
 		height: 1,
-		width: "80%",
+		width: width * 0.8,
+	},
+	item: {
+		width: width * 0.9,
+		marginVertical: 5,
+		backgroundColor: theme.colors.background,
+		padding: 10,
+		paddingHorizontal: 20,
 	},
 });

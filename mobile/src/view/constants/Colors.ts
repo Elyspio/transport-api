@@ -10,5 +10,6 @@ export const theme: Theme = {
 		...DarkTheme.colors,
 		primary: "#3498db",
 		accent: "#f1c40f",
+		background: "#212121",
 	},
 };

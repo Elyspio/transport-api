@@ -20,7 +20,7 @@ export default function BottomTabNavigator() {
 			tabBarPosition={"bottom"}
 			tabBarOptions={{
 				activeTintColor: theme.colors.primary,
-				inactiveTintColor: theme.colors.text,
+				inactiveTintColor: theme.colors.disabled,
 				showIcon: true,
 			}}
 		>
