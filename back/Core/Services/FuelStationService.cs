@@ -25,7 +25,7 @@ namespace Core.Services
 
         }
 
-        public double Calculate(double lat1, double lon1, double lat2, double lon2)
+        private double Calculate(double lat1, double lon1, double lat2, double lon2)
         {
             var R = 6378.137; // Radius of earth in KM
             var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;

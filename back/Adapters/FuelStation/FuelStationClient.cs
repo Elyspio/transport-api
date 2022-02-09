@@ -1,5 +1,6 @@
 ﻿using Abstraction.Models;
 using Newtonsoft.Json;
+using Serilog;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
@@ -9,10 +10,15 @@ namespace Adapters.FuelStation
     public class FuelStationClient
     {
         private readonly HttpClient client;
+        private readonly ILogger logger;
+        private DateTime cacheTime;
+        private List<FuelStationData> cacheData;
 
         public FuelStationClient(HttpClient client)
         {
             this.client = client;
+            this.logger = new LoggerConfiguration().CreateLogger().ForContext<FuelStationClient>();
+            GetFuelStations(true).GetAwaiter().GetResult();
         }
 
 
@@ -33,16 +39,25 @@ namespace Adapters.FuelStation
             return Encoding.GetEncoding("ISO-8859-1").GetString(extracted.ToArray());
         }
 
-        public async Task<List<FuelStationData>> GetFuelStations()
+        public async Task<List<FuelStationData>> GetFuelStations(bool refresh = false)
         {
-            var xml = await GetFuelStationsXml();
-            var doc = new XmlDocument();
-            doc.LoadXml(xml);
-            var json = JsonConvert.SerializeXmlNode(doc, Newtonsoft.Json.Formatting.Indented);
+            if (refresh || cacheTime + TimeSpan.FromHours(6) < DateTime.Now)
+            {
+                logger.Debug($"Refresh fuel stations cache at {DateTime.Now.ToShortDateString()}");
+                cacheTime = DateTime.Now;
+                var xml = await GetFuelStationsXml();
+                var doc = new XmlDocument();
+                doc.LoadXml(xml);
+                var json = JsonConvert.SerializeXmlNode(doc, Newtonsoft.Json.Formatting.Indented);
 
-            var data = FuelStations.FromJson(json);
+                var data = FuelStations.FromJson(json);
 
-            return new FuelStationAssembler().Convert(data);
+                cacheData = new FuelStationAssembler().Convert(data);
+            }
+
+            return cacheData;
+
+
         }
     }
 }
