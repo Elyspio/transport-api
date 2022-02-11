@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY back/TransportApi.sln ./TransportApi.sln
 COPY back/Core/Core.csproj ./Core/Core.csproj
-COPY back/Db/Db.csproj ./Db/Db.csproj
 COPY back/Adapters/Adapters.csproj ./Adapters/Adapters.csproj
+COPY back/Abstraction/Abstraction.csproj ./Abstraction/Abstraction.csproj
 COPY back/Web/Web.csproj ./Web/Web.csproj
 
 RUN dotnet restore
@@ -35,7 +35,6 @@ COPY --from=builder-back /app/out .
 
 COPY --from=builder-front /front/build /back/wwwroot
 ENV FRONT_PATH /back/wwwroot
-
-EXPOSE 4003
+EXPOSE 4000
 ENTRYPOINT ["dotnet", "Web.dll"]
 
