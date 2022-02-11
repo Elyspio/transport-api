@@ -13,15 +13,17 @@ namespace Core.Services
             this.client = client;
         }
 
-        public async Task<List<FuelStationData>> GetFuelStations(double lat, double lon, long radius)
+        public async Task<List<FuelStationDataDistance>> GetFuelStations(double lat, double lon, long radius)
         {
             var stations = await client.GetFuelStations();
 
-            return stations.FindAll(station =>
-            {
-                var distance = Calculate(lat, lon, station.Location.Latitude, station.Location.Longitude);
-                return distance < radius * 1000;
-            });
+            return stations
+                .Select(station => new FuelStationDataDistance(
+                    station,
+                    Calculate(lat, lon, station.Location.Latitude, station.Location.Longitude))
+                )
+                .Where(station => station.Distance < radius * 1000)
+                .ToList();
 
         }
 

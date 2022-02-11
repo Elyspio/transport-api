@@ -23,7 +23,7 @@ public class FuelStationController : ControllerBase
     /// <param name="longitude"></param>
     /// <param name="radius">Maximal distance in meter between the fuel station and the specified point</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<FuelStationData>), 200)]
+    [ProducesResponseType(typeof(List<FuelStationDataDistance>), 200)]
     public async Task<IActionResult> GetFuelStations([Required] double latitude, [Required] double longitude, long radius = 10000)
     {
         return Ok(await client.GetFuelStations(latitude, longitude, radius));

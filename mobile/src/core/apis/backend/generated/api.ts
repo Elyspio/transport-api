@@ -34,33 +34,39 @@ import { BASE_PATH, BaseAPI, COLLECTION_FORMATS, RequestArgs, RequiredError } fr
 /**
  *
  * @export
- * @interface FuelStationData
+ * @interface FuelStationDataDistance
  */
-export interface FuelStationData {
+export interface FuelStationDataDistance {
 	/**
 	 *
 	 * @type {number}
-	 * @memberof FuelStationData
+	 * @memberof FuelStationDataDistance
 	 */
 	id: number;
 	/**
 	 *
 	 * @type {Location}
-	 * @memberof FuelStationData
+	 * @memberof FuelStationDataDistance
 	 */
 	location: Location;
 	/**
 	 *
 	 * @type {Prices}
-	 * @memberof FuelStationData
+	 * @memberof FuelStationDataDistance
 	 */
 	prices: Prices;
 	/**
 	 *
 	 * @type {Array<FuelStationServiceType>}
-	 * @memberof FuelStationData
+	 * @memberof FuelStationDataDistance
 	 */
 	services: Array<FuelStationServiceType>;
+	/**
+	 *
+	 * @type {number}
+	 * @memberof FuelStationDataDistance
+	 */
+	distance: number;
 }
 
 /**
@@ -256,7 +262,7 @@ export const FuelStationsApiFp = function (configuration?: Configuration) {
 			longitude: number,
 			radius?: number,
 			options?: AxiosRequestConfig
-		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<FuelStationData>>> {
+		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<FuelStationDataDistance>>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.getFuelStations(latitude, longitude, radius, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
 		},
@@ -278,7 +284,7 @@ export const FuelStationsApiFactory = function (configuration?: Configuration, b
 		 * @param {*} [options] Override http request option.
 		 * @throws {RequiredError}
 		 */
-		getFuelStations(latitude: number, longitude: number, radius?: number, options?: any): AxiosPromise<Array<FuelStationData>> {
+		getFuelStations(latitude: number, longitude: number, radius?: number, options?: any): AxiosPromise<Array<FuelStationDataDistance>> {
 			return localVarFp.getFuelStations(latitude, longitude, radius, options).then((request) => request(axios, basePath));
 		},
 	};

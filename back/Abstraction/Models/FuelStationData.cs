@@ -5,7 +5,17 @@ namespace Abstraction.Models
 {
     public partial class FuelStationData
     {
-        [Required]
+        public FuelStationData(FuelStationData all)
+        {
+            Id = all.Id;
+            Location = all.Location;
+            Prices = all.Prices;
+            Services = all.Services;
+        }
+
+        public FuelStationData() { }
+
+       [Required]
         public long Id { get; set; }
 
         [Required]
