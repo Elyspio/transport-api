@@ -10,8 +10,6 @@ using Web.Utils;
 
 var frontPath = new Env().Get("FRONT_PATH", "/front");
 
-AppContext.SetSwitch("Switch.Microsoft.AspNetCore.Mvc.EnableRangeProcessing", true);
-
 var useBuilder = () =>
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -53,8 +51,8 @@ var useBuilder = () =>
 
     // Setup Logging
     builder.Host.UseSerilog((_, lc) => lc
+        .Enrich.FromLogContext()
         .Enrich.With(new CallerEnricher())
-        .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
         .WriteTo.Console(
             LogEventLevel.Debug,
             "[{Timestamp:HH:mm:ss} {Level}{Caller}] {Message:lj}{NewLine}{Exception}",
@@ -77,8 +75,6 @@ var useBuilder = () =>
     builder.Services.AddSwaggerGen(c =>
     {
         c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
-        // c.CustomSchemaIds(type => type.ToString());
-        //c.OperationFilter<RequireAuthAttribute.Swagger>();
     });
 
     // Setup SPA Serving
@@ -110,12 +106,24 @@ var useApp = (WebApplication application) =>
     // Start SPA serving
     if (application.Environment.IsProduction())
     {
+        app.UseRouting();
+
         application.UseDefaultFiles(new DefaultFilesOptions
         {
-            DefaultFileNames = new List<string> { "index.html" }
+            DefaultFileNames = new List<string> { "index.html" },
+            RedirectToAppendTrailingSlash = true,
         });
         application.UseStaticFiles();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapFallbackToFile("/index.html");
+        });
+
+
     }
+
+
 
 
     // Start the application

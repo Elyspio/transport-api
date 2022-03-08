@@ -20,6 +20,16 @@ function getDistance(val: number) {
 	}
 }
 
+type PriceProps = {
+	prices: Prices,
+	fuel: keyof Prices;
+}
+
+function Price({ prices, fuel }: PriceProps) {
+	if (prices[fuel].length === 0) return null;
+	return <Caption>{fuel.toLocaleUpperCase()}: {prices[fuel][0].value} €</Caption>;
+}
+
 export function StationsScreen() {
 	const coords = useAppSelector((s) => s.location.data?.coords);
 	const allData = useAppSelector((s) => s.stations.data);
@@ -43,19 +53,20 @@ export function StationsScreen() {
 					latitude: coords.latitude,
 					longitude: coords.longitude,
 					radius,
-				})
+				}),
 			);
 		}
 	}, [dispatch, coords, radius]);
 
 	const onFuelStationClick = React.useCallback(
 		(station: FuelStationDataDistance) => () => {
+			console.log(station);
 			return Services.waze.openWaze({
 				longitude: station.location.longitude,
 				latitude: station.location.latitude,
 			});
 		},
-		[]
+		[],
 	);
 
 	return (
@@ -85,7 +96,8 @@ export function StationsScreen() {
 
 					<ToggleButton.Row onValueChange={(value: any) => setSortBy(value)} value={sortBy}>
 						<ToggleButton icon={() => <Paragraph>e10</Paragraph>} value="e10" style={{ width: 100 }} />
-						<ToggleButton icon={() => <Paragraph>gazole</Paragraph>} value="gazole" style={{ width: 100 }} />
+						<ToggleButton icon={() => <Paragraph>gazole</Paragraph>} value="gazole"
+						              style={{ width: 100 }} />
 					</ToggleButton.Row>
 				</View>
 			</View>
@@ -99,16 +111,16 @@ export function StationsScreen() {
 					<TouchableHighlight onLongPress={onFuelStationClick(item)}>
 						<View style={styles.item}>
 							<Paragraph>
-								{item.location.address} {getDistance(item.distance)}
+								{item.location.address}
 							</Paragraph>
 							<Caption>City: {item.location.city}</Caption>
-							<Caption>Distance: {item.location.city}</Caption>
-							{item.prices.gazole && <Caption>Gazole: {item.prices.gazole} €</Caption>}
-							{item.prices.e10 && <Caption>E10: {item.prices.e10} €</Caption>}
-							{item.prices.sp98 && <Caption>SP98: {item.prices.sp98} €</Caption>}
-							{item.prices.sp95 && <Caption>SP95: {item.prices.sp95} €</Caption>}
-							{item.prices.e85 && <Caption>E85: {item.prices.e85} €</Caption>}
-							{item.prices.gpLc && <Caption>GPL: {item.prices.gpLc} €</Caption>}
+							<Caption>Distance: {getDistance(item.distance)}</Caption>
+							<Price prices={item.prices} fuel={"gazole"} />
+							<Price prices={item.prices} fuel={"e10"} />
+							<Price prices={item.prices} fuel={"sp98"} />
+							<Price prices={item.prices} fuel={"sp95"} />
+							<Price prices={item.prices} fuel={"e85"} />
+							<Price prices={item.prices} fuel={"gpLc"} />
 						</View>
 					</TouchableHighlight>
 				)}

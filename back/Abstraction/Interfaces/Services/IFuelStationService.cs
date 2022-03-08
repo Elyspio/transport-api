@@ -12,4 +12,11 @@ public interface IFuelStationService
     /// <param name="radius">Maximal distance in meter between the fuel station and the specified point</param>
     /// <returns></returns>
     Task<List<FuelStationDataDistance>> GetFuelStations(double latitude, double longitude, long radius);
+
+
+
+    public Task<List<FuelStationHistory>> GetHistories();
+
+    public Task Fetch();
+
 }

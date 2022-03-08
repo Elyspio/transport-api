@@ -16,7 +16,7 @@ const BottomTab = createMaterialTopTabNavigator<Routes>();
 export default function BottomTabNavigator() {
 	return (
 		<BottomTab.Navigator
-			initialRouteName="Stations"
+			initialRouteName="Fuel"
 			tabBarPosition={"bottom"}
 			tabBarOptions={{
 				activeTintColor: theme.colors.primary,
@@ -25,7 +25,7 @@ export default function BottomTabNavigator() {
 			}}
 		>
 			<BottomTab.Screen
-				name="Stations"
+				name="Fuel"
 				component={StationsScreen}
 				options={{
 					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name={"map-marked"} color={color} />,

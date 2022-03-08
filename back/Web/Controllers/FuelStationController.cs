@@ -1,6 +1,7 @@
 using Abstraction.Interfaces.Services;
 using Abstraction.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.Controllers;
@@ -22,11 +23,64 @@ public class FuelStationController : ControllerBase
     /// <param name="latitude"></param>
     /// <param name="longitude"></param>
     /// <param name="radius">Maximal distance in meter between the fuel station and the specified point</param>
-    [HttpGet]
+    [HttpGet("near")]
     [ProducesResponseType(typeof(List<FuelStationDataDistance>), 200)]
-    public async Task<IActionResult> GetFuelStations([Required] double latitude, [Required] double longitude, long radius = 10000)
+    public async Task<IActionResult> GetFuelStations([Required] double latitude, [Required] double longitude, long radius = 10)
     {
         return Ok(await client.GetFuelStations(latitude, longitude, radius));
+
+    }
+
+
+
+    /// <summary>
+    /// Get All fuel stations history
+    /// </summary>
+    [HttpGet("all")]
+    [ProducesResponseType(typeof(List<FuelStationHistory>), 200)]
+    public async Task<IActionResult> GetHistories()
+    {
+        return Ok(await client.GetHistories());
+
+    }
+
+
+    private List<FuelStationHistory> stations = new();
+
+    /// <summary>
+    /// Get All fuel stations history
+    /// </summary>
+    [HttpGet("fetch")]
+    [ProducesResponseType(typeof(List<FuelStationHistory>), 200)]
+    public async Task<IActionResult> Fetch()
+    {
+
+        if (stations.Count == 0)
+        {
+            // deserialize JSON directly from a file
+            StreamReader file = System.IO.File.OpenText(@"P:\own\mobile\transport-api\back\Web\merged.json");
+            var serializer = new JsonSerializer();
+            stations = (List<FuelStationHistory>)serializer.Deserialize(file, typeof(List<FuelStationHistory>));
+
+            file.Dispose();
+
+            file = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+
+        }
+
+
+
+
+        var ids = stations.Select(s => s.Id).ToList();
+        ids.Sort();
+
+
+        return Ok(ids);
 
     }
 }

@@ -6,7 +6,7 @@ export default {
 		screens: {
 			Root: {
 				screens: {
-					Stations: {
+					Fuel: {
 						screens: {
 							TabOneScreen: "one",
 						},

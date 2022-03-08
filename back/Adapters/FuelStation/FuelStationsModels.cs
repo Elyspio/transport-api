@@ -42,7 +42,7 @@ public partial class Pdv
     [JsonProperty("adresse", Required = Required.Always)]
     public string Adresse { get; set; }
 
-    [JsonProperty("ville", Required = Required.Always)]
+    [JsonProperty("ville")]
     public string Ville { get; set; }
 
     [JsonProperty("horaires", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -51,7 +51,7 @@ public partial class Pdv
     [JsonProperty("services", Required = Required.AllowNull)]
     public Services Services { get; set; }
 
-    [JsonProperty("prix", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+    [JsonProperty("prix", NullValueHandling = NullValueHandling.Ignore)]
     public PrixUnion? Prix { get; set; }
 }
 
@@ -92,7 +92,7 @@ public partial class HoraireElement
 public partial class PrixElement
 {
     [JsonProperty("@nom", Required = Required.Always)]
-    public PrixNom Nom { get; set; }
+    public FuelType Nom { get; set; }
 
     [JsonProperty("@id", Required = Required.Always)]
     [JsonConverter(typeof(ParseStringConverter))]
@@ -127,9 +127,9 @@ public enum JourNom { Dimanche, Jeudi, Lundi, Mardi, Mercredi, Samedi, Vendredi 
 
 public enum Pop { A, N, R };
 
-public enum PrixNom { E10, E85, Gazole, GpLc, Sp95, Sp98 };
+public enum FuelType { E10, E85, Gazole, GpLc, Sp95, Sp98 };
 
-public enum ServiceElement { AireDeCampingCars, AutomateCb2424, Bar, BornesÉlectriques, BoutiqueAlimentaire, BoutiqueNonAlimentaire, CarburantAdditivé, DabDistributeurAutomatiqueDeBillets, Douches, EspaceBébé, Gnv, LavageAutomatique, LavageManuel, Laverie, LocationDeVéhicule, PistePoidsLourds, RelaisColis, RestaurationSurPlace, RestaurationÀEmporter, ServicesRéparationEntretien, StationDeGonflage, ToilettesPubliques, VenteDAdditifsCarburants, VenteDeFioulDomestique, VenteDeGazDomestiqueButanePropane, VenteDePétroleLampant, Wifi };
+public enum ServiceElement { AireDeCampingCars, AutomateCb2424, Bar, BornesÉlectriques, BoutiqueAlimentaire, BoutiqueNonAlimentaire, CarburantAdditivé, DabDistributeurAutomatiqueDeBillets, Douches, EspaceBébé, Gnv, LavageAutomatique, LavageManuel, Laverie, LocationDeVéhicule, PistePoidsLourds, RelaisColis, RestaurationSurPlace, RestaurationÀEmporter, ServicesRéparationEntretien, StationDeGonflage, ToilettesPubliques, VenteDAdditifsCarburants, VenteDeFioulDomestique, VenteDeGazDomestiqueButanePropane, VenteDePétroleLampant, Wifi, Inconnu };
 
 public partial struct HoraireUnion
 {
@@ -238,6 +238,7 @@ internal class PopConverter : JsonConverter
             case "R":
                 return Pop.R;
         }
+        return null;
         throw new Exception("Cannot unmarshal type Pop");
     }
 
@@ -421,7 +422,7 @@ internal class PrixUnionConverter : JsonConverter
 
 internal class PrixNomConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(PrixNom) || t == typeof(PrixNom?);
+    public override bool CanConvert(Type t) => t == typeof(FuelType) || t == typeof(FuelType?);
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
@@ -430,17 +431,17 @@ internal class PrixNomConverter : JsonConverter
         switch (value)
         {
             case "E10":
-                return PrixNom.E10;
+                return FuelType.E10;
             case "E85":
-                return PrixNom.E85;
+                return FuelType.E85;
             case "GPLc":
-                return PrixNom.GpLc;
+                return FuelType.GpLc;
             case "Gazole":
-                return PrixNom.Gazole;
+                return FuelType.Gazole;
             case "SP95":
-                return PrixNom.Sp95;
+                return FuelType.Sp95;
             case "SP98":
-                return PrixNom.Sp98;
+                return FuelType.Sp98;
         }
         throw new Exception("Cannot unmarshal type PrixNom");
     }
@@ -452,25 +453,25 @@ internal class PrixNomConverter : JsonConverter
             serializer.Serialize(writer, null);
             return;
         }
-        var value = (PrixNom)untypedValue;
+        var value = (FuelType)untypedValue;
         switch (value)
         {
-            case PrixNom.E10:
+            case FuelType.E10:
                 serializer.Serialize(writer, "E10");
                 return;
-            case PrixNom.E85:
+            case FuelType.E85:
                 serializer.Serialize(writer, "E85");
                 return;
-            case PrixNom.GpLc:
+            case FuelType.GpLc:
                 serializer.Serialize(writer, "GPLc");
                 return;
-            case PrixNom.Gazole:
+            case FuelType.Gazole:
                 serializer.Serialize(writer, "Gazole");
                 return;
-            case PrixNom.Sp95:
+            case FuelType.Sp95:
                 serializer.Serialize(writer, "SP95");
                 return;
-            case PrixNom.Sp98:
+            case FuelType.Sp98:
                 serializer.Serialize(writer, "SP98");
                 return;
         }
@@ -555,7 +556,7 @@ internal class ServiceUnionConverter : JsonConverter
                 return new ServiceUnion { StringArray = arrayValue };
 #pragma warning restore CS8601 // Possible null reference assignment.
         }
-        throw new Exception("Cannot unmarshal type ServiceUnion");
+        return new ServiceUnion { Enum = ServiceElement.Inconnu };
     }
 
     public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)
@@ -726,7 +727,7 @@ internal class ServiceElementConverter : JsonConverter
             case "Wifi":
                 return ServiceElement.Wifi;
         }
-        throw new Exception("Cannot unmarshal type ServiceElement");
+        return ServiceElement.Inconnu;
     }
 
     public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

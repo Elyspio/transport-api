@@ -11,19 +11,28 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { Provider as DiProvider } from "inversify-react";
 import { container } from "./core/di";
+import { BrowserRouter } from "react-router-dom";
 
 declare module "@mui/styles/defaultTheme" {
 	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface DefaultTheme extends Theme {}
+	interface DefaultTheme extends Theme {
+	}
 }
 
 function Wrapper() {
-	const { theme, current } = useAppSelector((state) => ({ theme: state.theme.current === "dark" ? themes.dark : themes.light, current: state.theme.current }));
+	const { theme, current } = useAppSelector((state) => ({
+		theme: state.theme.current === "dark" ? themes.dark : themes.light,
+		current: state.theme.current,
+	}));
+
+	const basename = process.env.NODE_ENV === "production" ? "/transport" : undefined;
 
 	return (
 		<StyledEngineProvider injectFirst>
 			<ThemeProvider theme={theme}>
-				<Application />
+				<BrowserRouter basename={basename}>
+					<Application />
+				</BrowserRouter>
 				<ToastContainer theme={current} position={"top-right"} />
 			</ThemeProvider>
 		</StyledEngineProvider>

@@ -2,7 +2,7 @@
 
 namespace Abstraction.Models
 {
-    public class Location
+    public class Location : IEquatable<Location?>
     {
         [Required]
         public double Latitude { get; set; }
@@ -18,6 +18,37 @@ namespace Abstraction.Models
 
         [Required]
         public string City { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Location);
+        }
+
+        public bool Equals(Location? other)
+        {
+            return other != null &&
+                   Latitude == other.Latitude &&
+                   Longitude == other.Longitude &&
+                   PostalCode == other.PostalCode &&
+                   Address == other.Address &&
+                   City == other.City;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Latitude, Longitude, PostalCode, Address, City);
+        }
+
+        public static bool operator ==(Location? left, Location? right)
+        {
+            return EqualityComparer<Location>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Location? left, Location? right)
+        {
+            return !(left == right);
+        }
+
 
     }
 }

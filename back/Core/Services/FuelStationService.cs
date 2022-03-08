@@ -1,4 +1,5 @@
-﻿using Abstraction.Interfaces.Services;
+﻿using Abstraction.Enums;
+using Abstraction.Interfaces.Services;
 using Abstraction.Models;
 using Adapters.FuelStation;
 
@@ -40,6 +41,51 @@ namespace Core.Services
             return d * 1000; // meters
         }
 
+
+        public async Task<List<FuelStationHistory>> GetHistories()
+        {
+            var stations = await client.GetFuelStationsAllTime();
+
+            var histories = new List<FuelStationHistory>();
+
+            stations.ForEach(station =>
+            {
+
+                var history = histories.Find(h => h.Id == station.Id);
+
+                if (history == null)
+                {
+                    history = new FuelStationHistory
+                    {
+                        Id = station.Id,
+                        Location = station.Location,
+                        Prices = new Dictionary<Fuel, List<FuelPriceHistory>>()
+                    };
+
+                    foreach (Fuel type in Enum.GetValues(typeof(Fuel)))
+                    {
+                        history.Prices.Add(type, new List<FuelPriceHistory>());
+                    }
+
+                    histories.Add(history);
+                }
+
+                foreach (Fuel type in Enum.GetValues(typeof(Fuel)))
+                {
+                    var prices = station.Prices[type];
+                    history.Prices[type].AddRange(prices);
+                }
+
+            });
+
+
+            return histories;
+        }
+
+        public async Task Fetch()
+        {
+            await client.Fetch();
+        }
 
     }
 }

@@ -2,13 +2,14 @@ import * as React from "react";
 import "./Application.scss";
 import Brightness5Icon from "@mui/icons-material/Brightness5";
 import Brightness3Icon from "@mui/icons-material/Brightness3";
-import Example from "./test/Test";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box } from "@mui/material";
 import { login, logout } from "../../store/module/authentication/authentication.action";
 import { Login, Logout } from "@mui/icons-material";
+import { Privacy } from "./privacy/Privacy";
+import { Route, Routes } from "react-router-dom";
 
 function Application() {
 	const dispatch = useAppDispatch();
@@ -31,21 +32,23 @@ function Application() {
 			createDrawerAction("Logout", {
 				icon: <Logout fill={"currentColor"} />,
 				onClick: () => dispatch(logout()),
-			})
+			}),
 		);
 	} else {
 		actions.push(
 			createDrawerAction("Login", {
 				icon: <Login fill={"currentColor"} />,
 				onClick: () => dispatch(login()),
-			})
+			}),
 		);
 	}
 
 	const drawer = withDrawer({
-		component: <Example />,
+		component: <Routes>
+			<Route path={"privacy"} element={<Privacy />} />
+		</Routes>,
 		actions,
-		title: "Example",
+		title: "ElyTransport",
 	});
 
 	return (

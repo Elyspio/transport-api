@@ -15,7 +15,7 @@ namespace Abstraction.Models
 
         public FuelStationData() { }
 
-       [Required]
+        [Required]
         public long Id { get; set; }
 
         [Required]
@@ -29,4 +29,19 @@ namespace Abstraction.Models
         public List<FuelStationServiceType> Services { get; set; }
 
     }
+
+
+    public class FuelStationHistory
+    {
+        public long Id { get; set; }
+        public Location Location { get; set; }
+        public Dictionary<Fuel, List<FuelPriceHistory>> Prices { get; set; }
+    }
+
+    public class FuelPriceHistory
+    {
+        public DateTime Date { get; set; }
+        public double Value { get; set; }
+    }
+
 }
