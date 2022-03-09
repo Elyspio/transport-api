@@ -27,21 +27,21 @@ function Application() {
 		}),
 	];
 
-	if (logged) {
-		actions.push(
-			createDrawerAction("Logout", {
-				icon: <Logout fill={"currentColor"} />,
-				onClick: () => dispatch(logout()),
-			}),
-		);
-	} else {
-		actions.push(
-			createDrawerAction("Login", {
-				icon: <Login fill={"currentColor"} />,
-				onClick: () => dispatch(login()),
-			}),
-		);
-	}
+	// if (logged) {
+	// 	actions.push(
+	// 		createDrawerAction("Logout", {
+	// 			icon: <Logout fill={"currentColor"} />,
+	// 			onClick: () => dispatch(logout()),
+	// 		}),
+	// 	);
+	// } else {
+	// 	actions.push(
+	// 		createDrawerAction("Login", {
+	// 			icon: <Login fill={"currentColor"} />,
+	// 			onClick: () => dispatch(login()),
+	// 		}),
+	// 	);
+	// }
 
 	const drawer = withDrawer({
 		component: <Routes>

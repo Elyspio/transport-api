@@ -1,1 +1,3 @@
 ﻿.idea
+deploy/dev/data
+back/Tools/Core.Merge/*.json

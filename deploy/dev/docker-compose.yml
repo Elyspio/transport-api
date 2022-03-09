@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+    transport-api-db:
+        container_name: transport-api-db
+        image: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: A4daz6554d8zad
+        volumes:
+            - ./data:/data/db
+        ports:
+            - "6007:27017"
