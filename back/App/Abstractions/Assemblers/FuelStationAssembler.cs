@@ -12,7 +12,6 @@ public class FuelStationAssembler : BaseAssembler<FuelStationData, FuelStationEn
         return new FuelStationData
         {
             Services = obj.Services,
-            Prices = obj.Prices,   
             Id = obj.Id,
             Location = obj.Location,
         };

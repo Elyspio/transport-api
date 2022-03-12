@@ -1,13 +1,14 @@
 ﻿using Abstractions.Enums;
 using Abstractions.Models;
+using Db.Entities;
 
 namespace Abstractions.Interfaces.Repositories
 {
     public interface IFuelStationRepository
     {
-        Task<FuelStationData> Add(long id, Location location, Prices prices, List<FuelStationServiceType> services);
+        Task<FuelStationEntity> Add(long id, Location location, List<FuelStationServiceType> services);
         Task Clear();
-        Task<FuelStationData> GetById(long id);
-        Task<List<FuelStationData>> GetBetweenDates(DateTime minDate, DateTime maxDate);
+        Task<List<FuelStationEntity>> GetById(List<long> ids);
+        Task<FuelStationEntity> GetById(long id);
     }
 }

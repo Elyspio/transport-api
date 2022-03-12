@@ -16,4 +16,8 @@
       <ProjectReference Include="..\Adapters\Adapters.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Exceptions\" />
+    </ItemGroup>
+
 </Project>

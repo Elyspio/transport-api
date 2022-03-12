@@ -1,20 +1,24 @@
 ﻿using Abstractions.Enums;
+using Abstractions.Interfaces.Repositories;
 using Abstractions.Interfaces.Services;
 using Abstractions.Models;
-using Abstractions.Interfaces.Repositories;
 using Adapters.FuelStation;
+using System.Collections.Concurrent;
 
 namespace Core.Services
 {
     public class FuelStationService : IFuelStationService
     {
         private readonly FuelStationClient client;
-        private readonly IFuelStationRepository repository;
+        private readonly IFuelStationRepository stationRepository;
+        private readonly IPriceRepository priceRepository;
 
-        public FuelStationService(FuelStationClient client, IFuelStationRepository repository)
+        public FuelStationService(FuelStationClient client, IFuelStationRepository repository, IPriceRepository priceRepository)
         {
             this.client = client;
-            this.repository = repository;
+            this.stationRepository = repository;
+            this.priceRepository = priceRepository;
+
         }
 
         public async Task<List<FuelStationDataDistance>> GetFuelStations(double lat, double lon, long radius)
@@ -24,14 +28,14 @@ namespace Core.Services
             return stations
                 .Select(station => new FuelStationDataDistance(
                     station,
-                    Calculate(lat, lon, station.Location.Latitude, station.Location.Longitude))
+                    GetDistance(lat, lon, station.Location.Latitude, station.Location.Longitude))
                 )
                 .Where(station => station.Distance < radius * 1000)
                 .ToList();
 
         }
 
-        private double Calculate(double lat1, double lon1, double lat2, double lon2)
+        private double GetDistance(double lat1, double lon1, double lat2, double lon2)
         {
             var R = 6378.137; // Radius of earth in KM
             var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
@@ -92,10 +96,43 @@ namespace Core.Services
 
         public async Task<List<FuelStationData>> GetBetweenDates(DateTime? minDate = null, DateTime? maxDate = null)
         {
-            if (minDate == null) minDate = DateTime.MinValue;
-            if (maxDate == null) maxDate = DateTime.MaxValue;
+            if (minDate == default) minDate = DateTime.MinValue;
+            if (maxDate == default) maxDate = DateTime.MaxValue;
 
-            return await repository.GetBetweenDates(minDate.Value, maxDate.Value);
+            var allPrices = await priceRepository.GetBetweenDates(minDate.Value, maxDate.Value);
+            Console.WriteLine($"Count prices {allPrices.Count}");
+
+            var stationIds = allPrices.Select(p => p.IdStation).Distinct().ToList();
+
+            var stations = await stationRepository.GetById(stationIds);
+            Console.WriteLine($"Count stations {stations.Count}");
+
+            var datas = new ConcurrentBag<FuelStationData>();
+
+            Parallel.ForEach(stations, station =>
+            {
+
+                var data = new FuelStationData { Location = station.Location, Services = station.Services, Id = station.Id, Prices = new Prices() };
+
+                var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
+
+
+                foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+                {
+                    data.Prices[fuel].AddRange(prices.Where(p => p.Fuel == fuel).Select(p => new FuelPriceHistory
+                    {
+                        Date = p.Date,
+                        Value = p.Value
+                    }).ToList());
+                }
+
+
+                datas.Add(data);
+            });
+
+
+            return datas.ToList();
+
 
         }
     }

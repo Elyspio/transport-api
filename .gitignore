@@ -1,3 +1,4 @@
 ﻿.idea
 deploy/dev/data
 back/Tools/Core.Merge/*.json
+back/Tools/Db.Import/merged.json

@@ -37,7 +37,7 @@ public class FuelStationController : ControllerBase
     /// </summary>
     [HttpGet("time")]
     [ProducesResponseType(typeof(List<FuelStationData>), 200)]
-    public async Task<IActionResult> GetFuelStationsBetweenDates(DateTime minDate, DateTime maxDate)
+    public async Task<IActionResult> GetFuelStationsBetweenDates(DateTime? minDate = null, DateTime? maxDate = null)
     {
         return Ok(await client.GetBetweenDates(minDate, maxDate));
 
