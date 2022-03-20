@@ -6,7 +6,8 @@
 		"ios": "expo start --ios",
 		"web": "expo start --web",
 		"eject": "expo eject",
-		"test": "jest --watchAll"
+		"test": "jest --watchAll",
+		"dist": "eas build -p android"
 	},
 	"jest": {
 		"preset": "jest-expo"
@@ -30,6 +31,7 @@
 		"expo-splash-screen": "~0.14.1",
 		"expo-status-bar": "~1.2.0",
 		"expo-task-manager": "~10.1.0",
+		"expo-updates": "~0.11.6",
 		"expo-web-browser": "~10.1.0",
 		"react": "17.0.1",
 		"react-dom": "17.0.1",
@@ -51,6 +53,7 @@
 		"@types/react": "~17.0.21",
 		"@types/react-native": "~0.64.12",
 		"@types/react-redux": "^7.1.16",
+		"eas-cli": "^0.48.0",
 		"jest-expo": "^44.0.0",
 		"prettier": "^2.5.1",
 		"typescript": "~4.3.5"

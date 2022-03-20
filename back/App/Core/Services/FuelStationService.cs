@@ -96,8 +96,8 @@ namespace Core.Services
 
         public async Task<List<FuelStationData>> GetBetweenDates(DateTime? minDate = null, DateTime? maxDate = null)
         {
-            if (minDate == default) minDate = DateTime.MinValue;
-            if (maxDate == default) maxDate = DateTime.MaxValue;
+            if (minDate == null) minDate = DateTime.MinValue;
+            if (maxDate == null) maxDate = DateTime.MaxValue;
 
             var allPrices = await priceRepository.GetBetweenDates(minDate.Value, maxDate.Value);
             Console.WriteLine($"Count prices {allPrices.Count}");

@@ -8,6 +8,6 @@ services:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: A4daz6554d8zad
         volumes:
-            - ./data:/data/db
+            - D:\Apps\transport-api\database:/data/db
         ports:
             - "6007:27017"

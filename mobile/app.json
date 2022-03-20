@@ -1,11 +1,11 @@
 {
 	"expo": {
-		"name": "Transportation Api",
-		"slug": "transportation-api",
-		"version": "1.0.2",
+		"name": "ElyTransport",
+		"slug": "ely-transport",
+		"version": "1.0.4",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
-		"scheme": "transportation-api",
+		"scheme": "ely-transport",
 		"userInterfaceStyle": "automatic",
 		"splash": {
 			"image": "./assets/images/splash.png",
@@ -16,11 +16,8 @@
 			"fallbackToCacheTimeout": 0
 		},
 		"assetBundlePatterns": [
-			"**/*"
+			"./**/*"
 		],
-		"ios": {
-			"supportsTablet": true
-		},
 		"web": {
 			"favicon": "./assets/images/favicon.png"
 		},
@@ -30,7 +27,8 @@
 				"ACCESS_FINE_LOCATION",
 				"READ_PHONE_STATE"
 			],
-			"package": "fr.elyspio.transport"
+			"package": "fr.elyspio.transport",
+			"versionCode": 2
 		},
 		"androidNavigationBar": {
 			"visible": "immersive",

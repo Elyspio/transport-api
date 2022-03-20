@@ -3,11 +3,15 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS builder-back
 WORKDIR /app
 
 COPY back/TransportApi.sln ./TransportApi.sln
-COPY back/Core/Core.csproj ./Core/Core.csproj
-COPY back/Core.Merge/Core.Merge.csproj ./Core.Merge/Core.Merge.csproj
-COPY back/Adapters/Adapters.csproj ./Adapters/Adapters.csproj
-COPY back/Abstraction/Abstraction.csproj ./Abstraction/Abstraction.csproj
-COPY back/Web/Web.csproj ./Web/Web.csproj
+COPY back/App/Core/Core.csproj ./App/Core/
+COPY back/App/Adapters/Adapters.csproj ./App/Adapters/
+COPY back/App/Abstractions/Abstractions.csproj ./App/Abstractions/
+COPY back/App/Db/Db.csproj ./App/Db/
+COPY back/App/Web/Web.csproj ./App/Web/
+
+COPY back/Tools/Core.Merge/Core.Merge.csproj ./Tools/Core.Merge/
+COPY back/Tools/Db.Import/Db.Import.csproj ./Tools/Db.Import/
+
 
 RUN dotnet restore
 

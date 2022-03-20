@@ -13,7 +13,6 @@ import "react-native-url-polyfill/auto";
 export default function App() {
 	const isLoadingComplete = useCachedResources();
 	const colorScheme = useColorScheme();
-	console.log(process.env);
 
 	if (!isLoadingComplete) {
 		return null;
