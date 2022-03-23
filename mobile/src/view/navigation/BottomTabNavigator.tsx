@@ -1,10 +1,9 @@
 import "react-native-gesture-handler";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import * as React from "react";
 
 import StationsScreen from "../screens/StationsScreen";
-import LocationScreen from "../screens/TabTwoScreen";
 import StoreScreen from "../screens/StoreScreen";
 import { theme } from "../constants/Colors";
 import linkingConfiguration from "./LinkingConfiguration";
@@ -31,13 +30,13 @@ export default function BottomTabNavigator() {
 					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name={"map-marked"} color={color} />,
 				}}
 			/>
-			<BottomTab.Screen
-				name="Location"
-				component={LocationScreen}
-				options={{
-					tabBarIcon: ({ color }) => <MaterialIcons size={24} name="place" color={color} />,
-				}}
-			/>
+			{/*<BottomTab.Screen*/}
+			{/*	name="Location"*/}
+			{/*	component={LocationScreen}*/}
+			{/*	options={{*/}
+			{/*		tabBarIcon: ({ color }) => <MaterialIcons size={24} name="place" color={color} />,*/}
+			{/*	}}*/}
+			{/*/>*/}
 			<BottomTab.Screen
 				name="Data"
 				component={StoreScreen}

@@ -1,34 +1,13 @@
 import * as React from "react";
-import { Dimensions, StyleSheet, TouchableHighlight, View, VirtualizedList } from "react-native";
+import { Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { Caption, Divider, Paragraph, Surface, Title, ToggleButton } from "react-native-paper";
+import { Divider, Paragraph, Surface, Title, ToggleButton } from "react-native-paper";
 import { getFuelStations } from "../../store/stations/stations.action";
 import Slider from "@react-native-community/slider";
 import { FuelStationDataDistance, Prices } from "../../core/apis/backend/generated";
-import { theme } from "../constants/Colors";
 import { Services } from "../../core/services";
-
-const fuelTypes: (keyof Prices)[] = ["e10", "gazole"];
-
-// https://www.waze.com/fr/live-map/directions?to=ll.45.78127997%2C4.82977867&from=ll.45.7935651%2C4.8451191
-
-function getDistance(val: number) {
-	if (val < 1000) {
-		return `(${val.toFixed(0)}m)`;
-	} else {
-		return `(${(val / 1000).toFixed(2)}Km)`;
-	}
-}
-
-type PriceProps = {
-	prices: Prices,
-	fuel: keyof Prices;
-}
-
-function Price({ prices, fuel }: PriceProps) {
-	if (prices[fuel].length === 0) return null;
-	return <Caption>{fuel.toLocaleUpperCase()}: {prices[fuel][0].value} €</Caption>;
-}
+import { Station } from "../components/fuel/Station";
+import { PriceSortSelector } from "../components/fuel/PriceSortSelector";
 
 export function StationsScreen() {
 	const coords = useAppSelector((s) => s.location.data?.coords);
@@ -40,9 +19,10 @@ export function StationsScreen() {
 	const [sortBy, setSortBy] = React.useState<keyof Prices>("e10");
 
 	const data = React.useMemo(() => {
-		let ret = [...allData];
-		if (sortBy) ret = ret.filter((a) => a.prices[sortBy]);
-		ret.sort((a, b) => (a.prices[sortBy]! > b.prices[sortBy]! ? 1 : -1));
+		let ret = [...allData].filter((a) => a.prices[sortBy]?.length > 0);
+		ret.sort((stationA, stationB) => {
+			return stationA.prices[sortBy][0].value < stationB.prices[sortBy][0].value ? -1 : 1;
+		});
 		return ret;
 	}, [sortBy, allData]);
 
@@ -53,7 +33,7 @@ export function StationsScreen() {
 					latitude: coords.latitude,
 					longitude: coords.longitude,
 					radius,
-				}),
+				})
 			);
 		}
 	}, [dispatch, coords, radius]);
@@ -66,7 +46,7 @@ export function StationsScreen() {
 				latitude: station.location.latitude,
 			});
 		},
-		[],
+		[]
 	);
 
 	return (
@@ -94,10 +74,9 @@ export function StationsScreen() {
 				<View style={styles.innerContainer}>
 					<Paragraph style={{ width: 95 }}>Sort by </Paragraph>
 
-					<ToggleButton.Row onValueChange={(value: any) => setSortBy(value)} value={sortBy}>
-						<ToggleButton icon={() => <Paragraph>e10</Paragraph>} value="e10" style={{ width: 100 }} />
-						<ToggleButton icon={() => <Paragraph>gazole</Paragraph>} value="gazole"
-						              style={{ width: 100 }} />
+					<ToggleButton.Row onValueChange={(value: any) => value && setSortBy(value)} value={sortBy}>
+						<PriceSortSelector selected={sortBy === "e10"} value={"e10"} />
+						<PriceSortSelector selected={sortBy === "gazole"} value={"gazole"} />
 					</ToggleButton.Row>
 				</View>
 			</View>
@@ -107,23 +86,7 @@ export function StationsScreen() {
 			<VirtualizedList
 				data={data}
 				initialNumToRender={4}
-				renderItem={({ item }) => (
-					<TouchableHighlight onLongPress={onFuelStationClick(item)}>
-						<View style={styles.item}>
-							<Paragraph>
-								{item.location.address}
-							</Paragraph>
-							<Caption>City: {item.location.city}</Caption>
-							<Caption>Distance: {getDistance(item.distance)}</Caption>
-							<Price prices={item.prices} fuel={"gazole"} />
-							<Price prices={item.prices} fuel={"e10"} />
-							<Price prices={item.prices} fuel={"sp98"} />
-							<Price prices={item.prices} fuel={"sp95"} />
-							<Price prices={item.prices} fuel={"e85"} />
-							<Price prices={item.prices} fuel={"gpLc"} />
-						</View>
-					</TouchableHighlight>
-				)}
+				renderItem={({ item }) => <Station key={item.id} item={item} onLongPress={onFuelStationClick(item)} />}
 				keyExtractor={(item: FuelStationDataDistance) => item.id.toString()}
 				getItemCount={() => data.length}
 				getItem={(data, index) => data[index]}
@@ -134,7 +97,7 @@ export function StationsScreen() {
 
 export default StationsScreen;
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
 	container: {
@@ -151,12 +114,5 @@ const styles = StyleSheet.create({
 		marginVertical: 30,
 		height: 1,
 		width: width * 0.8,
-	},
-	item: {
-		width: width * 0.9,
-		marginVertical: 5,
-		backgroundColor: theme.colors.background,
-		padding: 10,
-		paddingHorizontal: 20,
 	},
 });
