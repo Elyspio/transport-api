@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getFuelStations } from "./stations.action";
+import { getFuelStationsNow } from "./stations.action";
 import { FuelStationDataDistance } from "../../core/apis/backend/generated";
 
 const initialState: State = {
-	data: [],
+	now: [],
 };
 
 type State = {
-	data: FuelStationDataDistance[];
+	now: FuelStationDataDistance[];
 };
 
 const locationSlice = createSlice({
@@ -15,8 +15,8 @@ const locationSlice = createSlice({
 	reducers: {},
 	initialState,
 	extraReducers: ({ addCase }) => {
-		addCase(getFuelStations.fulfilled, (state, { payload }) => {
-			state.data = payload;
+		addCase(getFuelStationsNow.fulfilled, (state, { payload }) => {
+			state.now = payload;
 		});
 	},
 });

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
+import { Dimensions, ScrollView, StyleSheet } from "react-native";
 import { useAppSelector } from "../../store";
-import { Divider, Paragraph, Surface } from "react-native-paper";
+import { Divider, Paragraph, Surface, Text } from "react-native-paper";
 
 export function StoreScreen() {
 	const store = useAppSelector((s) => s);
@@ -10,10 +10,14 @@ export function StoreScreen() {
 		<Surface style={styles.container}>
 			<Paragraph style={styles.title}>Store</Paragraph>
 			<Divider style={{ marginBottom: 30 }} />
-			<Paragraph> {JSON.stringify(store, null, 4)}</Paragraph>
+			<ScrollView>
+				<Text>{JSON.stringify(store, null, 8)})</Text>
+			</ScrollView>
 		</Surface>
 	);
 }
+
+const { height } = Dimensions.get("window");
 
 export default StoreScreen;
 const styles = StyleSheet.create({
@@ -30,5 +34,9 @@ const styles = StyleSheet.create({
 		marginVertical: 30,
 		height: 1,
 		width: "80%",
+	},
+	content: {
+		maxHeight: height - 200,
+		overflow: "scroll",
 	},
 });

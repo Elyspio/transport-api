@@ -1,8 +1,13 @@
 import { expo } from "../app.json";
 import * as fs from "fs";
 import * as path from "path";
+import { platform } from "os";
 import { spawnSync } from "child_process";
 import semver from "semver";
+
+const isWindows = () => platform() === "win32";
+
+const getNodeModulesBin = (name: string) => path.resolve(__dirname, "..", "node_modules", ".bin", isWindows() ? `${name}.cmd` : name);
 
 const getOldConfig = () => JSON.parse(JSON.stringify(expo)) as typeof expo;
 
@@ -18,7 +23,7 @@ try {
 	version.inc("patch", "1");
 	config.version = version.toString();
 	setAppJson(config);
-	const output = spawnSync(path.resolve(__dirname, "..", "node_modules", ".bin", "eas.cmd"), ["build", "-p", "android"], {
+	const output = spawnSync(getNodeModulesBin("eas"), ["build", "-p", "android"], {
 		stdio: "inherit",
 		cwd: path.resolve(__dirname, ".."),
 	});

@@ -2,18 +2,19 @@ import * as React from "react";
 import { Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { Divider, Paragraph, Surface, Title, ToggleButton } from "react-native-paper";
-import { getFuelStations } from "../../store/stations/stations.action";
+import { getFuelStationsNow } from "../../store/stations/stations.action";
 import Slider from "@react-native-community/slider";
 import { FuelStationDataDistance, Prices } from "../../core/apis/backend/generated";
 import { Services } from "../../core/services";
 import { Station } from "../components/fuel/Station";
 import { PriceSortSelector } from "../components/fuel/PriceSortSelector";
+import { useDispatch } from "react-redux";
 
 export function StationsScreen() {
 	const coords = useAppSelector((s) => s.location.data?.coords);
-	const allData = useAppSelector((s) => s.stations.data);
+	const allData = useAppSelector((s) => s.stations.now);
 
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const [radius, setRadius] = React.useState(1);
 	const [sortBy, setSortBy] = React.useState<keyof Prices>("e10");
@@ -29,7 +30,7 @@ export function StationsScreen() {
 	React.useEffect(() => {
 		if (coords) {
 			dispatch(
-				getFuelStations({
+				getFuelStationsNow({
 					latitude: coords.latitude,
 					longitude: coords.longitude,
 					radius,
@@ -40,7 +41,6 @@ export function StationsScreen() {
 
 	const onFuelStationClick = React.useCallback(
 		(station: FuelStationDataDistance) => () => {
-			console.log(station);
 			return Services.waze.openWaze({
 				longitude: station.location.longitude,
 				latitude: station.location.latitude,
