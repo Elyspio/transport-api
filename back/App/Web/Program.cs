@@ -1,12 +1,14 @@
-using Abstractions.Utils;
-using Adapters.FuelStation;
+using System.Net;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Newtonsoft.Json.Converters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using System.Net;
-using Web.Utils;
+using Transport.Api.Abstractions.Utils;
+using Transport.Api.Adapters.FuelStation;
+using Transport.Api.Web.Utils;
 
 var frontPath = Env.Get("FRONT_PATH", "/front");
 
@@ -67,19 +69,18 @@ var useBuilder = () =>
             o.Conventions.Add(new ControllerDocumentationConvention());
             o.OutputFormatters.RemoveType<StringOutputFormatter>();
         })
-        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()))
-        .AddNewtonsoftJson(x => x.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter()));
+        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+        .AddNewtonsoftJson(x => x.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
-    });
+    builder.Services.AddSwaggerGen(c => { c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}"); });
 
     // Setup SPA Serving
     if (builder.Environment.IsProduction())
+    {
         Console.WriteLine($"Server in production, serving SPA from {frontPath} folder");
+    }
 
     return builder;
 };
@@ -110,16 +111,12 @@ var useApp = (WebApplication application) =>
 
         application.UseDefaultFiles(new DefaultFilesOptions
         {
-            DefaultFileNames = new List<string> { "index.html" },
-            RedirectToAppendTrailingSlash = true,
+            DefaultFileNames = new List<string> {"index.html"},
+            RedirectToAppendTrailingSlash = true
         });
         application.UseStaticFiles();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapFallbackToFile("/index.html");
-        });
-
+        app.UseEndpoints(endpoints => { endpoints.MapFallbackToFile("/index.html"); });
     }
 
     // Start the application

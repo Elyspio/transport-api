@@ -1,4 +1,4 @@
-﻿namespace Web.Utils;
+﻿namespace Transport.Api.Web.Utils;
 
 public class AuthUtility
 {

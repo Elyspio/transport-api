@@ -1,15 +1,15 @@
-﻿using Abstractions.Models;
-using Newtonsoft.Json;
-using Serilog;
+﻿using System.Collections.Concurrent;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
+using Newtonsoft.Json;
+using Serilog;
+using Transport.Api.Abstractions.Transports;
+using Formatting = Newtonsoft.Json.Formatting;
 
+namespace Transport.Api.Adapters.FuelStation;
 
-namespace Adapters.FuelStation;
-
-
-struct FuelStationCache
+internal struct FuelStationCache
 {
     public List<FuelStationData> DailyData { get; set; }
     public DateTime DailyRefresh { get; set; }
@@ -20,16 +20,16 @@ public class FuelStationClient
 {
     private readonly HttpClient client;
     private readonly ILogger logger;
+    private readonly FuelStationAssembler assembler = new();
 
-    private FuelStationCache cache = new();
+    private FuelStationCache cache;
 
 
     public FuelStationClient(HttpClient client)
     {
         this.client = client;
-        this.logger = new LoggerConfiguration().CreateLogger().ForContext<FuelStationClient>();
+        logger = new LoggerConfiguration().CreateLogger().ForContext<FuelStationClient>();
     }
-
 
 
     private async Task<string> Download(string url)
@@ -47,7 +47,7 @@ public class FuelStationClient
             using var ms = new MemoryStream();
 
             file.CopyTo(ms);
-            byte[] bytes = ms.ToArray();
+            var bytes = ms.ToArray();
 
 
             var content = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
@@ -66,14 +66,21 @@ public class FuelStationClient
     {
         try
         {
-            logger.Information($"Entering method -- GetFuelStationsXml");
+            logger.Information("Entering method -- GetFuelStationsXml");
             return await Download("https://donnees.roulez-eco.fr/opendata/instantane");
-
         }
         finally
         {
-            logger.Information($"Exiting method -- GetFuelStationsXml");
+            logger.Information("Exiting method -- GetFuelStationsXml");
         }
+    }
+
+
+    public async Task<List<FuelStationData>> GetFuelStationsByYear(int year)
+    {
+        var xml = await Download($"https://donnees.roulez-eco.fr/opendata/annee/{year}");
+        var data = Parse(xml);
+        return assembler.Convert(data);
     }
 
 
@@ -81,61 +88,58 @@ public class FuelStationClient
     {
         try
         {
-            logger.Information($"Entering method -- GetFuelStationsAllTime");
+            logger.Information("Entering method -- GetFuelStationsAllTime");
 
-            if (this.cache.AllTimeData == null)
+            if (cache.AllTimeData == null)
             {
-                var stations = new List<FuelStationData>();
+                var stations = new ConcurrentBag<FuelStationData>();
+                var years = new List<int> {2020, 2021};
                 var tasks = new List<Task>();
-                var assembler = new FuelStationAssembler();
 
-                for (int year = 2020; year < 2021; year++)
+                await Parallel.ForEachAsync(years, async (year, cancel) =>
                 {
-                    var xml = await Download($"https://donnees.roulez-eco.fr/opendata/annee/{year}");
-                    var data = Parse(xml);
-                    stations.AddRange(assembler.Convert(data));
+                    var data = await GetFuelStationsByYear(year);
+                    data.ForEach(station => stations.Add(station));
+                });
 
-                }
 
-                cache.AllTimeData = stations;
+                cache.AllTimeData = stations.ToList();
             }
 
             return cache.AllTimeData;
         }
         finally
         {
-            logger.Information($"Exiting method -- GetFuelStationsAllTime");
+            logger.Information("Exiting method -- GetFuelStationsAllTime");
         }
     }
 
     public async Task Fetch()
     {
-
         //for (int i = 2017; i < 2022; i++)
         {
-
             var xml = await Download("https://donnees.roulez-eco.fr/opendata/annee/" + 2022);
             var raw = Parse(xml);
             var data = new FuelStationAssembler().Convert(raw);
 
-            File.WriteAllText($@"P:\own\mobile\transport-api\back\Core.Merge\2022.json", JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.None));
+            File.WriteAllText(@"P:\own\mobile\transport-api\back\Core.Merge\2022.json", JsonConvert.SerializeObject(data, Formatting.None));
         }
-
     }
 
     private FuelStations Parse(string xml)
     {
         try
         {
-            logger.Information($"Entering method -- Parse"); var doc = new XmlDocument();
+            logger.Information("Entering method -- Parse");
+            var doc = new XmlDocument();
             doc.LoadXml(xml);
-            var json = JsonConvert.SerializeXmlNode(doc, Newtonsoft.Json.Formatting.None);
+            var json = JsonConvert.SerializeXmlNode(doc, Formatting.None);
 
             return FuelStations.FromJson(json);
         }
         finally
         {
-            logger.Information($"Exiting method -- Parse");
+            logger.Information("Exiting method -- Parse");
         }
     }
 
@@ -144,7 +148,7 @@ public class FuelStationClient
     {
         try
         {
-            logger.Information($"Entering method -- GetFuelStations");
+            logger.Information("Entering method -- GetFuelStations");
             if (refresh || cache.DailyRefresh + TimeSpan.FromHours(6) < DateTime.Now)
             {
                 logger.Debug($"Refresh fuel stations cache at {DateTime.Now.ToShortDateString()}");
@@ -153,13 +157,12 @@ public class FuelStationClient
                 cache.DailyRefresh = DateTime.Now;
                 cache.DailyData = new FuelStationAssembler().Convert(Parse(xml));
             }
+
             return cache.DailyData;
         }
-
         finally
         {
-            logger.Information($"Exiting method -- GetFuelStations");
+            logger.Information("Exiting method -- GetFuelStations");
         }
     }
-
 }

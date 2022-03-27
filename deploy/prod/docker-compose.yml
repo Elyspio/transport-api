@@ -1,32 +1,55 @@
 version: "3"
 services:
 
-  # app
-  transport-api:
-    image: elyspio/transport-api:latest
-    container_name: transport-api
-    restart: always
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=external"
-      - "traefik.http.middlewares.transport-api-prefix.stripprefix.prefixes=/transport"
-      - "traefik.http.routers.transport-api.middlewares=transport-api-prefix@docker"
-      - "traefik.http.routers.transport-api.rule=PathPrefix(`/transport`)"
-      - "traefik.http.services.transport-api.loadbalancer.server.port=4000"
-      - "traefik.http.routers.transport-api.entrypoints=external"
-    volumes:
-      - "./config/front/conf.js:/back/wwwroot/conf.js"
-      - "./config/back/appsettings.json:/back/appsettings.json"
+    # app
+    transport-api:
+        image: elyspio/transport-api:latest
+        container_name: transport-api
+        restart: always
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=external"
+            - "traefik.http.middlewares.transport-api-prefix.stripprefix.prefixes=/transport"
+            - "traefik.http.routers.transport-api.middlewares=transport-api-prefix@docker"
+            - "traefik.http.routers.transport-api.rule=PathPrefix(`/transport`)"
+            - "traefik.http.services.transport-api.loadbalancer.server.port=4000"
+            - "traefik.http.routers.transport-api.entrypoints=external"
+        volumes:
+            - "./config/front/conf.js:/back/wwwroot/conf.js"
+            - "./config/back/appsettings.json:/back/appsettings.json"
 
-    networks:
-      - transport-api
-      - external
+        networks:
+            - transport-api
+            - external
 
+    transport-api-db-update:
+        image: elyspio/transport-api:db-update
+        container_name: transport-api-db-update
+        stdin_open: true
+        tty: true
+        volumes:
+            - "./config/back/appsettings.db.json:/back/appsettings.json"
+        networks:
+            - transport-api
+
+    transport-api-db:
+        container_name: transport-api-db
+        image: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./data:/data/db
+        ports:
+            - "5003:27017"
+        networks:
+            - transport-api
 
 
 networks:
-  transport-api:
-    name: "transport-api"
-  external:
-    external: true
+    transport-api:
+        name: "transport-api"
+    external:
+        external: true
 

@@ -1,18 +1,18 @@
-﻿using Abstractions.Enums;
-using Abstractions.Interfaces.Repositories;
-using Db.Entities;
-using Db.Repositories.Internal;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Transport.Api.Abstractions.Enums;
+using Transport.Api.Abstractions.Interfaces.Repositories;
+using Transport.Api.Abstractions.Models;
+using Transport.Api.Abstractions.Transports;
+using Transport.Api.Db.Repositories.Internal;
 
-namespace Db.Repositories;
+namespace Transport.Api.Db.Repositories;
 
 public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 {
-
     public PriceRepository(IConfiguration configuration, ILogger<PriceRepository> logger) : base(configuration, logger)
     {
     }
@@ -24,7 +24,7 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
             IdStation = idStation,
             Fuel = fuel,
             Date = date,
-            Value = value,
+            Value = value
         };
 
         await EntityCollection.InsertOneAsync(elem);
@@ -55,4 +55,42 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
         await EntityCollection.Database.DropCollectionAsync(CollectionName);
     }
 
+    public async Task<List<PriceEntity>> Add(IEnumerable<FuelStationData> stations)
+    {
+        var entities = new List<PriceEntity>();
+
+        foreach (var station in stations)
+        {
+            foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+            {
+                var prices = station.Prices[fuel];
+
+                foreach (var price in prices)
+                {
+                    entities.Add(new PriceEntity
+                    {
+                        IdStation = station.Id,
+                        Fuel = fuel,
+                        Value = price.Value / 1000,
+                        Date = price.Date
+                    });
+                }
+            }
+        }
+
+        await EntityCollection.InsertManyAsync(entities);
+
+
+        return entities;
+    }
+
+    public async Task<long> Clear(int year)
+    {
+        var filter = Builders<PriceEntity>.Filter.Gt(e => e.Date, new DateTime(year, 1, 1));
+        filter &= Builders<PriceEntity>.Filter.Lt(e => e.Date, new DateTime(year, 12, 30));
+
+        var result = await EntityCollection.DeleteManyAsync(filter);
+
+        return result.DeletedCount;
+    }
 }

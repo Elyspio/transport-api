@@ -1,4 +1,4 @@
-﻿namespace Db.Configs;
+﻿namespace Transport.Api.Db.Configs;
 
 public class DbConfig
 {

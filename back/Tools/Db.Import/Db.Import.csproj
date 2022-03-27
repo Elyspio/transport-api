@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\App\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\..\App\Db\Db.csproj" />
+    <ProjectReference Include="..\Core.Merge\Core.Merge.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace Abstractions.Interfaces.Assemblers;
+﻿namespace Transport.Api.Abstractions.Interfaces.Assemblers;
 
 public interface IAssembler<TA, TB>
 {
@@ -7,4 +7,7 @@ public interface IAssembler<TA, TB>
 
     IEnumerable<TB> Convert(IEnumerable<TA> objs);
     IEnumerable<TA> Convert(IEnumerable<TB> objs);
+
+    Task<TB> Convert(Task<TA> obj);
+    Task<TA> Convert(Task<TB> obj);
 }

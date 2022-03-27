@@ -8,16 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
-      <ProjectReference Include="..\Adapters\Adapters.csproj" />
+        <ProjectReference Include="..\Abstractions\Transport.Api.Abstractions.csproj"/>
+        <ProjectReference Include="..\Adapters\Transport.Api.Adapters.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Exceptions\" />
+        <Folder Include="Exceptions\"/>
     </ItemGroup>
 
 </Project>

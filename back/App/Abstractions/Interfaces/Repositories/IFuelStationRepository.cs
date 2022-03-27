@@ -1,14 +1,16 @@
-﻿using Abstractions.Enums;
-using Abstractions.Models;
-using Db.Entities;
+﻿using Transport.Api.Abstractions.Enums;
+using Transport.Api.Abstractions.Models;
+using Transport.Api.Abstractions.Transports;
 
-namespace Abstractions.Interfaces.Repositories
+namespace Transport.Api.Abstractions.Interfaces.Repositories;
+
+public interface IFuelStationRepository
 {
-    public interface IFuelStationRepository
-    {
-        Task<FuelStationEntity> Add(long id, Location location, List<FuelStationServiceType> services);
-        Task Clear();
-        Task<List<FuelStationEntity>> GetById(List<long> ids);
-        Task<FuelStationEntity> GetById(long id);
-    }
+    Task<FuelStationEntity> Add(long id, Location location, List<FuelStationServiceType> services);
+    Task<List<FuelStationEntity>> Add(IEnumerable<FuelStationData> stations);
+    Task<List<long>> GetAllIds();
+
+    Task Clear();
+    Task<List<FuelStationEntity>> GetById(List<long> ids);
+    Task<FuelStationEntity> GetById(long id);
 }

@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
-namespace Db.Repositories.Internal;
+namespace Transport.Api.Db.Repositories.Internal;
 
 public abstract class BaseRepository<T>
 {

@@ -1,8 +1,8 @@
-﻿using Abstractions.Enums;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Transport.Api.Abstractions.Enums;
 
-namespace Db.Entities;
+namespace Transport.Api.Abstractions.Models;
 
 public class PriceEntity
 {
@@ -16,5 +16,4 @@ public class PriceEntity
 
     public DateTime Date { get; set; }
     public double Value { get; set; }
-
 }

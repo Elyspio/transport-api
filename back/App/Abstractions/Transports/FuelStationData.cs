@@ -1,36 +1,28 @@
-﻿using Abstractions.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Transport.Api.Abstractions.Enums;
 
-namespace Abstractions.Models
+namespace Transport.Api.Abstractions.Transports;
+
+public class FuelStationData
 {
-    public partial class FuelStationData
+    public FuelStationData(FuelStationData all)
     {
-        public FuelStationData(FuelStationData all)
-        {
-            Id = all.Id;
-            Location = all.Location;
-            Prices = all.Prices;
-            Services = all.Services;
-        }
-
-        public FuelStationData()
-        {
-
-        }
-
-        [Required]
-        public long Id { get; set; }
-
-        [Required]
-        public Location Location { get; set; }
-
-
-        [Required]
-        public Prices Prices { get; set; }
-
-        [Required]
-        public List<FuelStationServiceType> Services { get; set; }
-
+        Id = all.Id;
+        Location = all.Location;
+        Prices = all.Prices;
+        Services = all.Services;
     }
 
+    public FuelStationData()
+    {
+    }
+
+    [Required] public long Id { get; set; }
+
+    [Required] public Location Location { get; set; }
+
+
+    [Required] public Prices Prices { get; set; }
+
+    [Required] public List<FuelStationServiceType> Services { get; set; }
 }

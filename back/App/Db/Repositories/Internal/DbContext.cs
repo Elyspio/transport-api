@@ -1,9 +1,9 @@
-﻿using Abstractions.Utils;
-using Db.Configs;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
+using Transport.Api.Abstractions.Utils;
+using Transport.Api.Db.Configs;
 
-namespace Db.Repositories.Internal;
+namespace Transport.Api.Db.Repositories.Internal;
 
 public class MongoContext
 {

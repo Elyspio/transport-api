@@ -1,10 +1,8 @@
-﻿
+﻿using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Globalization;
 
-
-namespace Adapters.FuelStation;
+namespace Transport.Api.Adapters.FuelStation;
 
 public partial class FuelStations
 {
@@ -15,13 +13,13 @@ public partial class FuelStations
     public PdvListe PdvListe { get; set; }
 }
 
-public partial class PdvListe
+public class PdvListe
 {
     [JsonProperty("pdv", Required = Required.Always)]
     public List<Pdv> Pdv { get; set; }
 }
 
-public partial class Pdv
+public class Pdv
 {
     [JsonProperty("@id", Required = Required.Always)]
     [JsonConverter(typeof(ParseStringConverter))]
@@ -42,8 +40,7 @@ public partial class Pdv
     [JsonProperty("adresse", Required = Required.Always)]
     public string Adresse { get; set; }
 
-    [JsonProperty("ville")]
-    public string Ville { get; set; }
+    [JsonProperty("ville")] public string Ville { get; set; }
 
     [JsonProperty("horaires", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
     public Horaires Horaires { get; set; }
@@ -55,7 +52,7 @@ public partial class Pdv
     public PrixUnion? Prix { get; set; }
 }
 
-public partial class Horaires
+public class Horaires
 {
     [JsonProperty("@automate-24-24", Required = Required.Always)]
     public string Automate2424 { get; set; }
@@ -64,7 +61,7 @@ public partial class Horaires
     public List<Jour> Jour { get; set; }
 }
 
-public partial class Jour
+public class Jour
 {
     [JsonProperty("@id", Required = Required.Always)]
     [JsonConverter(typeof(ParseStringConverter))]
@@ -80,7 +77,7 @@ public partial class Jour
     public HoraireUnion? Horaire { get; set; }
 }
 
-public partial class HoraireElement
+public class HoraireElement
 {
     [JsonProperty("@ouverture", Required = Required.Always)]
     public string Ouverture { get; set; }
@@ -89,7 +86,7 @@ public partial class HoraireElement
     public string Fermeture { get; set; }
 }
 
-public partial class PrixElement
+public class PrixElement
 {
     [JsonProperty("@nom", Required = Required.Always)]
     public FuelType Nom { get; set; }
@@ -105,13 +102,13 @@ public partial class PrixElement
     public string Valeur { get; set; }
 }
 
-public partial class Services
+public class Services
 {
     [JsonProperty("service", Required = Required.Always)]
     public ServiceUnion Service { get; set; }
 }
 
-public partial class Xml
+public class Xml
 {
     [JsonProperty("@version", Required = Required.Always)]
     public string Version { get; set; }
@@ -123,56 +120,135 @@ public partial class Xml
     public string Standalone { get; set; }
 }
 
-public enum JourNom { Dimanche, Jeudi, Lundi, Mardi, Mercredi, Samedi, Vendredi };
+public enum JourNom
+{
+    Dimanche,
+    Jeudi,
+    Lundi,
+    Mardi,
+    Mercredi,
+    Samedi,
+    Vendredi
+}
 
-public enum Pop { A, N, R };
+public enum Pop
+{
+    A,
+    N,
+    R
+}
 
-public enum FuelType { E10, E85, Gazole, GpLc, Sp95, Sp98 };
+public enum FuelType
+{
+    E10,
+    E85,
+    Gazole,
+    GpLc,
+    Sp95,
+    Sp98
+}
 
-public enum ServiceElement { AireDeCampingCars, AutomateCb2424, Bar, BornesÉlectriques, BoutiqueAlimentaire, BoutiqueNonAlimentaire, CarburantAdditivé, DabDistributeurAutomatiqueDeBillets, Douches, EspaceBébé, Gnv, LavageAutomatique, LavageManuel, Laverie, LocationDeVéhicule, PistePoidsLourds, RelaisColis, RestaurationSurPlace, RestaurationÀEmporter, ServicesRéparationEntretien, StationDeGonflage, ToilettesPubliques, VenteDAdditifsCarburants, VenteDeFioulDomestique, VenteDeGazDomestiqueButanePropane, VenteDePétroleLampant, Wifi, Inconnu };
+public enum ServiceElement
+{
+    AireDeCampingCars,
+    AutomateCb2424,
+    Bar,
+    BornesÉlectriques,
+    BoutiqueAlimentaire,
+    BoutiqueNonAlimentaire,
+    CarburantAdditivé,
+    DabDistributeurAutomatiqueDeBillets,
+    Douches,
+    EspaceBébé,
+    Gnv,
+    LavageAutomatique,
+    LavageManuel,
+    Laverie,
+    LocationDeVéhicule,
+    PistePoidsLourds,
+    RelaisColis,
+    RestaurationSurPlace,
+    RestaurationÀEmporter,
+    ServicesRéparationEntretien,
+    StationDeGonflage,
+    ToilettesPubliques,
+    VenteDAdditifsCarburants,
+    VenteDeFioulDomestique,
+    VenteDeGazDomestiqueButanePropane,
+    VenteDePétroleLampant,
+    Wifi,
+    Inconnu
+}
 
-public partial struct HoraireUnion
+public struct HoraireUnion
 {
     public HoraireElement HoraireElement;
     public List<HoraireElement> HoraireElementArray;
 
-    public static implicit operator HoraireUnion(HoraireElement HoraireElement) => new HoraireUnion { HoraireElement = HoraireElement };
-    public static implicit operator HoraireUnion(List<HoraireElement> HoraireElementArray) => new HoraireUnion { HoraireElementArray = HoraireElementArray };
+    public static implicit operator HoraireUnion(HoraireElement HoraireElement)
+    {
+        return new() {HoraireElement = HoraireElement};
+    }
+
+    public static implicit operator HoraireUnion(List<HoraireElement> HoraireElementArray)
+    {
+        return new() {HoraireElementArray = HoraireElementArray};
+    }
 }
 
-public partial struct PrixUnion
+public struct PrixUnion
 {
     public PrixElement PrixElement;
     public List<PrixElement> PrixElementArray;
 
-    public static implicit operator PrixUnion(PrixElement PrixElement) => new PrixUnion { PrixElement = PrixElement };
-    public static implicit operator PrixUnion(List<PrixElement> PrixElementArray) => new PrixUnion { PrixElementArray = PrixElementArray };
+    public static implicit operator PrixUnion(PrixElement PrixElement)
+    {
+        return new() {PrixElement = PrixElement};
+    }
+
+    public static implicit operator PrixUnion(List<PrixElement> PrixElementArray)
+    {
+        return new() {PrixElementArray = PrixElementArray};
+    }
 }
 
-public partial struct ServiceUnion
+public struct ServiceUnion
 {
     public ServiceElement? Enum;
     public List<ServiceElement> StringArray;
 
-    public static implicit operator ServiceUnion(ServiceElement Enum) => new ServiceUnion { Enum = Enum };
-    public static implicit operator ServiceUnion(List<ServiceElement> StringArray) => new ServiceUnion { StringArray = StringArray };
+    public static implicit operator ServiceUnion(ServiceElement Enum)
+    {
+        return new() {Enum = Enum};
+    }
+
+    public static implicit operator ServiceUnion(List<ServiceElement> StringArray)
+    {
+        return new() {StringArray = StringArray};
+    }
 }
 
 public partial class FuelStations
 {
 #pragma warning disable CS8603 // Possible null reference return.
-    public static FuelStations FromJson(string json) => JsonConvert.DeserializeObject<FuelStations>(json, Converter.Settings);
+    public static FuelStations FromJson(string json)
+    {
+        return JsonConvert.DeserializeObject<FuelStations>(json, Converter.Settings);
+    }
 #pragma warning restore CS8603 // Possible null reference return.
 }
 
 public static class Serialize
 {
-    public static string ToJson(this FuelStations self) => JsonConvert.SerializeObject(self, Converter.Settings);
+    public static string ToJson(this FuelStations self)
+    {
+        return JsonConvert.SerializeObject(self, Converter.Settings);
+    }
 }
 
 internal static class Converter
 {
-    public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+    public static readonly JsonSerializerSettings Settings = new()
     {
         MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
         DateParseHandling = DateParseHandling.None,
@@ -185,24 +261,34 @@ internal static class Converter
             PrixNomConverter.Singleton,
             ServiceUnionConverter.Singleton,
             ServiceElementConverter.Singleton,
-            new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-        },
+            new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal}
+        }
     };
 }
 
 internal class ParseStringConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+    public static readonly ParseStringConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(long) || t == typeof(long?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
         var value = serializer.Deserialize<string>(reader);
         long l;
-        if (Int64.TryParse(value, out l))
+        if (long.TryParse(value, out l))
         {
             return l;
         }
+
         throw new Exception("Cannot unmarshal type long");
     }
 
@@ -213,21 +299,28 @@ internal class ParseStringConverter : JsonConverter
             serializer.Serialize(writer, null);
             return;
         }
-        var value = (long)untypedValue;
-        serializer.Serialize(writer, value.ToString());
-        return;
-    }
 
-    public static readonly ParseStringConverter Singleton = new ParseStringConverter();
+        var value = (long) untypedValue;
+        serializer.Serialize(writer, value.ToString());
+    }
 }
 
 internal class PopConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(Pop) || t == typeof(Pop?);
+    public static readonly PopConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(Pop) || t == typeof(Pop?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
         var value = serializer.Deserialize<string>(reader);
         switch (value)
         {
@@ -238,6 +331,7 @@ internal class PopConverter : JsonConverter
             case "R":
                 return Pop.R;
         }
+
         return null;
         throw new Exception("Cannot unmarshal type Pop");
     }
@@ -249,7 +343,8 @@ internal class PopConverter : JsonConverter
             serializer.Serialize(writer, null);
             return;
         }
-        var value = (Pop)untypedValue;
+
+        var value = (Pop) untypedValue;
         switch (value)
         {
             case Pop.A:
@@ -262,19 +357,27 @@ internal class PopConverter : JsonConverter
                 serializer.Serialize(writer, "R");
                 return;
         }
+
         throw new Exception("Cannot marshal type Pop");
     }
-
-    public static readonly PopConverter Singleton = new PopConverter();
 }
 
 internal class JourNomConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(JourNom) || t == typeof(JourNom?);
+    public static readonly JourNomConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(JourNom) || t == typeof(JourNom?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
         var value = serializer.Deserialize<string>(reader);
         switch (value)
         {
@@ -293,6 +396,7 @@ internal class JourNomConverter : JsonConverter
             case "Vendredi":
                 return JourNom.Vendredi;
         }
+
         throw new Exception("Cannot unmarshal type JourNom");
     }
 
@@ -303,7 +407,8 @@ internal class JourNomConverter : JsonConverter
             serializer.Serialize(writer, null);
             return;
         }
-        var value = (JourNom)untypedValue;
+
+        var value = (JourNom) untypedValue;
         switch (value)
         {
             case JourNom.Dimanche:
@@ -328,15 +433,19 @@ internal class JourNomConverter : JsonConverter
                 serializer.Serialize(writer, "Vendredi");
                 return;
         }
+
         throw new Exception("Cannot marshal type JourNom");
     }
-
-    public static readonly JourNomConverter Singleton = new JourNomConverter();
 }
 
 internal class HoraireUnionConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(HoraireUnion) || t == typeof(HoraireUnion?);
+    public static readonly HoraireUnionConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(HoraireUnion) || t == typeof(HoraireUnion?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
@@ -345,41 +454,47 @@ internal class HoraireUnionConverter : JsonConverter
             case JsonToken.StartObject:
                 var objectValue = serializer.Deserialize<HoraireElement>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-                return new HoraireUnion { HoraireElement = objectValue };
+                return new HoraireUnion {HoraireElement = objectValue};
 #pragma warning restore CS8601 // Possible null reference assignment.
             case JsonToken.StartArray:
                 var arrayValue = serializer.Deserialize<List<HoraireElement>>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-                return new HoraireUnion { HoraireElementArray = arrayValue };
+                return new HoraireUnion {HoraireElementArray = arrayValue};
 #pragma warning restore CS8601 // Possible null reference assignment.
         }
+
         throw new Exception("Cannot unmarshal type HoraireUnion");
     }
 
     public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)
     {
 #pragma warning disable CS8605 // Unboxing a possibly null value.
-        var value = (HoraireUnion)untypedValue;
+        var value = (HoraireUnion) untypedValue;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
         if (value.HoraireElementArray != null)
         {
             serializer.Serialize(writer, value.HoraireElementArray);
             return;
         }
+
         if (value.HoraireElement != null)
         {
             serializer.Serialize(writer, value.HoraireElement);
             return;
         }
+
         throw new Exception("Cannot marshal type HoraireUnion");
     }
-
-    public static readonly HoraireUnionConverter Singleton = new HoraireUnionConverter();
 }
 
 internal class PrixUnionConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(PrixUnion) || t == typeof(PrixUnion?);
+    public static readonly PrixUnionConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(PrixUnion) || t == typeof(PrixUnion?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
@@ -388,45 +503,55 @@ internal class PrixUnionConverter : JsonConverter
             case JsonToken.StartObject:
                 var objectValue = serializer.Deserialize<PrixElement>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-                return new PrixUnion { PrixElement = objectValue };
+                return new PrixUnion {PrixElement = objectValue};
 #pragma warning restore CS8601 // Possible null reference assignment.
             case JsonToken.StartArray:
                 var arrayValue = serializer.Deserialize<List<PrixElement>>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-                return new PrixUnion { PrixElementArray = arrayValue };
+                return new PrixUnion {PrixElementArray = arrayValue};
 #pragma warning restore CS8601 // Possible null reference assignment.
         }
+
         throw new Exception("Cannot unmarshal type PrixUnion");
     }
 
     public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)
     {
 #pragma warning disable CS8605 // Unboxing a possibly null value.
-        var value = (PrixUnion)untypedValue;
+        var value = (PrixUnion) untypedValue;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
         if (value.PrixElementArray != null)
         {
             serializer.Serialize(writer, value.PrixElementArray);
             return;
         }
+
         if (value.PrixElement != null)
         {
             serializer.Serialize(writer, value.PrixElement);
             return;
         }
+
         throw new Exception("Cannot marshal type PrixUnion");
     }
-
-    public static readonly PrixUnionConverter Singleton = new PrixUnionConverter();
 }
 
 internal class PrixNomConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(FuelType) || t == typeof(FuelType?);
+    public static readonly PrixNomConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(FuelType) || t == typeof(FuelType?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
         var value = serializer.Deserialize<string>(reader);
         switch (value)
         {
@@ -443,6 +568,7 @@ internal class PrixNomConverter : JsonConverter
             case "SP98":
                 return FuelType.Sp98;
         }
+
         throw new Exception("Cannot unmarshal type PrixNom");
     }
 
@@ -453,7 +579,8 @@ internal class PrixNomConverter : JsonConverter
             serializer.Serialize(writer, null);
             return;
         }
-        var value = (FuelType)untypedValue;
+
+        var value = (FuelType) untypedValue;
         switch (value)
         {
             case FuelType.E10:
@@ -475,15 +602,19 @@ internal class PrixNomConverter : JsonConverter
                 serializer.Serialize(writer, "SP98");
                 return;
         }
+
         throw new Exception("Cannot marshal type PrixNom");
     }
-
-    public static readonly PrixNomConverter Singleton = new PrixNomConverter();
 }
 
 internal class ServiceUnionConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(ServiceUnion) || t == typeof(ServiceUnion?);
+    public static readonly ServiceUnionConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(ServiceUnion) || t == typeof(ServiceUnion?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
@@ -495,74 +626,76 @@ internal class ServiceUnionConverter : JsonConverter
                 switch (stringValue)
                 {
                     case "Aire de camping-cars":
-                        return new ServiceUnion { Enum = ServiceElement.AireDeCampingCars };
+                        return new ServiceUnion {Enum = ServiceElement.AireDeCampingCars};
                     case "Automate CB 24/24":
-                        return new ServiceUnion { Enum = ServiceElement.AutomateCb2424 };
+                        return new ServiceUnion {Enum = ServiceElement.AutomateCb2424};
                     case "Bar":
-                        return new ServiceUnion { Enum = ServiceElement.Bar };
+                        return new ServiceUnion {Enum = ServiceElement.Bar};
                     case "Bornes électriques":
-                        return new ServiceUnion { Enum = ServiceElement.BornesÉlectriques };
+                        return new ServiceUnion {Enum = ServiceElement.BornesÉlectriques};
                     case "Boutique alimentaire":
-                        return new ServiceUnion { Enum = ServiceElement.BoutiqueAlimentaire };
+                        return new ServiceUnion {Enum = ServiceElement.BoutiqueAlimentaire};
                     case "Boutique non alimentaire":
-                        return new ServiceUnion { Enum = ServiceElement.BoutiqueNonAlimentaire };
+                        return new ServiceUnion {Enum = ServiceElement.BoutiqueNonAlimentaire};
                     case "Carburant additivé":
-                        return new ServiceUnion { Enum = ServiceElement.CarburantAdditivé };
+                        return new ServiceUnion {Enum = ServiceElement.CarburantAdditivé};
                     case "DAB (Distributeur automatique de billets)":
-                        return new ServiceUnion { Enum = ServiceElement.DabDistributeurAutomatiqueDeBillets };
+                        return new ServiceUnion {Enum = ServiceElement.DabDistributeurAutomatiqueDeBillets};
                     case "Douches":
-                        return new ServiceUnion { Enum = ServiceElement.Douches };
+                        return new ServiceUnion {Enum = ServiceElement.Douches};
                     case "Espace bébé":
-                        return new ServiceUnion { Enum = ServiceElement.EspaceBébé };
+                        return new ServiceUnion {Enum = ServiceElement.EspaceBébé};
                     case "GNV":
-                        return new ServiceUnion { Enum = ServiceElement.Gnv };
+                        return new ServiceUnion {Enum = ServiceElement.Gnv};
                     case "Lavage automatique":
-                        return new ServiceUnion { Enum = ServiceElement.LavageAutomatique };
+                        return new ServiceUnion {Enum = ServiceElement.LavageAutomatique};
                     case "Lavage manuel":
-                        return new ServiceUnion { Enum = ServiceElement.LavageManuel };
+                        return new ServiceUnion {Enum = ServiceElement.LavageManuel};
                     case "Laverie":
-                        return new ServiceUnion { Enum = ServiceElement.Laverie };
+                        return new ServiceUnion {Enum = ServiceElement.Laverie};
                     case "Location de véhicule":
-                        return new ServiceUnion { Enum = ServiceElement.LocationDeVéhicule };
+                        return new ServiceUnion {Enum = ServiceElement.LocationDeVéhicule};
                     case "Piste poids lourds":
-                        return new ServiceUnion { Enum = ServiceElement.PistePoidsLourds };
+                        return new ServiceUnion {Enum = ServiceElement.PistePoidsLourds};
                     case "Relais colis":
-                        return new ServiceUnion { Enum = ServiceElement.RelaisColis };
+                        return new ServiceUnion {Enum = ServiceElement.RelaisColis};
                     case "Restauration sur place":
-                        return new ServiceUnion { Enum = ServiceElement.RestaurationSurPlace };
+                        return new ServiceUnion {Enum = ServiceElement.RestaurationSurPlace};
                     case "Restauration à emporter":
-                        return new ServiceUnion { Enum = ServiceElement.RestaurationÀEmporter };
+                        return new ServiceUnion {Enum = ServiceElement.RestaurationÀEmporter};
                     case "Services réparation / entretien":
-                        return new ServiceUnion { Enum = ServiceElement.ServicesRéparationEntretien };
+                        return new ServiceUnion {Enum = ServiceElement.ServicesRéparationEntretien};
                     case "Station de gonflage":
-                        return new ServiceUnion { Enum = ServiceElement.StationDeGonflage };
+                        return new ServiceUnion {Enum = ServiceElement.StationDeGonflage};
                     case "Toilettes publiques":
-                        return new ServiceUnion { Enum = ServiceElement.ToilettesPubliques };
+                        return new ServiceUnion {Enum = ServiceElement.ToilettesPubliques};
                     case "Vente d'additifs carburants":
-                        return new ServiceUnion { Enum = ServiceElement.VenteDAdditifsCarburants };
+                        return new ServiceUnion {Enum = ServiceElement.VenteDAdditifsCarburants};
                     case "Vente de fioul domestique":
-                        return new ServiceUnion { Enum = ServiceElement.VenteDeFioulDomestique };
+                        return new ServiceUnion {Enum = ServiceElement.VenteDeFioulDomestique};
                     case "Vente de gaz domestique (Butane, Propane)":
-                        return new ServiceUnion { Enum = ServiceElement.VenteDeGazDomestiqueButanePropane };
+                        return new ServiceUnion {Enum = ServiceElement.VenteDeGazDomestiqueButanePropane};
                     case "Vente de pétrole lampant":
-                        return new ServiceUnion { Enum = ServiceElement.VenteDePétroleLampant };
+                        return new ServiceUnion {Enum = ServiceElement.VenteDePétroleLampant};
                     case "Wifi":
-                        return new ServiceUnion { Enum = ServiceElement.Wifi };
+                        return new ServiceUnion {Enum = ServiceElement.Wifi};
                 }
+
                 break;
             case JsonToken.StartArray:
                 var arrayValue = serializer.Deserialize<List<ServiceElement>>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-                return new ServiceUnion { StringArray = arrayValue };
+                return new ServiceUnion {StringArray = arrayValue};
 #pragma warning restore CS8601 // Possible null reference assignment.
         }
-        return new ServiceUnion { Enum = ServiceElement.Inconnu };
+
+        return new ServiceUnion {Enum = ServiceElement.Inconnu};
     }
 
     public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)
     {
 #pragma warning disable CS8605 // Unboxing a possibly null value.
-        var value = (ServiceUnion)untypedValue;
+        var value = (ServiceUnion) untypedValue;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
         if (value.Enum != null)
         {
@@ -651,24 +784,33 @@ internal class ServiceUnionConverter : JsonConverter
                     return;
             }
         }
+
         if (value.StringArray != null)
         {
             serializer.Serialize(writer, value.StringArray);
             return;
         }
+
         throw new Exception("Cannot marshal type ServiceUnion");
     }
-
-    public static readonly ServiceUnionConverter Singleton = new ServiceUnionConverter();
 }
 
 internal class ServiceElementConverter : JsonConverter
 {
-    public override bool CanConvert(Type t) => t == typeof(ServiceElement) || t == typeof(ServiceElement?);
+    public static readonly ServiceElementConverter Singleton = new();
+
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(ServiceElement) || t == typeof(ServiceElement?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
         var value = serializer.Deserialize<string>(reader);
         switch (value)
         {
@@ -727,6 +869,7 @@ internal class ServiceElementConverter : JsonConverter
             case "Wifi":
                 return ServiceElement.Wifi;
         }
+
         return ServiceElement.Inconnu;
     }
 
@@ -737,7 +880,8 @@ internal class ServiceElementConverter : JsonConverter
             serializer.Serialize(writer, null);
             return;
         }
-        var value = (ServiceElement)untypedValue;
+
+        var value = (ServiceElement) untypedValue;
         switch (value)
         {
             case ServiceElement.AireDeCampingCars:
@@ -822,8 +966,7 @@ internal class ServiceElementConverter : JsonConverter
                 serializer.Serialize(writer, "Wifi");
                 return;
         }
+
         throw new Exception("Cannot marshal type ServiceElement");
     }
-
-    public static readonly ServiceElementConverter Singleton = new ServiceElementConverter();
 }

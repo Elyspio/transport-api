@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Abstractions.Utils;
+namespace Transport.Api.Abstractions.Utils;
 
 public class Env
 {
@@ -10,7 +10,7 @@ public class Env
         if (env != null)
         {
             var converter = TypeDescriptor.GetConverter(typeof(T));
-            return (T)converter.ConvertFromString(env)!;
+            return (T) converter.ConvertFromString(env)!;
         }
 
         return falback;

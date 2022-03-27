@@ -1,11 +1,11 @@
-﻿using Abstractions.Models;
+﻿using Transport.Api.Abstractions.Transports;
 
-namespace Abstractions.Interfaces.Services;
+namespace Transport.Api.Abstractions.Interfaces.Services;
 
 public interface IFuelStationService
 {
     /// <summary>
-    /// Get All fuel stations around a point
+    ///     Get All fuel stations around a point
     /// </summary>
     /// <param name="latitude"></param>
     /// <param name="longitude"></param>
@@ -13,12 +13,5 @@ public interface IFuelStationService
     /// <returns></returns>
     Task<List<FuelStationDataDistance>> GetFuelStations(double latitude, double longitude, long radius);
 
-
-
-    public Task<List<FuelStationHistory>> GetHistories();
-
-    public Task Fetch();
-
     public Task<List<FuelStationData>> GetBetweenDates(DateTime? minDate = null, DateTime? maxDate = null);
-
 }

@@ -1,54 +1,46 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Abstractions.Models
+namespace Transport.Api.Abstractions.Transports;
+
+public class Location : IEquatable<Location?>
 {
-    public class Location : IEquatable<Location?>
+    [Required] public double Latitude { get; set; }
+
+    [Required] public double Longitude { get; set; }
+
+    [Required] public string PostalCode { get; set; }
+
+    [Required] public string Address { get; set; }
+
+    [Required] public string City { get; set; }
+
+    public bool Equals(Location? other)
     {
-        [Required]
-        public double Latitude { get; set; }
+        return other != null &&
+               Latitude == other.Latitude &&
+               Longitude == other.Longitude &&
+               PostalCode == other.PostalCode &&
+               Address == other.Address &&
+               City == other.City;
+    }
 
-        [Required]
-        public double Longitude { get; set; }
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Location);
+    }
 
-        [Required]
-        public string PostalCode { get; set; }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Latitude, Longitude, PostalCode, Address, City);
+    }
 
-        [Required]
-        public string Address { get; set; }
+    public static bool operator ==(Location? left, Location? right)
+    {
+        return EqualityComparer<Location>.Default.Equals(left, right);
+    }
 
-        [Required]
-        public string City { get; set; }
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as Location);
-        }
-
-        public bool Equals(Location? other)
-        {
-            return other != null &&
-                   Latitude == other.Latitude &&
-                   Longitude == other.Longitude &&
-                   PostalCode == other.PostalCode &&
-                   Address == other.Address &&
-                   City == other.City;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Latitude, Longitude, PostalCode, Address, City);
-        }
-
-        public static bool operator ==(Location? left, Location? right)
-        {
-            return EqualityComparer<Location>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(Location? left, Location? right)
-        {
-            return !(left == right);
-        }
-
-
+    public static bool operator !=(Location? left, Location? right)
+    {
+        return !(left == right);
     }
 }

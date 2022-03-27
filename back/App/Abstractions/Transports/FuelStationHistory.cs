@@ -1,12 +1,10 @@
-﻿using Abstractions.Enums;
+﻿using Transport.Api.Abstractions.Enums;
 
-namespace Abstractions.Models
+namespace Transport.Api.Abstractions.Transports;
+
+public class FuelStationHistory
 {
-    public class FuelStationHistory
-    {
-        public long Id { get; set; }
-        public Location Location { get; set; }
-        public Dictionary<Fuel, List<FuelPriceHistory>> Prices { get; set; }
-    }
-
+    public long Id { get; set; }
+    public Location Location { get; set; }
+    public Dictionary<Fuel, List<FuelPriceHistory>> Prices { get; set; }
 }
