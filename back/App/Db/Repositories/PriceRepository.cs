@@ -13,7 +13,8 @@ namespace Transport.Api.Db.Repositories;
 
 public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 {
-    public PriceRepository(IConfiguration configuration, ILogger<PriceRepository> logger) : base(configuration, logger)
+    public PriceRepository(IConfiguration configuration, ILogger<PriceRepository> logger) : base(configuration,
+        logger)
     {
     }
 

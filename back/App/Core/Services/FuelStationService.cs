@@ -13,7 +13,8 @@ public class FuelStationService : IFuelStationService
     private readonly IPriceRepository priceRepository;
     private readonly IFuelStationRepository stationRepository;
 
-    public FuelStationService(FuelStationClient client, IFuelStationRepository repository, IPriceRepository priceRepository)
+    public FuelStationService(FuelStationClient client, IFuelStationRepository repository,
+        IPriceRepository priceRepository)
     {
         this.client = client;
         stationRepository = repository;
@@ -51,7 +52,8 @@ public class FuelStationService : IFuelStationService
 
         Parallel.ForEach(stations, station =>
         {
-            var data = new FuelStationData {Location = station.Location, Services = station.Services, Id = station.Id, Prices = new Prices()};
+            var data = new FuelStationData
+                {Location = station.Location, Services = station.Services, Id = station.Id, Prices = new Prices()};
 
             var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
 

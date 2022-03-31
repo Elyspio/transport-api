@@ -187,12 +187,12 @@ public struct HoraireUnion
 
     public static implicit operator HoraireUnion(HoraireElement HoraireElement)
     {
-        return new() {HoraireElement = HoraireElement};
+        return new HoraireUnion {HoraireElement = HoraireElement};
     }
 
     public static implicit operator HoraireUnion(List<HoraireElement> HoraireElementArray)
     {
-        return new() {HoraireElementArray = HoraireElementArray};
+        return new HoraireUnion {HoraireElementArray = HoraireElementArray};
     }
 }
 
@@ -203,12 +203,12 @@ public struct PrixUnion
 
     public static implicit operator PrixUnion(PrixElement PrixElement)
     {
-        return new() {PrixElement = PrixElement};
+        return new PrixUnion {PrixElement = PrixElement};
     }
 
     public static implicit operator PrixUnion(List<PrixElement> PrixElementArray)
     {
-        return new() {PrixElementArray = PrixElementArray};
+        return new PrixUnion {PrixElementArray = PrixElementArray};
     }
 }
 
@@ -219,12 +219,12 @@ public struct ServiceUnion
 
     public static implicit operator ServiceUnion(ServiceElement Enum)
     {
-        return new() {Enum = Enum};
+        return new ServiceUnion {Enum = Enum};
     }
 
     public static implicit operator ServiceUnion(List<ServiceElement> StringArray)
     {
-        return new() {StringArray = StringArray};
+        return new ServiceUnion {StringArray = StringArray};
     }
 }
 
@@ -275,7 +275,8 @@ internal class ParseStringConverter : JsonConverter
         return t == typeof(long) || t == typeof(long?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
         {
@@ -314,7 +315,8 @@ internal class PopConverter : JsonConverter
         return t == typeof(Pop) || t == typeof(Pop?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
         {
@@ -371,7 +373,8 @@ internal class JourNomConverter : JsonConverter
         return t == typeof(JourNom) || t == typeof(JourNom?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
         {
@@ -447,7 +450,8 @@ internal class HoraireUnionConverter : JsonConverter
         return t == typeof(HoraireUnion) || t == typeof(HoraireUnion?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         switch (reader.TokenType)
         {
@@ -496,7 +500,8 @@ internal class PrixUnionConverter : JsonConverter
         return t == typeof(PrixUnion) || t == typeof(PrixUnion?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         switch (reader.TokenType)
         {
@@ -545,7 +550,8 @@ internal class PrixNomConverter : JsonConverter
         return t == typeof(FuelType) || t == typeof(FuelType?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
         {
@@ -616,7 +622,8 @@ internal class ServiceUnionConverter : JsonConverter
         return t == typeof(ServiceUnion) || t == typeof(ServiceUnion?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         switch (reader.TokenType)
         {
@@ -804,7 +811,8 @@ internal class ServiceElementConverter : JsonConverter
         return t == typeof(ServiceElement) || t == typeof(ServiceElement?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
         {

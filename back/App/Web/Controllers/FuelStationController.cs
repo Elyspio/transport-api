@@ -24,7 +24,8 @@ public class FuelStationController : ControllerBase
     /// <param name="radius">Maximal distance in meter between the fuel station and the specified point</param>
     [HttpGet("near")]
     [ProducesResponseType(typeof(List<FuelStationDataDistance>), 200)]
-    public async Task<IActionResult> GetFuelStationsNear([Required] double latitude, [Required] double longitude, long radius = 10)
+    public async Task<IActionResult> GetFuelStationsNear([Required] double latitude, [Required] double longitude,
+        long radius = 10)
     {
         return Ok(await client.GetFuelStations(latitude, longitude, radius));
     }

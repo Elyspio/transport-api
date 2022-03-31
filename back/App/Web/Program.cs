@@ -44,9 +44,9 @@ var useBuilder = () =>
     builder.Services.Scan(scan => scan
         .FromApplicationDependencies()
         .AddClasses(classes => classes.InNamespaces(
-            "Core.Services",
-            "Db.Repositories",
-            "Db.Repositories.Internal"
+            "Transport.Api.Core.Services",
+            "Transport.Api.Db.Repositories",
+            "Transport.Api.Db.Repositories.Internal"
         ))
         .AsImplementedInterfaces()
         .WithSingletonLifetime());

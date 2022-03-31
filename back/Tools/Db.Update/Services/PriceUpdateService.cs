@@ -11,7 +11,8 @@ internal class PriceUpdateService
     private readonly FuelStationClient fuelStationClient;
     private readonly FuelStationRepository fuelStationImportRepository;
 
-    public PriceUpdateService(FuelStationRepository fuelStationImportRepository, PriceRepository fuelImportRepository, FuelStationClient fuelStationClient)
+    public PriceUpdateService(FuelStationRepository fuelStationImportRepository,
+        PriceRepository fuelImportRepository, FuelStationClient fuelStationClient)
     {
         this.fuelStationImportRepository = fuelStationImportRepository;
         this.fuelImportRepository = fuelImportRepository;
@@ -22,7 +23,8 @@ internal class PriceUpdateService
     {
         await AnsiConsole.Progress()
             .AutoClear(false)
-            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(),
+                new SpinnerColumn())
             .StartAsync(async ctx =>
             {
                 var removeTask = ctx.AddTask($"Removing {year}'s prices");
@@ -76,7 +78,8 @@ internal class PriceUpdateService
     {
         await AnsiConsole.Progress()
             .AutoClear(false)
-            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(),
+                new SpinnerColumn())
             .StartAsync(async ctx =>
             {
                 var clearTask = ctx.AddTask("Clearing fuel and station collections");

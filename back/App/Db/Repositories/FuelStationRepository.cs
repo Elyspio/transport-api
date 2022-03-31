@@ -12,7 +12,8 @@ namespace Transport.Api.Db.Repositories;
 
 public class FuelStationRepository : BaseRepository<FuelStationEntity>, IFuelStationRepository
 {
-    public FuelStationRepository(IConfiguration configuration, ILogger<FuelStationRepository> logger) : base(configuration, logger)
+    public FuelStationRepository(IConfiguration configuration, ILogger<FuelStationRepository> logger) : base(
+        configuration, logger)
     {
     }
 

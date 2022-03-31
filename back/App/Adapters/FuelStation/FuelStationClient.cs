@@ -18,9 +18,9 @@ internal struct FuelStationCache
 
 public class FuelStationClient
 {
+    private readonly FuelStationAssembler assembler = new();
     private readonly HttpClient client;
     private readonly ILogger logger;
-    private readonly FuelStationAssembler assembler = new();
 
     private FuelStationCache cache;
 
@@ -122,7 +122,8 @@ public class FuelStationClient
             var raw = Parse(xml);
             var data = new FuelStationAssembler().Convert(raw);
 
-            File.WriteAllText(@"P:\own\mobile\transport-api\back\Core.Merge\2022.json", JsonConvert.SerializeObject(data, Formatting.None));
+            File.WriteAllText(@"P:\own\mobile\transport-api\back\Core.Merge\2022.json",
+                JsonConvert.SerializeObject(data, Formatting.None));
         }
     }
 
