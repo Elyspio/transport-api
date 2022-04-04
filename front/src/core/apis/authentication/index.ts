@@ -2,9 +2,7 @@ import { injectable } from "inversify";
 import { AuthenticationApi as baseAuth, UsersApi, UsersSettingsApi } from "./generated";
 import axios from "axios";
 
-const instance = axios.create({
-	withCredentials: true,
-});
+const instance = axios.create({});
 
 @injectable()
 export class AuthenticationApiClient {

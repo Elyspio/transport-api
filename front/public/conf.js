@@ -1,7 +1,5 @@
 window.config = {
 	endpoints: {
-		core: "http://localhost",
-		authentication: "http://localhost/authentication",
+		core: "http://localhost:4000",
 	},
-	loginPageUrl: "http://localhost/authentication",
 };

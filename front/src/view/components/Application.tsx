@@ -6,18 +6,16 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box } from "@mui/material";
-import { login, logout } from "../../store/module/authentication/authentication.action";
-import { Login, Logout } from "@mui/icons-material";
 import { Privacy } from "./privacy/Privacy";
 import { Route, Routes } from "react-router-dom";
+import { Statistics } from "./statistics/Statistics";
 
 function Application() {
 	const dispatch = useAppDispatch();
 
-	const { theme, themeIcon, logged } = useAppSelector((s) => ({
+	const { theme, themeIcon } = useAppSelector((s) => ({
 		theme: s.theme.current,
 		themeIcon: s.theme.current === "dark" ? <Brightness5Icon /> : <Brightness3Icon />,
-		logged: s.authentication.logged,
 	}));
 
 	const actions = [
@@ -44,9 +42,13 @@ function Application() {
 	// }
 
 	const drawer = withDrawer({
-		component: <Routes>
-			<Route path={"privacy"} element={<Privacy />} />
-		</Routes>,
+		component: (
+			<Routes>
+				<Route path={"privacy"} element={<Privacy />} />
+				<Route path={"stats"} element={<Statistics />} />
+				<Route path={"/"} element={<Statistics />} />
+			</Routes>
+		),
 		actions,
 		title: "ElyTransport",
 	});
