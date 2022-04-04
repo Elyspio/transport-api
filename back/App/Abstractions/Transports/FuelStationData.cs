@@ -13,9 +13,7 @@ public class FuelStationData
         Services = all.Services;
     }
 
-    public FuelStationData()
-    {
-    }
+    public FuelStationData() { }
 
     [Required] public long Id { get; set; }
 

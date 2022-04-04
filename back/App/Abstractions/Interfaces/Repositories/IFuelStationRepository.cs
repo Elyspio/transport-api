@@ -11,6 +11,6 @@ public interface IFuelStationRepository
     Task<List<long>> GetAllIds();
 
     Task Clear();
-    Task<List<FuelStationEntity>> GetById(List<long> ids);
+    Task<List<FuelStationEntity>> GetById(IEnumerable<long> ids);
     Task<FuelStationEntity> GetById(long id);
 }

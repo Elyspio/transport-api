@@ -96,11 +96,11 @@ public class FuelStationClient
                 var years = new List<int> {2020, 2021};
                 var tasks = new List<Task>();
 
-                await Parallel.ForEachAsync(years, async (year, cancel) =>
-                {
-                    var data = await GetFuelStationsByYear(year);
-                    data.ForEach(station => stations.Add(station));
-                });
+                await Parallel.ForEachAsync(years, async (year, cancel) => {
+                        var data = await GetFuelStationsByYear(year);
+                        data.ForEach(station => stations.Add(station));
+                    }
+                );
 
 
                 cache.AllTimeData = stations.ToList();
@@ -122,8 +122,7 @@ public class FuelStationClient
             var raw = Parse(xml);
             var data = new FuelStationAssembler().Convert(raw);
 
-            File.WriteAllText(@"P:\own\mobile\transport-api\back\Core.Merge\2022.json",
-                JsonConvert.SerializeObject(data, Formatting.None));
+            File.WriteAllText(@"P:\own\mobile\transport-api\back\Core.Merge\2022.json", JsonConvert.SerializeObject(data, Formatting.None));
         }
     }
 

@@ -11,8 +11,7 @@ internal class PriceUpdateService
     private readonly FuelStationClient fuelStationClient;
     private readonly FuelStationRepository fuelStationImportRepository;
 
-    public PriceUpdateService(FuelStationRepository fuelStationImportRepository,
-        PriceRepository fuelImportRepository, FuelStationClient fuelStationClient)
+    public PriceUpdateService(FuelStationRepository fuelStationImportRepository, PriceRepository fuelImportRepository, FuelStationClient fuelStationClient)
     {
         this.fuelStationImportRepository = fuelStationImportRepository;
         this.fuelImportRepository = fuelImportRepository;
@@ -23,27 +22,27 @@ internal class PriceUpdateService
     {
         await AnsiConsole.Progress()
             .AutoClear(false)
-            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(),
-                new SpinnerColumn())
-            .StartAsync(async ctx =>
-            {
-                var removeTask = ctx.AddTask($"Removing {year}'s prices");
-                var nbRemoved = await fuelImportRepository.Clear(year);
-                removeTask.StopTask();
-                removeTask.Description = $"Removed {nbRemoved} prices for {year}";
+            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+            .StartAsync(async ctx => {
+                    var removeTask = ctx.AddTask($"Removing {year}'s prices");
+                    var nbRemoved = await fuelImportRepository.Clear(year);
+                    removeTask.StopTask();
+                    removeTask.Description = $"Removed {nbRemoved} prices for {year}";
 
-                var downloadTask = ctx.AddTask($"Downloading fuel stations for the year {year}");
-                var data = await fuelStationClient.GetFuelStationsByYear(year);
-                downloadTask.StopTask();
-                downloadTask.Description = $"Downloaded {data.Count} fuel stations";
+                    var downloadTask = ctx.AddTask($"Downloading fuel stations for the year {year}");
+                    var data = await fuelStationClient.GetFuelStationsByYear(year);
+                    downloadTask.StopTask();
+                    downloadTask.Description = $"Downloaded {data.Count} fuel stations";
 
 
-                await Task.WhenAll(new List<Task>
-                {
-                    UpdateStationEntities(ctx, data),
-                    UpdatePriceEntities(ctx, data)
-                });
-            });
+                    await Task.WhenAll(new List<Task>
+                        {
+                            UpdateStationEntities(ctx, data),
+                            UpdatePriceEntities(ctx, data)
+                        }
+                    );
+                }
+            );
     }
 
     private async Task UpdatePriceEntities(ProgressContext ctx, List<FuelStationData> data)
@@ -78,15 +77,14 @@ internal class PriceUpdateService
     {
         await AnsiConsole.Progress()
             .AutoClear(false)
-            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(),
-                new SpinnerColumn())
-            .StartAsync(async ctx =>
-            {
-                var clearTask = ctx.AddTask("Clearing fuel and station collections");
-                await Task.WhenAll(fuelImportRepository.Clear(), fuelStationImportRepository.Clear());
+            .Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+            .StartAsync(async ctx => {
+                    var clearTask = ctx.AddTask("Clearing fuel and station collections");
+                    await Task.WhenAll(fuelImportRepository.Clear(), fuelStationImportRepository.Clear());
 
-                clearTask.StopTask();
-                clearTask.Description = "Cleared fuel and station collections ";
-            });
+                    clearTask.StopTask();
+                    clearTask.Description = "Cleared fuel and station collections ";
+                }
+            );
     }
 }

@@ -5,7 +5,7 @@ using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Transport.Api.Abstractions.Utils;
+namespace Transport.Api.Abstractions.Helpers;
 
 public class CallerEnricher : ILogEventEnricher
 {
@@ -24,9 +24,7 @@ public class CallerEnricher : ILogEventEnricher
             var method = stack.GetMethod();
             if (method!.DeclaringType!.Assembly != typeof(Log).Assembly)
             {
-                var caller = NeedLogging(method)
-                    ? $" {method.DeclaringType.Name}.{method.Name}"
-                    : "";
+                var caller = NeedLogging(method) ? $" {method.DeclaringType.Name}.{method.Name}" : "";
                 logEvent.AddPropertyIfAbsent(new LogEventProperty("Caller", new ScalarValue(caller)));
                 return;
             }

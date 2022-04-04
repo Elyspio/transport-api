@@ -12,4 +12,7 @@ public interface IPriceRepository
     Task<long> Clear(int year);
     Task<List<PriceEntity>> GetBetweenDates(DateTime minDate, DateTime maxDate);
     Task<PriceEntity> GetById(string id);
+
+    Task<List<PriceEntity>> GetByYear(int year);
+    Task<List<PriceEntity>> GetPricesByYearForStations(int year, IEnumerable<long> stationsIds);
 }

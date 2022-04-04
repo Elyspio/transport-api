@@ -16,12 +16,7 @@ public class Location : IEquatable<Location?>
 
     public bool Equals(Location? other)
     {
-        return other != null &&
-               Latitude == other.Latitude &&
-               Longitude == other.Longitude &&
-               PostalCode == other.PostalCode &&
-               Address == other.Address &&
-               City == other.City;
+        return other != null && Latitude == other.Latitude && Longitude == other.Longitude && PostalCode == other.PostalCode && Address == other.Address && City == other.City;
     }
 
     public override bool Equals(object? obj)

@@ -6,35 +6,34 @@ using Newtonsoft.Json.Converters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using Transport.Api.Abstractions.Utils;
+using Transport.Api.Abstractions.Helpers;
 using Transport.Api.Adapters.FuelStation;
 using Transport.Api.Web.Utils;
 
 var frontPath = Env.Get("FRONT_PATH", "/front");
 
-var useBuilder = () =>
-{
+var useBuilder = () => {
     var builder = WebApplication.CreateBuilder(args);
-    builder.WebHost.ConfigureKestrel((_, options) =>
-    {
-        options.Listen(IPAddress.Any, 4000, listenOptions =>
-        {
-            // Use HTTP/3
-            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-        });
-    });
+    builder.WebHost.ConfigureKestrel((_, options) => {
+            options.Listen(IPAddress.Any, 4000, listenOptions => {
+                    // Use HTTP/3
+                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                }
+            );
+        }
+    );
 
 
     // Setup CORS
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("Cors", b =>
-        {
-            b.AllowAnyOrigin();
-            b.AllowAnyHeader();
-            b.AllowAnyMethod();
-        });
-    });
+    builder.Services.AddCors(options => {
+            options.AddPolicy("Cors", b => {
+                    b.AllowAnyOrigin();
+                    b.AllowAnyHeader();
+                    b.AllowAnyMethod();
+                }
+            );
+        }
+    );
 
 
     // Inject Adapters
@@ -43,44 +42,33 @@ var useBuilder = () =>
     // Inject Services
     builder.Services.Scan(scan => scan
         .FromApplicationDependencies()
-        .AddClasses(classes => classes.InNamespaces(
-            "Transport.Api.Core.Services",
-            "Transport.Api.Db.Repositories",
-            "Transport.Api.Db.Repositories.Internal"
-        ))
+        .AddClasses(classes => classes.InNamespaces("Transport.Api.Core.Services", "Transport.Api.Db.Repositories", "Transport.Api.Db.Repositories.Internal"))
         .AsImplementedInterfaces()
-        .WithSingletonLifetime());
+        .WithSingletonLifetime()
+    );
 
     // Setup Logging
     builder.Host.UseSerilog((_, lc) => lc
         .Enrich.FromLogContext()
         .Enrich.With(new CallerEnricher())
-        .WriteTo.Console(
-            LogEventLevel.Debug,
-            "[{Timestamp:HH:mm:ss} {Level}{Caller}] {Message:lj}{NewLine}{Exception}",
-            theme: AnsiConsoleTheme.Code
-        )
+        .WriteTo.Console(LogEventLevel.Debug, "[{Timestamp:HH:mm:ss} {Level}{Caller}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code)
     );
 
     // Convert Enum to String 
-    builder.Services
-        .AddControllers(o =>
-        {
-            o.Conventions.Add(new ControllerDocumentationConvention());
-            o.OutputFormatters.RemoveType<StringOutputFormatter>();
-        })
+    builder.Services.AddControllers(o => {
+                o.Conventions.Add(new ControllerDocumentationConvention());
+                o.OutputFormatters.RemoveType<StringOutputFormatter>();
+            }
+        )
         .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
         .AddNewtonsoftJson(x => x.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c => { c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}"); });
+    builder.Services.AddSwaggerGen(options => { options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}"); });
 
     // Setup SPA Serving
-    if (builder.Environment.IsProduction())
-    {
-        Console.WriteLine($"Server in production, serving SPA from {frontPath} folder");
-    }
+    if (builder.Environment.IsProduction()) Console.WriteLine($"Server in production, serving SPA from {frontPath} folder");
 
     return builder;
 };
@@ -90,8 +78,7 @@ var builder = useBuilder();
 
 var app = builder.Build();
 
-var useApp = (WebApplication application) =>
-{
+var useApp = (WebApplication application) => {
     application.UseSwagger();
     application.UseSwaggerUI();
 
@@ -110,10 +97,11 @@ var useApp = (WebApplication application) =>
         app.UseRouting();
 
         application.UseDefaultFiles(new DefaultFilesOptions
-        {
-            DefaultFileNames = new List<string> {"index.html"},
-            RedirectToAppendTrailingSlash = true
-        });
+            {
+                DefaultFileNames = new List<string> {"index.html"},
+                RedirectToAppendTrailingSlash = true
+            }
+        );
         application.UseStaticFiles();
 
         app.UseEndpoints(endpoints => { endpoints.MapFallbackToFile("/index.html"); });

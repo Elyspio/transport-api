@@ -13,8 +13,8 @@ public class DatabaseUpdateService : IDatabaseUpdateService
     private readonly ILogger<DatabaseUpdateService> logger;
     private readonly IPriceRepository priceRepository;
 
-    public DatabaseUpdateService(IPriceRepository priceRepository, IFuelStationRepository fuelStationRepository,
-        FuelStationClient fuelStationClient, ILogger<DatabaseUpdateService> logger)
+    public DatabaseUpdateService(IPriceRepository priceRepository, IFuelStationRepository fuelStationRepository, FuelStationClient fuelStationClient,
+        ILogger<DatabaseUpdateService> logger)
     {
         this.priceRepository = priceRepository;
         this.fuelStationRepository = fuelStationRepository;

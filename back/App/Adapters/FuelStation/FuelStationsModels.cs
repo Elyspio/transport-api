@@ -275,20 +275,13 @@ internal class ParseStringConverter : JsonConverter
         return t == typeof(long) || t == typeof(long?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null)
-        {
-            return null;
-        }
+        if (reader.TokenType == JsonToken.Null) return null;
 
         var value = serializer.Deserialize<string>(reader);
         long l;
-        if (long.TryParse(value, out l))
-        {
-            return l;
-        }
+        if (long.TryParse(value, out l)) return l;
 
         throw new Exception("Cannot unmarshal type long");
     }
@@ -315,13 +308,9 @@ internal class PopConverter : JsonConverter
         return t == typeof(Pop) || t == typeof(Pop?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null)
-        {
-            return null;
-        }
+        if (reader.TokenType == JsonToken.Null) return null;
 
         var value = serializer.Deserialize<string>(reader);
         switch (value)
@@ -373,13 +362,9 @@ internal class JourNomConverter : JsonConverter
         return t == typeof(JourNom) || t == typeof(JourNom?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null)
-        {
-            return null;
-        }
+        if (reader.TokenType == JsonToken.Null) return null;
 
         var value = serializer.Deserialize<string>(reader);
         switch (value)
@@ -450,8 +435,7 @@ internal class HoraireUnionConverter : JsonConverter
         return t == typeof(HoraireUnion) || t == typeof(HoraireUnion?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         switch (reader.TokenType)
         {
@@ -500,8 +484,7 @@ internal class PrixUnionConverter : JsonConverter
         return t == typeof(PrixUnion) || t == typeof(PrixUnion?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         switch (reader.TokenType)
         {
@@ -550,13 +533,9 @@ internal class PrixNomConverter : JsonConverter
         return t == typeof(FuelType) || t == typeof(FuelType?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null)
-        {
-            return null;
-        }
+        if (reader.TokenType == JsonToken.Null) return null;
 
         var value = serializer.Deserialize<string>(reader);
         switch (value)
@@ -622,8 +601,7 @@ internal class ServiceUnionConverter : JsonConverter
         return t == typeof(ServiceUnion) || t == typeof(ServiceUnion?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         switch (reader.TokenType)
         {
@@ -705,7 +683,6 @@ internal class ServiceUnionConverter : JsonConverter
         var value = (ServiceUnion) untypedValue;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
         if (value.Enum != null)
-        {
             switch (value.Enum)
             {
                 case ServiceElement.AireDeCampingCars:
@@ -790,7 +767,6 @@ internal class ServiceUnionConverter : JsonConverter
                     serializer.Serialize(writer, "Wifi");
                     return;
             }
-        }
 
         if (value.StringArray != null)
         {
@@ -811,13 +787,9 @@ internal class ServiceElementConverter : JsonConverter
         return t == typeof(ServiceElement) || t == typeof(ServiceElement?);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null)
-        {
-            return null;
-        }
+        if (reader.TokenType == JsonToken.Null) return null;
 
         var value = serializer.Deserialize<string>(reader);
         switch (value)

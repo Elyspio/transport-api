@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using Transport.Api.Abstractions.Utils;
+using Transport.Api.Abstractions.Helpers;
 using Transport.Api.Db.Configs;
 
 namespace Transport.Api.Db.Repositories.Internal;

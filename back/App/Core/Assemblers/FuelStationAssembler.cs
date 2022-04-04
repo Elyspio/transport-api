@@ -1,7 +1,8 @@
-﻿using Transport.Api.Abstractions.Models;
+﻿using Transport.Api.Abstractions.Assemblers;
+using Transport.Api.Abstractions.Models;
 using Transport.Api.Abstractions.Transports;
 
-namespace Transport.Api.Abstractions.Assemblers;
+namespace Transport.Api.Core.Assemblers;
 
 public class FuelStationAssembler : BaseAssembler<FuelStationData, FuelStationEntity>
 {
@@ -11,7 +12,8 @@ public class FuelStationAssembler : BaseAssembler<FuelStationData, FuelStationEn
         {
             Services = obj.Services,
             Id = obj.Id,
-            Location = obj.Location
+            Location = obj.Location,
+            Prices = new Prices()
         };
     }
 

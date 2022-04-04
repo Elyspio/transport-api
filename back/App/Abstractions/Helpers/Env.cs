@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Transport.Api.Abstractions.Utils;
+namespace Transport.Api.Abstractions.Helpers;
 
 public class Env
 {
