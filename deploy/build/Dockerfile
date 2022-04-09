@@ -23,9 +23,10 @@ FROM --platform=linux/amd64 node:16 as builder-front
 
 COPY front/package.json /front/package.json
 COPY front/package-lock.json /front/package-lock.json
-RUN cd /front && npm install
+RUN cd /front && npm install --legacy-peer-deps
 
-COPY front/tsconfig.json /front/tsconfig.json
+COPY front/tsconfig.json /front/
+COPY front/craco.config.js /front/
 COPY front/public /front/public
 COPY front/src /front/src
 RUN cd /front && npm run build
