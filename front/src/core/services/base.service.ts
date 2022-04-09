@@ -3,8 +3,5 @@ import { injectable } from "inversify";
 
 @injectable()
 export class BaseService {
-	protected extractData = <T>(response: AxiosResponse<T>): T => {
-		console.log(response.data);
-		return response.data;
-	};
+	protected extractData = <T>(response: AxiosResponse<T>): T => response.data;
 }

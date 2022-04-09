@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { themeReducer } from "./module/theme/theme.reducer";
+import { statisticsReducer } from "./module/statistics/statistics.reducer";
 
 const store = configureStore({
 	reducer: {
 		theme: themeReducer,
+		statistic: statisticsReducer,
 	},
 	devTools: process.env.NODE_ENV !== "production",
 });
