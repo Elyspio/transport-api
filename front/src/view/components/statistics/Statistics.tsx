@@ -3,7 +3,7 @@ import { Box, Grid, Paper } from "@mui/material";
 import StatControls from "./StatControls";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getStatistics } from "../../../store/module/statistics/statistics.action";
-import { Chart } from "./Chart";
+import { Chart } from "./chart/Chart";
 
 export function Statistics() {
 	const {
@@ -27,16 +27,6 @@ export function Statistics() {
 				<Grid item xs>
 					<Box p={2}>
 						<Chart />
-
-						{/*<Chart data={data} key={fuels.reduce((acc, current) => `${acc}-${current}`, "")}>*/}
-						{/*	<ArgumentScale factory={scaleBand} />*/}
-						{/*	<ArgumentAxis />*/}
-						{/*	<ValueAxis tickSize={100} />*/}
-						{/*	<Title text={"Fuel prices per liters"} />*/}
-						{/*	{fuels.map((price) => (*/}
-						{/*		<SplineSeries key={price} name="line" valueField={price} argumentField="date" />*/}
-						{/*	))}*/}
-						{/*</Chart>*/}
 					</Box>
 				</Grid>
 			</Grid>
