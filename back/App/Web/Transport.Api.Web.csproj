@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Assemblers\" />
+    <Folder Include="Server\" />
   </ItemGroup>
 
 </Project>

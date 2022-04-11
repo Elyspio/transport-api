@@ -1,10 +1,10 @@
-﻿using System.Collections.Concurrent;
+﻿using Newtonsoft.Json;
+using Serilog;
+using System.Collections.Concurrent;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
-using Newtonsoft.Json;
-using Serilog;
-using Transport.Api.Abstractions.Transports;
+using Transport.Api.Abstractions.Transports.FuelStation;
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Transport.Api.Adapters.FuelStation;
@@ -93,13 +93,14 @@ public class FuelStationClient
             if (cache.AllTimeData == null)
             {
                 var stations = new ConcurrentBag<FuelStationData>();
-                var years = new List<int> {2020, 2021};
+                var years = new List<int> { 2020, 2021 };
                 var tasks = new List<Task>();
 
-                await Parallel.ForEachAsync(years, async (year, cancel) => {
-                        var data = await GetFuelStationsByYear(year);
-                        data.ForEach(station => stations.Add(station));
-                    }
+                await Parallel.ForEachAsync(years, async (year, cancel) =>
+                {
+                    var data = await GetFuelStationsByYear(year);
+                    data.ForEach(station => stations.Add(station));
+                }
                 );
 
 

@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
-using Transport.Api.Abstractions.Interfaces.Repositories;
 
 namespace Transport.Api.Abstractions.Models;
 

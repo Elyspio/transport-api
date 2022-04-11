@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Transports;
@@ -45,18 +45,11 @@ public class StatisticsController : ControllerBase
     }
 
 
-    [HttpGet("weekly/{statsTimeType}")]
+    [HttpGet("{statsTimeType}")]
     [SwaggerResponse(200, Type = typeof(List<Statistic>))]
     public async Task<IActionResult> GetWeeklyStats([Required] StatsTimeType statsTimeType)
     {
         return Ok(await statsService.GetWeeklyStats(statsTimeType));
     }
 
-
-    [HttpGet("daily/")]
-    [SwaggerResponse(200, Type = typeof(List<Statistic>))]
-    public async Task<IActionResult> GetDailyStats([Required] DateTime start, [Required] DateTime end)
-    {
-        return Ok();
-    }
 }

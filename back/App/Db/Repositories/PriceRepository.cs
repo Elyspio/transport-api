@@ -6,7 +6,7 @@ using MongoDB.Driver.Linq;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Models;
-using Transport.Api.Abstractions.Transports;
+using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Db.Repositories.Internal;
 
 namespace Transport.Api.Db.Repositories;
@@ -78,12 +78,12 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 
                 foreach (var price in prices)
                     entities.Add(new PriceEntity
-                        {
-                            IdStation = station.Id,
-                            Fuel = fuel,
-                            Value = price.Value / 1000,
-                            Date = price.Date
-                        }
+                    {
+                        IdStation = station.Id,
+                        Fuel = fuel,
+                        Value = price.Value / 1000,
+                        Date = price.Date
+                    }
                     );
             }
 

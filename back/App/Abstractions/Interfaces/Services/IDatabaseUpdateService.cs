@@ -3,4 +3,6 @@
 public interface IDatabaseUpdateService
 {
     Task RefreshYearly(int year);
+
+    Task RefreshLocations();
 }

@@ -1,6 +1,6 @@
 ﻿using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Models;
-using Transport.Api.Abstractions.Transports;
+using Transport.Api.Abstractions.Transports.FuelStation;
 
 namespace Transport.Api.Abstractions.Interfaces.Repositories;
 

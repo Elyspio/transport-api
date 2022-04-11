@@ -5,7 +5,7 @@ using MongoDB.Driver.Linq;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Models;
-using Transport.Api.Abstractions.Transports;
+using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Db.Repositories.Internal;
 
 namespace Transport.Api.Db.Repositories;
@@ -31,11 +31,11 @@ public class FuelStationRepository : BaseRepository<FuelStationEntity>, IFuelSta
     public async Task<List<FuelStationEntity>> Add(IEnumerable<FuelStationData> stations)
     {
         var entities = stations.Select(s => new FuelStationEntity
-                {
-                    Id = s.Id,
-                    Location = s.Location,
-                    Services = s.Services
-                }
+        {
+            Id = s.Id,
+            Location = s.Location,
+            Services = s.Services
+        }
             )
             .ToList();
 

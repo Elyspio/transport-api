@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Transport.Api.Abstractions.Transports;
+namespace Transport.Api.Abstractions.Transports.FuelStation;
 
 public class FuelPriceHistory
 {

@@ -2,7 +2,7 @@
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Interfaces.Services;
-using Transport.Api.Abstractions.Transports;
+using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Adapters.FuelStation;
 using Transport.Api.Core.Assemblers;
 
@@ -47,26 +47,27 @@ public class FuelStationService : IFuelStationService
 
         var datas = new ConcurrentBag<FuelStationData>();
 
-        Parallel.ForEach(stations, station => {
-                var data = fuelStationAssembler.Convert(station);
+        Parallel.ForEach(stations, station =>
+        {
+            var data = fuelStationAssembler.Convert(station);
 
-                var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
+            var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
 
-                foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-                    data.Prices[fuel]
-                        .AddRange(prices.Where(p => p.Fuel == fuel)
-                            .Select(p => new FuelPriceHistory
-                                {
-                                    Date = p.Date,
-                                    Value = p.Value
-                                }
-                            )
-                            .ToList()
-                        );
+            foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+                data.Prices[fuel]
+                    .AddRange(prices.Where(p => p.Fuel == fuel)
+                        .Select(p => new FuelPriceHistory
+                        {
+                            Date = p.Date,
+                            Value = p.Value
+                        }
+                        )
+                        .ToList()
+                    );
 
 
-                datas.Add(data);
-            }
+            datas.Add(data);
+        }
         );
 
 

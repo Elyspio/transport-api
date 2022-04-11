@@ -9,6 +9,6 @@ public interface IStatisticRepository
 
     Task<List<StatisticEntity>> GetByType(StatsTimeType type);
 
-    Task ClearWeekly();
+    Task ClearWeekly(int? year = 0);
     Task ClearDaily();
 }

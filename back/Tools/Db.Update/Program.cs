@@ -9,12 +9,13 @@ AnsiConsole.Write(new FigletText("Database Updater").LeftAligned().Color(Color.S
 
 
 var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(service => {
-            service.AddHttpClient<FuelStationClient>();
-            service.AddSingleton<PriceUpdateService>();
-            service.AddSingleton<FuelStationRepository>();
-            service.AddSingleton<PriceRepository>();
-        }
+    .ConfigureServices(service =>
+    {
+        service.AddHttpClient<FuelStationClient>();
+        service.AddSingleton<PriceUpdateService>();
+        service.AddSingleton<FuelStationRepository>();
+        service.AddSingleton<PriceRepository>();
+    }
     )
     .Build();
 

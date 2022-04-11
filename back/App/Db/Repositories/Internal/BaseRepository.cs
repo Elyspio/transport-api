@@ -38,8 +38,8 @@ public class EnumAsStringSerializationProvider : BsonSerializationProviderBase
         if (!type.IsEnum) return null;
 
         var enumSerializerType = typeof(EnumSerializer<>).MakeGenericType(type);
-        var enumSerializerConstructor = enumSerializerType.GetConstructor(new[] {typeof(BsonType)});
-        var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[] {BsonType.String});
+        var enumSerializerConstructor = enumSerializerType.GetConstructor(new[] { typeof(BsonType) });
+        var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[] { BsonType.String });
 
         return enumSerializer;
     }

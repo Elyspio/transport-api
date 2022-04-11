@@ -44,14 +44,23 @@ internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatistic
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
+
+        var targetType = new List<StatsTimeType> { StatsTimeType.Month, StatsTimeType.Week }.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
+
+
         return await EntityCollection.AsQueryable()
-            .Where(stat => stat.Time.Type == StatisticTimeType.Week && stat.Time.Start >= startDate && stat.Time.End <= DateTime.Now)
+            .Where(stat => stat.Time.Type == targetType && stat.Time.Start >= startDate && stat.Time.End <= DateTime.Now)
             .ToListAsync();
     }
 
-    public async Task ClearWeekly()
+    public async Task ClearWeekly(int? year)
     {
         var filter = Builders<StatisticEntity>.Filter.Eq(stat => stat.Time.Type, StatisticTimeType.Week);
+        if (year != default)
+        {
+            filter &= Builders<StatisticEntity>.Filter.Gt(e => e.Time.Start, new DateTime(year.Value, 1, 1));
+            filter &= Builders<StatisticEntity>.Filter.Lt(e => e.Time.End, new DateTime(year.Value, 12, 30));
+        }
         await EntityCollection.DeleteManyAsync(filter);
     }
 

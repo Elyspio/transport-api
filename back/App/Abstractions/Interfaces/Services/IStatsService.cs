@@ -12,4 +12,5 @@ public interface IStatsService
 
     public Task RefreshDailyStats(bool clear = false);
     public Task<List<Statistic>> GetWeeklyStats(StatsTimeType statsTimeType);
+    public Task<List<Statistic>> GetDailyStats(StatsTimeType statsTimeType);
 }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
 
-namespace Transport.Api.Abstractions.Transports;
+namespace Transport.Api.Abstractions.Transports.FuelStation;
 
 public class FuelStationData
 {

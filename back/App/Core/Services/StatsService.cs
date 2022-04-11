@@ -1,8 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Globalization;
-using Microsoft.Extensions.Logging;
 using Transport.Api.Abstractions.Enums;
-using Transport.Api.Abstractions.Helpers;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Models;
@@ -38,7 +37,7 @@ public class StatsService : IStatsService
 
     public async Task RefreshWeeklyStats(bool clear = false, int? year = null)
     {
-        if (clear) await statisticRepository.ClearWeekly();
+        if (clear) await statisticRepository.ClearWeekly(year);
 
         if (year is null)
             for (year = 2007; year <= DateTime.Now.Year; year++)
@@ -55,19 +54,21 @@ public class StatsService : IStatsService
         var now = DateTime.Now;
         var lastMonth = now.AddMonths(-1);
 
-        for (var i = 0; i <= (now - lastMonth).Days; i++)
+
+        await Parallel.ForEachAsync(Enumerable.Range(0, (now - lastMonth).Days - 1), async (day, _) =>
         {
-            var startDate = lastMonth.AddDays(i);
+            var startDate = lastMonth.AddDays(day);
             var endDate = startDate.AddDays(1);
 
             logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
 
             var infos = await CalculateBetweenDates(startDate, endDate);
 
-            await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Week);
+            await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
 
             logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
         }
+        );
     }
 
     public async Task<List<Statistic>> GetWeeklyStats(StatsTimeType statsTimeType)
@@ -75,6 +76,11 @@ public class StatsService : IStatsService
         var stats = await statisticRepository.GetByType(statsTimeType);
 
         return statsAssembler.Convert(stats).ToList();
+    }
+
+    public async Task<List<Statistic>> GetDailyStats(StatsTimeType statsTimeType)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task RefreshWeeklyStatsInternal(int year, int week)
@@ -118,7 +124,8 @@ public class StatsService : IStatsService
         #region Regions
 
         var regionDict = new ConcurrentDictionary<Region, StatisticData>();
-        Parallel.ForEach(Enum.GetValues<Region>(), region => { regionDict[region] = GetStatisticByRegion(stations, prices, region); });
+        var regionsIds = (await locationRepository.GetRegions()).Select(region => region.Id);
+        await Parallel.ForEachAsync(regionsIds, async (region, _) => { regionDict[region] = await GetStatisticByRegion(stations, prices, region); });
         infos.Regions = new Dictionary<Region, StatisticData>(regionDict.ToList());
 
         #endregion
@@ -126,8 +133,8 @@ public class StatsService : IStatsService
         #region Depatements
 
         var departementDict = new ConcurrentDictionary<string, StatisticData>();
-        var departements = RegionHelper.GetAllDepartements();
-        Parallel.ForEach(departements, departement => { departementDict[departement] = GetStatisticByDepartement(stations, prices, departement); });
+        var departements = await locationRepository.GetAllDepartements();
+        Parallel.ForEach(departements, departement => { departementDict[departement.Code] = GetStatisticByDepartement(stations, prices, departement.Code); });
         infos.Departements = new Dictionary<string, StatisticData>(departementDict.ToList());
 
         #endregion
@@ -179,11 +186,11 @@ public class StatsService : IStatsService
     }
 
 
-    private StatisticData GetStatisticByRegion(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, Region region)
+    private async Task<StatisticData> GetStatisticByRegion(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, Region region)
     {
-        var departements = region.GetDepartements();
+        var departements = await locationRepository.GetDepartements(region);
 
-        var stations = allStations.Where(s => departements.Any(departement => s.Location.PostalCode.StartsWith(departement))).ToList();
+        var stations = allStations.Where(s => departements.Any(departement => s.Location.PostalCode.StartsWith(departement.Code))).ToList();
 
         var prices = allPrices.Where(p => stations.Select(s => s.Id).Contains(p.IdStation)).ToList();
 

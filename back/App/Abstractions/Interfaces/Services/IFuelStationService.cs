@@ -1,4 +1,4 @@
-﻿using Transport.Api.Abstractions.Transports;
+﻿using Transport.Api.Abstractions.Transports.FuelStation;
 
 namespace Transport.Api.Abstractions.Interfaces.Services;
 
