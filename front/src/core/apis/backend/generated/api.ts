@@ -34,6 +34,26 @@ import { BASE_PATH, BaseAPI, COLLECTION_FORMATS, RequestArgs, RequiredError } fr
 /**
  *
  * @export
+ * @interface Departement
+ */
+export interface Departement {
+	/**
+	 *
+	 * @type {string}
+	 * @memberof Departement
+	 */
+	name: string;
+	/**
+	 *
+	 * @type {string}
+	 * @memberof Departement
+	 */
+	code: string;
+}
+
+/**
+ *
+ * @export
  * @interface FuelPriceHistory
  */
 export interface FuelPriceHistory {
@@ -237,6 +257,59 @@ export interface Prices {
 	 * @memberof Prices
 	 */
 	sp98: Array<FuelPriceHistory>;
+}
+
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export enum Region {
+	AuvergneRhoneAlpes = "AuvergneRhoneAlpes",
+	BourgogneFrancheComte = "BourgogneFrancheComte",
+	Bretagne = "Bretagne",
+	CentreValDeLoire = "CentreValDeLoire",
+	Corse = "Corse",
+	GrandEst = "GrandEst",
+	HautDeFrance = "HautDeFrance",
+	Normandie = "Normandie",
+	NouvelleAquitaine = "NouvelleAquitaine",
+	IleDeFrance = "IleDeFrance",
+	Occitanie = "Occitanie",
+	PaysDeLaLoire = "PaysDeLaLoire",
+	ProvenceAlpesCoteAzur = "ProvenceAlpesCoteAzur",
+	Martinique = "Martinique",
+	Guadeloupe = "Guadeloupe",
+	Guyane = "Guyane",
+	LaReunion = "LaReunion",
+	Mayotte = "Mayotte",
+}
+
+/**
+ *
+ * @export
+ * @interface RegionTransport
+ */
+export interface RegionTransport {
+	/**
+	 *
+	 * @type {Region}
+	 * @memberof RegionTransport
+	 */
+	id: Region;
+	/**
+	 *
+	 * @type {string}
+	 * @memberof RegionTransport
+	 */
+	code: string;
+	/**
+	 *
+	 * @type {string}
+	 * @memberof RegionTransport
+	 */
+	label: string;
 }
 
 /**
@@ -639,24 +712,18 @@ export class FuelStationsApi extends BaseAPI {
 }
 
 /**
- * StatisticsApi - axios parameter creator
+ * LocationsApi - axios parameter creator
  * @export
  */
-export const StatisticsApiAxiosParamCreator = function (configuration?: Configuration) {
+export const LocationsApiAxiosParamCreator = function (configuration?: Configuration) {
 	return {
 		/**
 		 *
-		 * @param {string} start
-		 * @param {string} end
 		 * @param {*} [options] Override http request option.
 		 * @throws {RequiredError}
 		 */
-		getDailyStats: async (start: string, end: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-			// verify required parameter 'start' is not null or undefined
-			assertParamExists("getDailyStats", "start", start);
-			// verify required parameter 'end' is not null or undefined
-			assertParamExists("getDailyStats", "end", end);
-			const localVarPath = `/api/statistics/daily`;
+		getAllDepartements: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+			const localVarPath = `/api/Locations/departements`;
 			// use dummy base URL string because the URL constructor only accepts absolute URLs.
 			const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
 			let baseOptions;
@@ -667,14 +734,6 @@ export const StatisticsApiAxiosParamCreator = function (configuration?: Configur
 			const localVarRequestOptions = { method: "GET", ...baseOptions, ...options };
 			const localVarHeaderParameter = {} as any;
 			const localVarQueryParameter = {} as any;
-
-			if (start !== undefined) {
-				localVarQueryParameter["start"] = (start as any) instanceof Date ? (start as any).toISOString() : start;
-			}
-
-			if (end !== undefined) {
-				localVarQueryParameter["end"] = (end as any) instanceof Date ? (end as any).toISOString() : end;
-			}
 
 			setSearchParams(localVarUrlObj, localVarQueryParameter);
 			let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -687,6 +746,246 @@ export const StatisticsApiAxiosParamCreator = function (configuration?: Configur
 		},
 		/**
 		 *
+		 * @param {Region} region
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		getDepartementsByRegion: async (region: Region, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+			// verify required parameter 'region' is not null or undefined
+			assertParamExists("getDepartementsByRegion", "region", region);
+			const localVarPath = `/api/Locations/regions/{region}/departements`.replace(`{${"region"}}`, encodeURIComponent(String(region)));
+			// use dummy base URL string because the URL constructor only accepts absolute URLs.
+			const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+			let baseOptions;
+			if (configuration) {
+				baseOptions = configuration.baseOptions;
+			}
+
+			const localVarRequestOptions = { method: "GET", ...baseOptions, ...options };
+			const localVarHeaderParameter = {} as any;
+			const localVarQueryParameter = {} as any;
+
+			setSearchParams(localVarUrlObj, localVarQueryParameter);
+			let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+			localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+
+			return {
+				url: toPathString(localVarUrlObj),
+				options: localVarRequestOptions,
+			};
+		},
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		getRegions: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+			const localVarPath = `/api/Locations/regions`;
+			// use dummy base URL string because the URL constructor only accepts absolute URLs.
+			const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+			let baseOptions;
+			if (configuration) {
+				baseOptions = configuration.baseOptions;
+			}
+
+			const localVarRequestOptions = { method: "GET", ...baseOptions, ...options };
+			const localVarHeaderParameter = {} as any;
+			const localVarQueryParameter = {} as any;
+
+			setSearchParams(localVarUrlObj, localVarQueryParameter);
+			let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+			localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+
+			return {
+				url: toPathString(localVarUrlObj),
+				options: localVarRequestOptions,
+			};
+		},
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		refresh: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+			const localVarPath = `/api/Locations/regions`;
+			// use dummy base URL string because the URL constructor only accepts absolute URLs.
+			const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+			let baseOptions;
+			if (configuration) {
+				baseOptions = configuration.baseOptions;
+			}
+
+			const localVarRequestOptions = { method: "PATCH", ...baseOptions, ...options };
+			const localVarHeaderParameter = {} as any;
+			const localVarQueryParameter = {} as any;
+
+			setSearchParams(localVarUrlObj, localVarQueryParameter);
+			let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+			localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+
+			return {
+				url: toPathString(localVarUrlObj),
+				options: localVarRequestOptions,
+			};
+		},
+	};
+};
+
+/**
+ * LocationsApi - functional programming interface
+ * @export
+ */
+export const LocationsApiFp = function (configuration?: Configuration) {
+	const localVarAxiosParamCreator = LocationsApiAxiosParamCreator(configuration);
+	return {
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		async getAllDepartements(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Departement>>> {
+			const localVarAxiosArgs = await localVarAxiosParamCreator.getAllDepartements(options);
+			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+		},
+		/**
+		 *
+		 * @param {Region} region
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		async getDepartementsByRegion(region: Region, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Departement>>> {
+			const localVarAxiosArgs = await localVarAxiosParamCreator.getDepartementsByRegion(region, options);
+			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+		},
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		async getRegions(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<RegionTransport>>> {
+			const localVarAxiosArgs = await localVarAxiosParamCreator.getRegions(options);
+			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+		},
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		async refresh(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+			const localVarAxiosArgs = await localVarAxiosParamCreator.refresh(options);
+			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+		},
+	};
+};
+
+/**
+ * LocationsApi - factory interface
+ * @export
+ */
+export const LocationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+	const localVarFp = LocationsApiFp(configuration);
+	return {
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		getAllDepartements(options?: any): AxiosPromise<Array<Departement>> {
+			return localVarFp.getAllDepartements(options).then((request) => request(axios, basePath));
+		},
+		/**
+		 *
+		 * @param {Region} region
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		getDepartementsByRegion(region: Region, options?: any): AxiosPromise<Array<Departement>> {
+			return localVarFp.getDepartementsByRegion(region, options).then((request) => request(axios, basePath));
+		},
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		getRegions(options?: any): AxiosPromise<Array<RegionTransport>> {
+			return localVarFp.getRegions(options).then((request) => request(axios, basePath));
+		},
+		/**
+		 *
+		 * @param {*} [options] Override http request option.
+		 * @throws {RequiredError}
+		 */
+		refresh(options?: any): AxiosPromise<void> {
+			return localVarFp.refresh(options).then((request) => request(axios, basePath));
+		},
+	};
+};
+
+/**
+ * LocationsApi - object-oriented interface
+ * @export
+ * @class LocationsApi
+ * @extends {BaseAPI}
+ */
+export class LocationsApi extends BaseAPI {
+	/**
+	 *
+	 * @param {*} [options] Override http request option.
+	 * @throws {RequiredError}
+	 * @memberof LocationsApi
+	 */
+	public getAllDepartements(options?: AxiosRequestConfig) {
+		return LocationsApiFp(this.configuration)
+			.getAllDepartements(options)
+			.then((request) => request(this.axios, this.basePath));
+	}
+
+	/**
+	 *
+	 * @param {Region} region
+	 * @param {*} [options] Override http request option.
+	 * @throws {RequiredError}
+	 * @memberof LocationsApi
+	 */
+	public getDepartementsByRegion(region: Region, options?: AxiosRequestConfig) {
+		return LocationsApiFp(this.configuration)
+			.getDepartementsByRegion(region, options)
+			.then((request) => request(this.axios, this.basePath));
+	}
+
+	/**
+	 *
+	 * @param {*} [options] Override http request option.
+	 * @throws {RequiredError}
+	 * @memberof LocationsApi
+	 */
+	public getRegions(options?: AxiosRequestConfig) {
+		return LocationsApiFp(this.configuration)
+			.getRegions(options)
+			.then((request) => request(this.axios, this.basePath));
+	}
+
+	/**
+	 *
+	 * @param {*} [options] Override http request option.
+	 * @throws {RequiredError}
+	 * @memberof LocationsApi
+	 */
+	public refresh(options?: AxiosRequestConfig) {
+		return LocationsApiFp(this.configuration)
+			.refresh(options)
+			.then((request) => request(this.axios, this.basePath));
+	}
+}
+
+/**
+ * StatisticsApi - axios parameter creator
+ * @export
+ */
+export const StatisticsApiAxiosParamCreator = function (configuration?: Configuration) {
+	return {
+		/**
+		 *
 		 * @param {StatsTimeType} statsTimeType
 		 * @param {*} [options] Override http request option.
 		 * @throws {RequiredError}
@@ -694,7 +993,7 @@ export const StatisticsApiAxiosParamCreator = function (configuration?: Configur
 		getWeeklyStats: async (statsTimeType: StatsTimeType, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
 			// verify required parameter 'statsTimeType' is not null or undefined
 			assertParamExists("getWeeklyStats", "statsTimeType", statsTimeType);
-			const localVarPath = `/api/statistics/weekly/{statsTimeType}`.replace(`{${"statsTimeType"}}`, encodeURIComponent(String(statsTimeType)));
+			const localVarPath = `/api/statistics/{statsTimeType}`.replace(`{${"statsTimeType"}}`, encodeURIComponent(String(statsTimeType)));
 			// use dummy base URL string because the URL constructor only accepts absolute URLs.
 			const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
 			let baseOptions;
@@ -827,17 +1126,6 @@ export const StatisticsApiFp = function (configuration?: Configuration) {
 	return {
 		/**
 		 *
-		 * @param {string} start
-		 * @param {string} end
-		 * @param {*} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		async getDailyStats(start: string, end: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Statistic>>> {
-			const localVarAxiosArgs = await localVarAxiosParamCreator.getDailyStats(start, end, options);
-			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-		},
-		/**
-		 *
 		 * @param {StatsTimeType} statsTimeType
 		 * @param {*} [options] Override http request option.
 		 * @throws {RequiredError}
@@ -888,16 +1176,6 @@ export const StatisticsApiFactory = function (configuration?: Configuration, bas
 	return {
 		/**
 		 *
-		 * @param {string} start
-		 * @param {string} end
-		 * @param {*} [options] Override http request option.
-		 * @throws {RequiredError}
-		 */
-		getDailyStats(start: string, end: string, options?: any): AxiosPromise<Array<Statistic>> {
-			return localVarFp.getDailyStats(start, end, options).then((request) => request(axios, basePath));
-		},
-		/**
-		 *
 		 * @param {StatsTimeType} statsTimeType
 		 * @param {*} [options] Override http request option.
 		 * @throws {RequiredError}
@@ -942,20 +1220,6 @@ export const StatisticsApiFactory = function (configuration?: Configuration, bas
  * @extends {BaseAPI}
  */
 export class StatisticsApi extends BaseAPI {
-	/**
-	 *
-	 * @param {string} start
-	 * @param {string} end
-	 * @param {*} [options] Override http request option.
-	 * @throws {RequiredError}
-	 * @memberof StatisticsApi
-	 */
-	public getDailyStats(start: string, end: string, options?: AxiosRequestConfig) {
-		return StatisticsApiFp(this.configuration)
-			.getDailyStats(start, end, options)
-			.then((request) => request(this.axios, this.basePath));
-	}
-
 	/**
 	 *
 	 * @param {StatsTimeType} statsTimeType

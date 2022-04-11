@@ -9,7 +9,6 @@ export function ChartTooltip({ payload, label, active }: TooltipProps<any, any>)
 	if (!data) return null;
 	const fuels = Object.keys(data).filter((key) => key !== "date");
 
-	console.log({ payload, label });
 	return (
 		<Paper>
 			<Grid container p={2} direction={"column"} spacing={1}>
@@ -22,12 +21,19 @@ export function ChartTooltip({ payload, label, active }: TooltipProps<any, any>)
 				</Grid>
 
 				{fuels.map((fuel) => (
-					<Grid container sx={{ color: chartColors[fuel] }} spacing={1}>
+					<Grid key={fuel} container sx={{ color: chartColors[fuel] }} spacing={1}>
 						<Grid item>
 							<Typography>{fuel}: </Typography>
 						</Grid>
 						<Grid item ml={"auto"}>
-							<Typography sx={{ color: chartColors[fuel], textAlign: "right" }}>{data[fuel].toFixed(2)}€</Typography>
+							<Typography
+								sx={{
+									color: chartColors[fuel],
+									textAlign: "right",
+								}}
+							>
+								{data[fuel].toFixed(2)}€
+							</Typography>
 						</Grid>
 					</Grid>
 				))}

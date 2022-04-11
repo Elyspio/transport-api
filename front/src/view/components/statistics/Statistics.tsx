@@ -24,8 +24,8 @@ export function Statistics() {
 					<StatControls />
 				</Grid>
 
-				<Grid item xs>
-					<Box p={2}>
+				<Grid item xs={9}>
+					<Box p={2} width={"100%"} height={"100%"}>
 						<Chart />
 					</Box>
 				</Grid>

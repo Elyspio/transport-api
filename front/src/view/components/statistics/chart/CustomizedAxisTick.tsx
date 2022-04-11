@@ -10,7 +10,7 @@ export function CustomizedAxisTick(props: any) {
 
 	return (
 		<g transform={`translate(${x},${y})`}>
-			<text x={0} y={0} dy={16} textAnchor="end" fill={`${color}`} transform="rotate(-35)">
+			<text x={0} y={0} dy={16} textAnchor="end" fill={`${color}`} transform="rotate(-30)">
 				{payload.value}
 			</text>
 		</g>
