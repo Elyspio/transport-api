@@ -28,6 +28,23 @@ public abstract class BaseRepository<T>
         BsonSerializer.RegisterSerializationProvider(new EnumAsStringSerializationProvider());
     }
 
+
+    protected void CreateIndexIfMissing(string property)
+    {
+        var indexes = EntityCollection.Indexes.List().ToList();
+        var foundIndex = indexes.Any(index => index["key"].AsBsonDocument.Names.Contains(property));
+
+        var possibleIndexes = Builders<T>.IndexKeys;
+        var indexModel = new CreateIndexModel<T>(possibleIndexes.Ascending(property));
+
+        if (!foundIndex)
+        {
+            logger.LogWarning($"Property {CollectionName}.{property} is not indexed, creating one");
+            EntityCollection.Indexes.CreateOne(indexModel);
+            logger.LogWarning($"Property {CollectionName}.{property} is now indexed");
+        }
+    }
+
     protected IMongoCollection<T> EntityCollection => context.MongoDatabase.GetCollection<T>(CollectionName);
 }
 

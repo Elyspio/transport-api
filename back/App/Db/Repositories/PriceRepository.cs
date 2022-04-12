@@ -13,7 +13,18 @@ namespace Transport.Api.Db.Repositories;
 
 public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 {
-    public PriceRepository(IConfiguration configuration, ILogger<PriceRepository> logger) : base(configuration, logger) { }
+    public PriceRepository(IConfiguration configuration, ILogger<PriceRepository> logger) : base(configuration, logger)
+    {
+        InitIndexes();
+    }
+
+
+    private void InitIndexes()
+    {
+        CreateIndexIfMissing(nameof(PriceEntity.IdStation));
+        CreateIndexIfMissing(nameof(PriceEntity.Date));
+    }
+
 
     public async Task<PriceEntity> Add(long idStation, Fuel fuel, DateTime date, double value)
     {
@@ -65,6 +76,8 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
     public async Task Clear()
     {
         await EntityCollection.Database.DropCollectionAsync(CollectionName);
+        await EntityCollection.Database.CreateCollectionAsync(CollectionName);
+        InitIndexes();
     }
 
     public async Task<List<PriceEntity>> Add(IEnumerable<FuelStationData> stations)
@@ -95,10 +108,7 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 
     public async Task<long> Clear(int year)
     {
-        var filter = Builders<PriceEntity>.Filter.Gt(e => e.Date, new DateTime(year, 1, 1));
-        filter &= Builders<PriceEntity>.Filter.Lt(e => e.Date, new DateTime(year, 12, 30));
-
-        var result = await EntityCollection.DeleteManyAsync(filter);
+        var result = await EntityCollection.DeleteManyAsync(price => price.Date >= new DateTime(year, 1, 1) && price.Date <= new DateTime(year, 12, 30));
 
         return result.DeletedCount;
     }
