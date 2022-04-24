@@ -9,6 +9,7 @@ namespace Transport.Api.Core.Services;
 public class LocationService : ILocationService
 {
     private readonly ILocationRepository locationRepository;
+
     public LocationService(ILocationRepository locationRepository)
     {
         this.locationRepository = locationRepository;
@@ -28,11 +29,13 @@ public class LocationService : ILocationService
     {
         var regions = await locationRepository.GetRegions();
 
-        return regions.Select((entity) => new RegionTransport
-        {
-            Id = entity.Id,
-            Code = entity.Code,
-            Label = entity.Label
-        }).ToList();
+        return regions.Select(entity => new RegionTransport
+                {
+                    Id = entity.Id,
+                    Code = entity.Code,
+                    Label = entity.Label
+                }
+            )
+            .ToList();
     }
 }

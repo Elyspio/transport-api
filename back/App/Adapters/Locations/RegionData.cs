@@ -1,13 +1,10 @@
-﻿namespace Transport.Api.Adapters.Locations
+﻿using Newtonsoft.Json;
+
+namespace Transport.Api.Adapters.Locations;
+
+public class RegionData
 {
-    using Newtonsoft.Json;
+    [JsonProperty("nom")] public string Nom { get; set; }
 
-    public class RegionData
-    {
-        [JsonProperty("nom")]
-        public string Nom { get; set; }
-
-        [JsonProperty("code")]
-        public string Code { get; set; }
-    }
+    [JsonProperty("code")] public string Code { get; set; }
 }

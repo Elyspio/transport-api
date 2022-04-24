@@ -11,4 +11,3 @@ public interface ILocationRepository
     Task Clear();
     Task<List<LocationEntity>> GetRegions();
 }
-

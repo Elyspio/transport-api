@@ -5,10 +5,9 @@ namespace Transport.Api.Abstractions.Transports.Location;
 
 public class RegionTransport
 {
-    [Required]
-    public Region Id { get; set; }
-    [Required]
-    public string Code { get; set; }
-    [Required]
-    public string Label { get; set; }
+    [Required] public Region Id { get; set; }
+
+    [Required] public string Code { get; set; }
+
+    [Required] public string Label { get; set; }
 }

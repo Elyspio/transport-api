@@ -28,6 +28,8 @@ public abstract class BaseRepository<T>
         BsonSerializer.RegisterSerializationProvider(new EnumAsStringSerializationProvider());
     }
 
+    protected IMongoCollection<T> EntityCollection => context.MongoDatabase.GetCollection<T>(CollectionName);
+
 
     protected void CreateIndexIfMissing(string property)
     {
@@ -44,8 +46,6 @@ public abstract class BaseRepository<T>
             logger.LogWarning($"Property {CollectionName}.{property} is now indexed");
         }
     }
-
-    protected IMongoCollection<T> EntityCollection => context.MongoDatabase.GetCollection<T>(CollectionName);
 }
 
 public class EnumAsStringSerializationProvider : BsonSerializationProviderBase
@@ -55,8 +55,8 @@ public class EnumAsStringSerializationProvider : BsonSerializationProviderBase
         if (!type.IsEnum) return null;
 
         var enumSerializerType = typeof(EnumSerializer<>).MakeGenericType(type);
-        var enumSerializerConstructor = enumSerializerType.GetConstructor(new[] { typeof(BsonType) });
-        var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[] { BsonType.String });
+        var enumSerializerConstructor = enumSerializerType.GetConstructor(new[] {typeof(BsonType)});
+        var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[] {BsonType.String});
 
         return enumSerializer;
     }

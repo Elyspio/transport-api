@@ -10,12 +10,12 @@ namespace Transport.Api.Core.Services;
 
 public class DatabaseUpdateService : IDatabaseUpdateService
 {
+    private readonly ILocationRepository departementRepository;
     private readonly FuelStationClient fuelStationClient;
-    private readonly LocationClient locationClient;
     private readonly IFuelStationRepository fuelStationRepository;
+    private readonly LocationClient locationClient;
     private readonly ILogger<DatabaseUpdateService> logger;
     private readonly IPriceRepository priceRepository;
-    private readonly ILocationRepository departementRepository;
 
     public DatabaseUpdateService(IPriceRepository priceRepository, IFuelStationRepository fuelStationRepository, FuelStationClient fuelStationClient,
         ILogger<DatabaseUpdateService> logger, ILocationRepository departementRepository, LocationClient locationClient)
@@ -39,6 +39,27 @@ public class DatabaseUpdateService : IDatabaseUpdateService
     }
 
 
+    public async Task RefreshLocations()
+    {
+        await departementRepository.Clear();
+
+        var regions = await locationClient.GetRegions();
+        var departements = await locationClient.GetDepartements();
+
+        await Task.WhenAll(regions.Select(region =>
+                {
+                    var deps = departements.Where(departement => departement.CodeRegion == region.Code)
+                        .Select(departement => new Departement {Code = departement.Code, Name = departement.Name})
+                        .ToList();
+
+                    return departementRepository.Add(region.Nom, region.Code, deps);
+                }
+            )
+            .ToArray()
+        );
+    }
+
+
     private async Task UpdatePriceEntities(List<FuelStationData> data)
     {
         var prices = await priceRepository.Add(data);
@@ -57,25 +78,5 @@ public class DatabaseUpdateService : IDatabaseUpdateService
             var updated = await fuelStationRepository.Add(toAdd);
             logger.LogInformation($"Added {updated.Count} stations");
         }
-    }
-
-
-    public async Task RefreshLocations()
-    {
-        await departementRepository.Clear();
-
-        var regions = await locationClient.GetRegions();
-        var departements = await locationClient.GetDepartements();
-
-        await Task.WhenAll(regions.Select(region =>
-        {
-            var deps = departements
-                .Where(departement => departement.CodeRegion == region.Code)
-                .Select(departement => new Departement { Code = departement.Code, Name = departement.Name })
-                .ToList();
-
-            return departementRepository.Add(region.Nom, region.Code, deps);
-        }).ToArray());
-
     }
 }

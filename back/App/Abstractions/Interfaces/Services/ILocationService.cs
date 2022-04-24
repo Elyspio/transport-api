@@ -11,4 +11,3 @@ public interface ILocationService
 
     public Task<List<RegionTransport>> GetRegions();
 }
-

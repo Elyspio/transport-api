@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using Serilog;
-using System.Collections.Concurrent;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Text;
 using System.Xml;
+using Newtonsoft.Json;
+using Serilog;
 using Transport.Api.Abstractions.Transports.FuelStation;
 using Formatting = Newtonsoft.Json.Formatting;
 
@@ -76,56 +75,24 @@ public class FuelStationClient
     }
 
 
-    public async Task<List<FuelStationData>> GetFuelStationsByYear(int year)
+    public async Task<List<FuelStationData>> GetFuelStationsByYear(int year, bool useCache = true)
     {
-        var xml = await Download($"https://donnees.roulez-eco.fr/opendata/annee/{year}");
-        var data = Parse(xml);
-        return assembler.Convert(data);
+        if (!useCache || year == 2022)
+        {
+            var xml = await Download($"https://donnees.roulez-eco.fr/opendata/annee/{year}");
+            var data = Parse(xml);
+            return assembler.Convert(data);
+        }
+
+        var cacheUrl = FuelStationsCache.Cache[year];
+        var stream = await client.GetStreamAsync(cacheUrl);
+        var serializer = new JsonSerializer();
+
+        using var sr = new StreamReader(stream);
+        using var jsonTextReader = new JsonTextReader(sr);
+        return serializer.Deserialize<List<FuelStationData>>(jsonTextReader);
     }
 
-
-    public async Task<List<FuelStationData>> GetFuelStationsAllTime()
-    {
-        try
-        {
-            logger.Information("Entering method -- GetFuelStationsAllTime");
-
-            if (cache.AllTimeData == null)
-            {
-                var stations = new ConcurrentBag<FuelStationData>();
-                var years = new List<int> { 2020, 2021 };
-                var tasks = new List<Task>();
-
-                await Parallel.ForEachAsync(years, async (year, cancel) =>
-                {
-                    var data = await GetFuelStationsByYear(year);
-                    data.ForEach(station => stations.Add(station));
-                }
-                );
-
-
-                cache.AllTimeData = stations.ToList();
-            }
-
-            return cache.AllTimeData;
-        }
-        finally
-        {
-            logger.Information("Exiting method -- GetFuelStationsAllTime");
-        }
-    }
-
-    public async Task Fetch()
-    {
-        //for (int i = 2017; i < 2022; i++)
-        {
-            var xml = await Download("https://donnees.roulez-eco.fr/opendata/annee/" + 2022);
-            var raw = Parse(xml);
-            var data = new FuelStationAssembler().Convert(raw);
-
-            File.WriteAllText(@"P:\own\mobile\transport-api\back\Core.Merge\2022.json", JsonConvert.SerializeObject(data, Formatting.None));
-        }
-    }
 
     private FuelStations Parse(string xml)
     {

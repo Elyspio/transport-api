@@ -4,8 +4,8 @@ namespace Transport.Api.Adapters.Locations;
 
 public class LocationClient
 {
-
     private readonly HttpClient client;
+
     public LocationClient(HttpClient client)
     {
         this.client = client;
@@ -20,9 +20,8 @@ public class LocationClient
     }
 
 
-
     /// <summary>
-    /// Get the list of French regions
+    ///     Get the list of French regions
     /// </summary>
     /// <returns></returns>
     public async Task<List<RegionData>> GetRegions()

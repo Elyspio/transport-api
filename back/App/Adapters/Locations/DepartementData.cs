@@ -1,16 +1,12 @@
-﻿namespace Transport.Api.Adapters.Locations
+﻿using Newtonsoft.Json;
+
+namespace Transport.Api.Adapters.Locations;
+
+public class DepartementData
 {
-    using Newtonsoft.Json;
+    [JsonProperty("nom")] public string Name { get; set; }
 
-    public partial class DepartementData
-    {
-        [JsonProperty("nom")]
-        public string Name { get; set; }
+    [JsonProperty("code")] public string Code { get; set; }
 
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        [JsonProperty("codeRegion")]
-        public string CodeRegion { get; set; }
-    }
+    [JsonProperty("codeRegion")] public string CodeRegion { get; set; }
 }

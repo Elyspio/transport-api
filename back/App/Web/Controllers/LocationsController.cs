@@ -11,9 +11,10 @@ namespace Transport.Api.Web.Controllers;
 [ApiController]
 public class LocationsController : ControllerBase
 {
+    private readonly IDatabaseUpdateService databaseUpdateService;
 
     private readonly ILocationService locationService;
-    private readonly IDatabaseUpdateService databaseUpdateService;
+
     public LocationsController(ILocationService locationService, IDatabaseUpdateService databaseUpdateService)
     {
         this.locationService = locationService;
@@ -36,7 +37,6 @@ public class LocationsController : ControllerBase
     }
 
 
-
     [HttpGet("regions")]
     [SwaggerResponse(200, Type = typeof(List<RegionTransport>))]
     public async Task<IActionResult> GetRegions()
@@ -47,7 +47,6 @@ public class LocationsController : ControllerBase
 
     [HttpPatch("regions")]
     [SwaggerResponse(204)]
-
     public async Task<IActionResult> Refresh()
     {
         await databaseUpdateService.RefreshLocations();

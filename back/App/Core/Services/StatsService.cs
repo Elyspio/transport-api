@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Interfaces.Services;
@@ -56,18 +56,18 @@ public class StatsService : IStatsService
 
 
         await Parallel.ForEachAsync(Enumerable.Range(0, (now - lastMonth).Days - 1), async (day, _) =>
-        {
-            var startDate = lastMonth.AddDays(day);
-            var endDate = startDate.AddDays(1);
+            {
+                var startDate = lastMonth.AddDays(day);
+                var endDate = startDate.AddDays(1);
 
-            logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
+                logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
 
-            var infos = await CalculateBetweenDates(startDate, endDate);
+                var infos = await CalculateBetweenDates(startDate, endDate);
 
-            await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
+                await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
 
-            logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
-        }
+                logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
+            }
         );
     }
 
@@ -153,10 +153,10 @@ public class StatsService : IStatsService
 
         var data = new StatisticData
         {
-            Average = new(),
+            Average = new Dictionary<Fuel, double>(),
             Deciles = new Dictionary<Fuel, double>[10],
-            Min = new(),
-            Max = new()
+            Min = new Dictionary<Fuel, double>(),
+            Max = new Dictionary<Fuel, double>()
         };
 
 

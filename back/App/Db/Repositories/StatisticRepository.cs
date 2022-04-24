@@ -11,7 +11,9 @@ namespace Transport.Api.Db.Repositories;
 
 internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatisticRepository
 {
-    public StatisticRepository(IConfiguration configuration, ILogger<BaseRepository<StatisticEntity>> logger) : base(configuration, logger) { }
+    public StatisticRepository(IConfiguration configuration, ILogger<BaseRepository<StatisticEntity>> logger) : base(configuration, logger)
+    {
+    }
 
 
     public async Task<StatisticEntity> Add(StatisticInfo data, DateTime startDate, DateTime endDate, StatisticTimeType timeType)
@@ -45,12 +47,10 @@ internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatistic
         };
 
 
-        var targetType = new List<StatsTimeType> { StatsTimeType.Month, StatsTimeType.Week }.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
+        var targetType = new List<StatsTimeType> {StatsTimeType.Month, StatsTimeType.Week}.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
 
 
-        return await EntityCollection.AsQueryable()
-            .Where(stat => stat.Time.Type == targetType && stat.Time.Start >= startDate && stat.Time.End <= DateTime.Now)
-            .ToListAsync();
+        return await EntityCollection.AsQueryable().Where(stat => stat.Time.Type == targetType && stat.Time.Start >= startDate && stat.Time.End <= DateTime.Now).ToListAsync();
     }
 
     public async Task ClearWeekly(int? year)
@@ -61,6 +61,7 @@ internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatistic
             filter &= Builders<StatisticEntity>.Filter.Gt(e => e.Time.Start, new DateTime(year.Value, 1, 1));
             filter &= Builders<StatisticEntity>.Filter.Lt(e => e.Time.End, new DateTime(year.Value, 12, 30));
         }
+
         await EntityCollection.DeleteManyAsync(filter);
     }
 

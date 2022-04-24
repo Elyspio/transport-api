@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Spectre.Console;
+﻿using Spectre.Console;
 using Transport.Api.Adapters.FuelStation;
 using Transport.Api.Db.Repositories;
 using Transport.Api.Db.Update.Services;
@@ -10,12 +8,12 @@ AnsiConsole.Write(new FigletText("Database Updater").LeftAligned().Color(Color.S
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(service =>
-    {
-        service.AddHttpClient<FuelStationClient>();
-        service.AddSingleton<PriceUpdateService>();
-        service.AddSingleton<FuelStationRepository>();
-        service.AddSingleton<PriceRepository>();
-    }
+        {
+            service.AddHttpClient<FuelStationClient>();
+            service.AddSingleton<PriceUpdateService>();
+            service.AddSingleton<FuelStationRepository>();
+            service.AddSingleton<PriceRepository>();
+        }
     )
     .Build();
 

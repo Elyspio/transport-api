@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.ComponentModel;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using System.ComponentModel;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Models;
@@ -12,10 +12,12 @@ namespace Transport.Api.Db.Repositories;
 
 public class LocationRepository : BaseRepository<LocationEntity>, ILocationRepository
 {
-    public LocationRepository(IConfiguration configuration, ILogger<BaseRepository<LocationEntity>> logger) : base(configuration, logger) { }
+    public LocationRepository(IConfiguration configuration, ILogger<BaseRepository<LocationEntity>> logger) : base(configuration, logger)
+    {
+    }
+
     public async Task<LocationEntity> Add(string regionName, string regionCode, List<Departement> departements)
     {
-
         var id = regionCode switch
         {
             "01" => Region.Guadeloupe,
@@ -50,28 +52,19 @@ public class LocationRepository : BaseRepository<LocationEntity>, ILocationRepos
         await EntityCollection.InsertOneAsync(entity);
 
         return entity;
-
     }
 
     public async Task<List<Departement>> GetDepartements(Region region)
     {
+        var entity = await EntityCollection.AsQueryable().FirstOrDefaultAsync(x => x.Id == region);
 
-        var entity = await EntityCollection.AsQueryable().FirstOrDefaultAsync((x) => x.Id == region);
-
-        if (entity == default)
-        {
-            throw new InvalidEnumArgumentException("region", (int) region, typeof(Region));
-        }
+        if (entity == default) throw new InvalidEnumArgumentException("region", (int) region, typeof(Region));
         return entity.Departements;
-
     }
 
     public async Task<List<Departement>> GetAllDepartements()
     {
-        return await EntityCollection
-            .AsQueryable()
-            .SelectMany(x => x.Departements)
-            .ToListAsync();
+        return await EntityCollection.AsQueryable().SelectMany(x => x.Departements).ToListAsync();
     }
 
 
