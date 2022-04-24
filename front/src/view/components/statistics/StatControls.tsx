@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select, Switch, Typography } from "@mui/material";
 import {
 	priceTypes,
 	setDepartements,
@@ -8,6 +8,7 @@ import {
 	setSelectedFuels,
 	setSelectedRegion,
 	setSelectedTimeInterval,
+	toggleSwitch,
 } from "../../../store/module/statistics/statistics.action";
 import { Departement, StatsTimeType } from "../../../core/apis/backend/generated";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -15,10 +16,11 @@ import { bindActionCreators } from "redux";
 import { useInjection } from "inversify-react";
 import { LocationsService } from "../../../core/services/locations.service";
 import { useAsyncEffect } from "../../hooks/useAsyncEffect";
+import { SelectedSwitches } from "../../../store/module/statistics/statistics.types";
 
 function StatControls() {
 	const {
-		selected: { fuels, region, timeInterval, departement },
+		selected: { fuels, region, timeInterval, departement, switches },
 		regions,
 		departements,
 	} = useAppSelector((s) => s.statistic);
@@ -39,6 +41,7 @@ function StatControls() {
 					setSelectedDepartement,
 					setDepartements,
 					setRegions,
+					toggleSwitch,
 				},
 				dispatch
 			),
@@ -71,6 +74,13 @@ function StatControls() {
 			update.setSelectedDepartement(departements.find((region) => region.code === e.target.value)?.code ?? "all");
 		},
 		[update, departements]
+	);
+
+	const onSwitchSelected = React.useCallback(
+		(sw: SelectedSwitches) => () => {
+			update.toggleSwitch(sw);
+		},
+		[update]
 	);
 
 	return (
@@ -133,6 +143,14 @@ function StatControls() {
 						))}
 					</Select>
 				</FormControl>
+			</Grid>
+
+			<Grid item>
+				<FormControlLabel
+					labelPlacement={"start"}
+					control={<Switch value={!switches.yAxisFrom0} color={"primary"} onChange={onSwitchSelected("yAxisFrom0")} />}
+					label={<Typography variant={"overline"}>Start prices at 0</Typography>}
+				/>
 			</Grid>
 		</Grid>
 	);

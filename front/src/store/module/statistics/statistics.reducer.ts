@@ -1,29 +1,16 @@
 import { createReducer } from "@reduxjs/toolkit";
 import {
-	DataType,
 	getStatistics,
-	PriceTypes,
 	setDepartements,
 	setRegions,
 	setSelectedDepartement,
 	setSelectedFuels,
 	setSelectedRegion,
 	setSelectedTimeInterval,
+	toggleSwitch,
 } from "./statistics.action";
-import { Departement, RegionTransport, Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
-
-export interface StatisticsTheme {
-	selected: {
-		region: RegionTransport["id"] | "all";
-		fuels: PriceTypes[];
-		departement: Departement["code"] | "all";
-		timeInterval: StatsTimeType;
-	};
-	raw: Statistic[];
-	data: DataType[];
-	regions: RegionTransport[];
-	departements: Departement[];
-}
+import { Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
+import { DataType, StatisticsTheme } from "./statistics.types";
 
 const defaultState: StatisticsTheme = {
 	raw: [],
@@ -33,6 +20,9 @@ const defaultState: StatisticsTheme = {
 		region: "all",
 		fuels: ["gazole", "e10"],
 		timeInterval: StatsTimeType.Month3,
+		switches: {
+			yAxisFrom0: false,
+		},
 	},
 	regions: [],
 	departements: [],
@@ -145,5 +135,9 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 
 	addCase(setRegions, (state, { payload }) => {
 		state.regions = payload.sort((dep1, dep2) => (parseInt(dep1.code) < parseInt(dep2.code) ? -1 : 1));
+	});
+
+	addCase(toggleSwitch, (state, { payload }) => {
+		state.selected.switches[payload] = !state.selected.switches[payload];
 	});
 });

@@ -1,12 +1,8 @@
 import { createAction as _createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { container } from "../../../core/di";
 import { StatisticsService } from "../../../core/services/statistics.service";
-import { Departement, Prices, RegionTransport, StatsTimeType } from "../../../core/apis/backend/generated";
-
-export type PriceTypes = keyof Prices;
-export type DataType = Record<PriceTypes, number> & {
-	date: string;
-};
+import { Departement, RegionTransport, StatsTimeType } from "../../../core/apis/backend/generated";
+import { PriceTypes, SelectedSwitches } from "./statistics.types";
 
 export const priceTypes = ["e85", "e10", "gazole", "sp95", "sp98"] as PriceTypes[];
 
@@ -21,6 +17,8 @@ export const setSelectedDepartement = createAction<Departement["code"] | "all">(
 export const setSelectedTimeInterval = createAction<StatsTimeType>("setSelectedTimeInterval");
 export const setDepartements = createAction<Departement[]>("setDepartements");
 export const setRegions = createAction<RegionTransport[]>("setRegions");
+
+export const toggleSwitch = createAction<SelectedSwitches>("toggleSwitch");
 
 export const getStatistics = createAsyncThunk("statistics/getStatistics", async (type: StatsTimeType) => {
 	return await service.getWeeklyStats(type);

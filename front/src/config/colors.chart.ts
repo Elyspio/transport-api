@@ -1,4 +1,4 @@
-import { PriceTypes } from "../store/module/statistics/statistics.action";
+import { PriceTypes } from "../store/module/statistics/statistics.types";
 
 export const chartColors: Record<PriceTypes, string> = {
 	gazole: "#FFAA00",

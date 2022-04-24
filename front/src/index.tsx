@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
+
 import "./index.scss";
 import { Provider } from "react-redux";
 import store, { useAppSelector } from "./store";
@@ -48,8 +49,6 @@ function App() {
 	);
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+const rootComponent = document.getElementById("root");
+const root = createRoot(rootComponent!);
+root.render(<App />);

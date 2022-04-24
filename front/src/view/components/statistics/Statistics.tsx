@@ -7,15 +7,14 @@ import { Chart } from "./chart/Chart";
 
 export function Statistics() {
 	const {
-		data,
-		selected: { fuels, timeInterval },
+		selected: { timeInterval },
 	} = useAppSelector((s) => s.statistic);
 
 	const dispatch = useAppDispatch();
 
 	React.useEffect(() => {
 		dispatch(getStatistics(timeInterval));
-	}, [timeInterval]);
+	}, [timeInterval, dispatch]);
 
 	return (
 		<Paper sx={{ width: "90%" }}>

@@ -88,7 +88,7 @@ public class ServerBuilder
                         }
                     );
 
-                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Transport API", Version = "v1"});
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Transport API", Version = "1"});
 
                 options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
             }
