@@ -2,6 +2,8 @@ import { TooltipProps } from "recharts";
 import { Divider, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 import { chartColors } from "../../../../config/colors.chart";
+import { fuelsLabels } from "../controls/StatControls.constants";
+import { getShortDate } from "./CustomizedAxisTick";
 
 export function ChartTooltip({ payload, label, active }: TooltipProps<any, any>) {
 	if (!active) return null;
@@ -13,7 +15,7 @@ export function ChartTooltip({ payload, label, active }: TooltipProps<any, any>)
 		<Paper>
 			<Grid container p={2} direction={"column"} spacing={1}>
 				<Grid item>
-					<Typography textAlign={"center"}>{label}</Typography>
+					<Typography textAlign={"center"}>{getShortDate(new Date(label))}</Typography>
 				</Grid>
 
 				<Grid item my={1}>
@@ -23,7 +25,7 @@ export function ChartTooltip({ payload, label, active }: TooltipProps<any, any>)
 				{fuels.map((fuel) => (
 					<Grid key={fuel} container sx={{ color: chartColors[fuel] }} spacing={1}>
 						<Grid item>
-							<Typography>{fuel}: </Typography>
+							<Typography>{fuelsLabels[fuel]}: </Typography>
 						</Grid>
 						<Grid item ml={"auto"}>
 							<Typography

@@ -34,7 +34,7 @@ export function Statistics() {
 					<StatControls />
 				</Grid>
 
-				<Grid item xs={9}>
+				<Grid item xs={9} pr={3}>
 					<Box p={2} width={"100%"} height={"100%"}>
 						<Chart />
 					</Box>

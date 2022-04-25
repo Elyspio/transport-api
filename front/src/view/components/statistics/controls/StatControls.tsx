@@ -148,9 +148,10 @@ export function StatControls() {
 
 			<Grid item>
 				<FormControlLabel
+					sx={{ width: "100%" }}
 					labelPlacement={"start"}
-					control={<Switch value={!switches.yAxisFrom0} color={"primary"} onChange={onSwitchSelected("yAxisFrom0")} />}
-					label={<Typography variant={"overline"}>Start prices at 0</Typography>}
+					control={<Switch value={!switches.yAxisFrom0} sx={{ marginLeft: "auto", marginRight: "1rem" }} color={"primary"} onChange={onSwitchSelected("yAxisFrom0")} />}
+					label={<Typography variant={"overline"}>Échelle à 0 </Typography>}
 				/>
 			</Grid>
 		</Grid>
