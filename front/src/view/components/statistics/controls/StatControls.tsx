@@ -9,16 +9,17 @@ import {
 	setSelectedRegion,
 	setSelectedTimeInterval,
 	toggleSwitch,
-} from "../../../store/module/statistics/statistics.action";
-import { Departement, StatsTimeType } from "../../../core/apis/backend/generated";
-import { useAppDispatch, useAppSelector } from "../../../store";
+} from "../../../../store/module/statistics/statistics.action";
+import { Departement, StatsTimeType } from "../../../../core/apis/backend/generated";
+import { useAppDispatch, useAppSelector } from "../../../../store";
 import { bindActionCreators } from "redux";
 import { useInjection } from "inversify-react";
-import { LocationsService } from "../../../core/services/locations.service";
-import { useAsyncEffect } from "../../hooks/useAsyncEffect";
-import { SelectedSwitches } from "../../../store/module/statistics/statistics.types";
+import { LocationsService } from "../../../../core/services/locations.service";
+import { useAsyncEffect } from "../../../hooks/useAsyncEffect";
+import { SelectedSwitches } from "../../../../store/module/statistics/statistics.types";
+import { fuelsLabels, timeLabels, timeOrdered } from "./StatControls.constants";
 
-function StatControls() {
+export function StatControls() {
 	const {
 		selected: { fuels, region, timeInterval, departement, switches },
 		regions,
@@ -91,7 +92,7 @@ function StatControls() {
 					<Select fullWidth multiple labelId="fuels-label" id="fuels-select" value={fuels} label="Fuels" onChange={(e) => update.setSelectedFuels(e.target.value as any)}>
 						{priceTypes.map((val) => (
 							<MenuItem value={val} key={val}>
-								{val}
+								{fuelsLabels[val]}
 							</MenuItem>
 						))}
 					</Select>
@@ -100,7 +101,7 @@ function StatControls() {
 
 			<Grid item>
 				<FormControl fullWidth>
-					<InputLabel id="time-interval-label">Time Interval</InputLabel>
+					<InputLabel id="time-interval-label">Depuis</InputLabel>
 					<Select
 						labelId="time-interval-label"
 						id="time-interval-select"
@@ -109,9 +110,9 @@ function StatControls() {
 						fullWidth
 						onChange={(e) => update.setSelectedTimeInterval(e.target.value as StatsTimeType)}
 					>
-						{Object.entries(StatsTimeType).map(([key, val]) => (
-							<MenuItem value={val} key={val}>
-								{key}
+						{timeOrdered.map((fuel) => (
+							<MenuItem value={fuel} key={fuel}>
+								{timeLabels[fuel]}
 							</MenuItem>
 						))}
 					</Select>
@@ -155,5 +156,3 @@ function StatControls() {
 		</Grid>
 	);
 }
-
-export default StatControls;

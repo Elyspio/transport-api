@@ -1,6 +1,6 @@
-import { PriceTypes } from "../store/module/statistics/statistics.types";
+import { FuelTypes } from "../store/module/statistics/statistics.types";
 
-export const chartColors: Record<PriceTypes, string> = {
+export const chartColors: Record<FuelTypes, string> = {
 	gazole: "#FFAA00",
 	e10: "#00ff99",
 	sp98: "#0051ff",

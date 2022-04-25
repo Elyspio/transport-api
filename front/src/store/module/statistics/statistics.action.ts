@@ -2,9 +2,9 @@ import { createAction as _createAction, createAsyncThunk } from "@reduxjs/toolki
 import { container } from "../../../core/di";
 import { StatisticsService } from "../../../core/services/statistics.service";
 import { Departement, RegionTransport, StatsTimeType } from "../../../core/apis/backend/generated";
-import { PriceTypes, SelectedSwitches } from "./statistics.types";
+import { FuelTypes, SelectedSwitches } from "./statistics.types";
 
-export const priceTypes = ["e85", "e10", "gazole", "sp95", "sp98"] as PriceTypes[];
+export const priceTypes = ["e85", "e10", "gazole", "sp95", "sp98"] as FuelTypes[];
 
 const service = container.get(StatisticsService);
 

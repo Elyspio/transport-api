@@ -403,6 +403,10 @@ export interface StatisticInfo {
  */
 
 export enum StatsTimeType {
+	AllTime = "AllTime",
+	Year10 = "Year10",
+	Year5 = "Year5",
+	Year2 = "Year2",
 	Year = "Year",
 	Month = "Month",
 	Month3 = "Month3",

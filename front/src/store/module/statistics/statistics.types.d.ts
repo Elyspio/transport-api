@@ -1,14 +1,14 @@
 import { Departement, Prices, RegionTransport, Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
 
-export type PriceTypes = keyof Prices;
-export type DataType = Record<PriceTypes, number> & {
+export type FuelTypes = keyof Prices;
+export type DataType = Record<FuelTypes, number> & {
 	date: string;
 };
 
 export interface StatisticsTheme {
 	selected: {
 		region: RegionTransport["id"] | "all";
-		fuels: PriceTypes[];
+		fuels: FuelTypes[];
 		departement: Departement["code"] | "all";
 		timeInterval: StatsTimeType;
 		switches: Record<SelectedSwitches, boolean>;
