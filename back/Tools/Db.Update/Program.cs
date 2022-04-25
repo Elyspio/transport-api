@@ -1,4 +1,6 @@
-﻿using Spectre.Console;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Spectre.Console;
 using Transport.Api.Adapters.FuelStation;
 using Transport.Api.Db.Repositories;
 using Transport.Api.Db.Update.Services;
@@ -7,15 +9,14 @@ AnsiConsole.Write(new FigletText("Database Updater").LeftAligned().Color(Color.S
 
 
 var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(service =>
-        {
-            service.AddHttpClient<FuelStationClient>();
-            service.AddSingleton<PriceUpdateService>();
-            service.AddSingleton<FuelStationRepository>();
-            service.AddSingleton<PriceRepository>();
-        }
-    )
-    .Build();
+	.ConfigureServices(service => {
+			service.AddHttpClient<FuelStationClient>();
+			service.AddSingleton<PriceUpdateService>();
+			service.AddSingleton<FuelStationRepository>();
+			service.AddSingleton<PriceRepository>();
+		}
+	)
+	.Build();
 
 
 var scope = host.Services.CreateScope();
@@ -31,16 +32,16 @@ var reset = AnsiConsole.Confirm("Reset all?", false);
 
 if (reset)
 {
-    await service.ClearAll();
+	await service.ClearAll();
 
 
-    foreach (var year in years) await service.UpdatePrices(year);
+	foreach (var year in years) await service.UpdatePrices(year);
 }
 else
 {
-    var year = AnsiConsole.Prompt(new SelectionPrompt<int>().Title("Which [blue]year[/] to refresh?").PageSize(5).AddChoices(years.Reverse().ToArray()));
+	var year = AnsiConsole.Prompt(new SelectionPrompt<int>().Title("Which [blue]year[/] to refresh?").PageSize(5).AddChoices(years.Reverse().ToArray()));
 
-    await service.UpdatePrices(year);
+	await service.UpdatePrices(year);
 }
 
 

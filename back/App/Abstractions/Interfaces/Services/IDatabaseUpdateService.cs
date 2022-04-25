@@ -2,7 +2,7 @@
 
 public interface IDatabaseUpdateService
 {
-    Task RefreshYearly(int year);
+	Task RefreshYearly(int year);
 
-    Task RefreshLocations();
+	Task RefreshLocations();
 }

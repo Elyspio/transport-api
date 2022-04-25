@@ -6,15 +6,15 @@ namespace Transport.Api.Core.Assemblers;
 
 internal class StatsAssembler : BaseAssembler<Statistic, StatisticEntity>
 {
-    public override StatisticEntity Convert(Statistic obj)
-    {
-        throw new NotImplementedException();
-    }
+	public override StatisticEntity Convert(Statistic obj)
+	{
+		throw new NotImplementedException();
+	}
 
-    public override Statistic Convert(StatisticEntity obj)
-    {
-        var dtMiddle = obj.Time.Start.AddDays(obj.Time.End.Day - obj.Time.Start.Day / 2);
+	public override Statistic Convert(StatisticEntity obj)
+	{
+		var dtMiddle = obj.Time.Start.AddDays(obj.Time.End.Day - obj.Time.Start.Day / 2);
 
-        return new Statistic(obj.Id.ToString(), dtMiddle, obj.Statistic);
-    }
+		return new Statistic(obj.Id.ToString(), dtMiddle, obj.Statistic);
+	}
 }

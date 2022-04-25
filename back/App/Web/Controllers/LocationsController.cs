@@ -11,45 +11,45 @@ namespace Transport.Api.Web.Controllers;
 [ApiController]
 public class LocationsController : ControllerBase
 {
-    private readonly IDatabaseUpdateService databaseUpdateService;
+	private readonly IDatabaseUpdateService databaseUpdateService;
 
-    private readonly ILocationService locationService;
+	private readonly ILocationService locationService;
 
-    public LocationsController(ILocationService locationService, IDatabaseUpdateService databaseUpdateService)
-    {
-        this.locationService = locationService;
-        this.databaseUpdateService = databaseUpdateService;
-    }
+	public LocationsController(ILocationService locationService, IDatabaseUpdateService databaseUpdateService)
+	{
+		this.locationService = locationService;
+		this.databaseUpdateService = databaseUpdateService;
+	}
 
-    [HttpGet("regions/{region}/departements")]
-    [SwaggerResponse(200, Type = typeof(List<Departement>))]
-    public async Task<IActionResult> GetDepartementsByRegion(Region region)
-    {
-        return Ok(await locationService.GetDepartements(region));
-    }
-
-
-    [HttpGet("departements")]
-    [SwaggerResponse(200, Type = typeof(List<Departement>))]
-    public async Task<IActionResult> GetAllDepartements()
-    {
-        return Ok(await locationService.GetAllDepartements());
-    }
+	[HttpGet("regions/{region}/departements")]
+	[SwaggerResponse(200, Type = typeof(List<Departement>))]
+	public async Task<IActionResult> GetDepartementsByRegion(Region region)
+	{
+		return Ok(await locationService.GetDepartements(region));
+	}
 
 
-    [HttpGet("regions")]
-    [SwaggerResponse(200, Type = typeof(List<RegionTransport>))]
-    public async Task<IActionResult> GetRegions()
-    {
-        return Ok(await locationService.GetRegions());
-    }
+	[HttpGet("departements")]
+	[SwaggerResponse(200, Type = typeof(List<Departement>))]
+	public async Task<IActionResult> GetAllDepartements()
+	{
+		return Ok(await locationService.GetAllDepartements());
+	}
 
 
-    [HttpPatch("regions")]
-    [SwaggerResponse(204)]
-    public async Task<IActionResult> Refresh()
-    {
-        await databaseUpdateService.RefreshLocations();
-        return NoContent();
-    }
+	[HttpGet("regions")]
+	[SwaggerResponse(200, Type = typeof(List<RegionTransport>))]
+	public async Task<IActionResult> GetRegions()
+	{
+		return Ok(await locationService.GetRegions());
+	}
+
+
+	[HttpPatch("regions")]
+	[SwaggerResponse(204)]
+	public async Task<IActionResult> Refresh()
+	{
+		await databaseUpdateService.RefreshLocations();
+		return NoContent();
+	}
 }

@@ -6,14 +6,14 @@ namespace Transport.Api.Abstractions.Models;
 
 public class PriceEntity
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public ObjectId Id { get; set; }
+	[BsonId]
+	[BsonRepresentation(BsonType.ObjectId)]
+	public ObjectId Id { get; set; }
 
-    public Fuel Fuel { get; set; }
+	public Fuel Fuel { get; set; }
 
-    public long IdStation { get; set; }
+	public long IdStation { get; set; }
 
-    public DateTime Date { get; set; }
-    public double Value { get; set; }
+	public DateTime Date { get; set; }
+	public double Value { get; set; }
 }

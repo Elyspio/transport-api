@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.json"/>
+    <None Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,14 +21,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0"/>
-    <PackageReference Include="Spectre.Console" Version="0.44.0"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0" />
+    <PackageReference Include="Spectre.Console" Version="0.44.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\App\Abstractions\Transport.Api.Abstractions.csproj"/>
-    <ProjectReference Include="..\..\App\Adapters\Transport.Api.Adapters.csproj"/>
-    <ProjectReference Include="..\..\App\Db\Transport.Api.Db.csproj"/>
+    <ProjectReference Include="..\..\App\Abstractions\Transport.Api.Abstractions.csproj" />
+    <ProjectReference Include="..\..\App\Adapters\Transport.Api.Adapters.csproj" />
+    <ProjectReference Include="..\..\App\Db\Transport.Api.Db.csproj" />
   </ItemGroup>
 
 </Project>
