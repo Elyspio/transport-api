@@ -122,7 +122,7 @@ export function StatControls() {
 				<FormControl fullWidth>
 					<InputLabel id="demo-region-label">Région</InputLabel>
 					<Select fullWidth labelId="demo-region-label" id="demo-region-select" value={region} label="Région" onChange={onRegionSelected}>
-						<MenuItem value={"all"}>All</MenuItem>
+						<MenuItem value={"all"}>Toutes</MenuItem>
 						{regions.map((region) => (
 							<MenuItem key={region.id} value={region.id}>
 								{region.label}
@@ -136,7 +136,7 @@ export function StatControls() {
 				<FormControl fullWidth>
 					<InputLabel id="demo-region-label">Département</InputLabel>
 					<Select fullWidth labelId="demo-region-label" id="demo-region-select" value={departement} label="Département" onChange={onDepartementSelected}>
-						<MenuItem value={"all"}>All</MenuItem>
+						<MenuItem value={"all"}>Tous</MenuItem>
 						{departements.map((departement) => (
 							<MenuItem key={departement.code} value={departement.code}>
 								{departement.name} ({departement.code})

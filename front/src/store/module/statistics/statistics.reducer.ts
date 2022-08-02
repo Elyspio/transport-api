@@ -129,12 +129,12 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 	});
 
 	addCase(setDepartements, (state, { payload }) => {
-		state.departements = payload.sort((dep1, dep2) => dep1.name.localeCompare(dep2.name));
+		state.departements = payload.sort((dep1, dep2) => dep1.code.localeCompare(dep2.code));
 		updateData(state);
 	});
 
 	addCase(setRegions, (state, { payload }) => {
-		state.regions = payload.sort((dep1, dep2) => (parseInt(dep1.code) < parseInt(dep2.code) ? -1 : 1));
+		state.regions = payload.sort((dep1, dep2) => dep1.label.localeCompare(dep2.label));
 	});
 
 	addCase(toggleSwitch, (state, { payload }) => {
