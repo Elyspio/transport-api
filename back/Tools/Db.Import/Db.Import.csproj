@@ -22,9 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\App\Abstractions\Abstractions.csproj" />
-    <ProjectReference Include="..\..\App\Db\Db.csproj" />
-    <ProjectReference Include="..\Core.Merge\Core.Merge.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\App\Abstractions\Transport.Api.Abstractions.csproj" />
+    <ProjectReference Include="..\..\App\Adapters\Transport.Api.Adapters.csproj" />
+    <ProjectReference Include="..\..\App\Core\Transport.Api.Core.csproj" />
+    <ProjectReference Include="..\..\App\Db\Transport.Api.Db.csproj" />
   </ItemGroup>
 
   <ItemGroup>

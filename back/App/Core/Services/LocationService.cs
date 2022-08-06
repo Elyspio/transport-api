@@ -30,11 +30,11 @@ public class LocationService : ILocationService
 		var regions = await locationRepository.GetRegions();
 
 		return regions.Select(entity => new RegionTransport
-				{
-					Id = entity.Id,
-					Code = entity.Code,
-					Label = entity.Label
-				}
+		{
+			Id = entity.Id,
+			Code = entity.Code,
+			Label = entity.Label
+		}
 			)
 			.ToList();
 	}

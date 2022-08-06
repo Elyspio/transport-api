@@ -1,6 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Globalization;
-using Microsoft.Extensions.Logging;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Interfaces.Services;
@@ -57,18 +57,19 @@ public class StatsService : IStatsService
 		var lastMonth = now.AddMonths(-1);
 
 
-		await Parallel.ForEachAsync(Enumerable.Range(0, (now - lastMonth).Days - 1), async (day, _) => {
-				var startDate = lastMonth.AddDays(day);
-				var endDate = startDate.AddDays(1);
+		await Parallel.ForEachAsync(Enumerable.Range(0, (now - lastMonth).Days - 1), async (day, _) =>
+		{
+			var startDate = lastMonth.AddDays(day);
+			var endDate = startDate.AddDays(1);
 
-				logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
+			logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
 
-				var infos = await CalculateBetweenDates(startDate, endDate);
+			var infos = await CalculateBetweenDates(startDate, endDate);
 
-				await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
+			await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
 
-				logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
-			}
+			logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
+		}
 		);
 	}
 
@@ -118,7 +119,7 @@ public class StatsService : IStatsService
 
 		var stations = await fuelStationRepository.GetById(prices.Select(p => p.IdStation).Distinct());
 
-		# region Cities
+		#region Cities
 
 		//var postalCodes = await locationRepository.GetPostalCodes();
 		//var postalCodeDict = new ConcurrentDictionary<string, StatisticData>();

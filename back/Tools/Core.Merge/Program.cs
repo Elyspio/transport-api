@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Abstractions.Enums;
-using Abstractions.Models;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Transport.Api.Abstractions.Enums;
+using Transport.Api.Abstractions.Transports.FuelStation;
 
 Console.WriteLine("Hello, World!");
 
@@ -15,33 +15,33 @@ FuelStationData item;
 FuelStationData[] content;
 foreach (var file in files)
 {
-    var str = File.ReadAllText(file);
-    content = JsonConvert.DeserializeObject<FuelStationData[]>(str)!;
-    Console.WriteLine("file " + file);
-    foreach (var pdv in content)
-    {
-        item = data.Find(datum => datum.Id == pdv.Id);
-        if (item == null)
-        {
-            item = pdv;
-        }
-        else
-        {
-            foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-            {
-                item.Prices[fuel].AddRange(pdv.Prices[fuel]);
-            }
-        }
-        data.RemoveAll(datum => datum.Id == pdv.Id);
-        data.Add(item);
-    }
+	var str = File.ReadAllText(file);
+	content = JsonConvert.DeserializeObject<FuelStationData[]>(str)!;
+	Console.WriteLine("file " + file);
+	foreach (var pdv in content)
+	{
+		item = data.Find(datum => datum.Id == pdv.Id);
+		if (item == null)
+		{
+			item = pdv;
+		}
+		else
+		{
+			foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+			{
+				item.Prices[fuel].AddRange(pdv.Prices[fuel]);
+			}
+		}
+		data.RemoveAll(datum => datum.Id == pdv.Id);
+		data.Add(item);
+	}
 }
 Console.WriteLine($"Writing {data.Count} pdv");
 
 using (TextWriter writer = File.CreateText("./merged.json"))
 {
-    var serializer = new JsonSerializer() { Formatting = Formatting.None };
-    serializer.Serialize(writer, data);
+	var serializer = new JsonSerializer() { Formatting = Formatting.None };
+	serializer.Serialize(writer, data);
 }
 
 

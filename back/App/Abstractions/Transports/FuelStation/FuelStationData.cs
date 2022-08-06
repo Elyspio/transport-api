@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
 
 namespace Transport.Api.Abstractions.Transports.FuelStation;
@@ -21,6 +22,7 @@ public class FuelStationData
 
 
 	[Required] public Prices Prices { get; set; }
+
 
 	[Required] public List<FuelStationServiceType> Services { get; set; }
 }

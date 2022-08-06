@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\App\Abstractions\Abstractions.csproj" />
-    <ProjectReference Include="..\..\App\Core\Core.csproj" />
+    <ProjectReference Include="..\..\App\Abstractions\Transport.Api.Abstractions.csproj" />
+    <ProjectReference Include="..\..\App\Core\Transport.Api.Core.csproj" />
   </ItemGroup>
 
 </Project>

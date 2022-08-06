@@ -49,7 +49,7 @@ internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatistic
 		};
 
 
-		var targetType = new List<StatsTimeType> {StatsTimeType.Month, StatsTimeType.Week}.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
+		var targetType = new List<StatsTimeType> { StatsTimeType.Month, StatsTimeType.Week }.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
 
 
 		return await EntityCollection.AsQueryable().Where(stat => stat.Time.Type == targetType && stat.Time.Start >= startDate && stat.Time.End <= DateTime.Now).ToListAsync();

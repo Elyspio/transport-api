@@ -3,8 +3,8 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "https://elyspio.fr/files/swagger/v1/swagger.json",
-      "output": "FileServeClient.cs.nswag.json",
+      "url": "http://localhost:4003/swagger/v1/swagger.json",
+      "output": "FilesApi.nswag.json",
       "newLineBehavior": "Auto"
     }
   },
@@ -24,7 +24,7 @@
       "useHttpClientCreationMethod": false,
       "httpClientType": "System.Net.Http.HttpClient",
       "useHttpRequestMessageCreationMethod": false,
-      "useBaseUrl": true,
+      "useBaseUrl": false,
       "generateBaseUrlProperty": true,
       "generateSyncMethods": false,
       "generatePrepareRequestAndProcessResponseAsAsyncMethods": false,
@@ -40,7 +40,7 @@
       "useRequestAndResponseSerializationSettings": false,
       "serializeTypeInformation": false,
       "queryNullValue": "",
-      "className": "{controller}FileServeClient",
+      "className": "{controller}Client",
       "operationGenerationMode": "MultipleClientsFromFirstTagAndOperationId",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
@@ -55,7 +55,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Transport.Api.Adapters.FileServeClient",
+      "namespace": "Transport.Api.Adapters",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -93,7 +93,7 @@
       "checksumCacheEnabled": false,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "FileServeClient.cs.cs",
+      "output": "FilesApi.cs",
       "newLineBehavior": "Auto"
     }
   }

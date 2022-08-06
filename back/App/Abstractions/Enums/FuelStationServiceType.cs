@@ -1,5 +1,9 @@
-﻿namespace Transport.Api.Abstractions.Enums;
+﻿using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
+namespace Transport.Api.Abstractions.Enums;
+
+[JsonConverter(typeof(StringEnumConverter))]
 public enum FuelStationServiceType
 {
 	AireDeCampingCars,

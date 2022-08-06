@@ -84,12 +84,12 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 
 				foreach (var price in prices)
 					entities.Add(new PriceEntity
-						{
-							IdStation = station.Id,
-							Fuel = fuel,
-							Value = price.Value / 1000,
-							Date = price.Date
-						}
+					{
+						IdStation = station.Id,
+						Fuel = fuel,
+						Value = price.Value / 1000,
+						Date = price.Date
+					}
 					);
 			}
 

@@ -46,13 +46,14 @@ public class DatabaseUpdateService : IDatabaseUpdateService
 		var regions = await locationClient.GetRegions();
 		var departements = await locationClient.GetDepartements();
 
-		await Task.WhenAll(regions.Select(region => {
-					var deps = departements.Where(departement => departement.CodeRegion == region.Code)
-						.Select(departement => new Departement {Code = departement.Code, Name = departement.Name})
-						.ToList();
+		await Task.WhenAll(regions.Select(region =>
+		{
+			var deps = departements.Where(departement => departement.CodeRegion == region.Code)
+				.Select(departement => new Departement { Code = departement.Code, Name = departement.Name })
+				.ToList();
 
-					return departementRepository.Add(region.Nom, region.Code, deps);
-				}
+			return departementRepository.Add(region.Nom, region.Code, deps);
+		}
 			)
 			.ToArray()
 		);

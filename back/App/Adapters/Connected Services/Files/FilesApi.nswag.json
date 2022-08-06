@@ -1,7 +1,7 @@
 ﻿{
   "openapi": "3.0.1",
   "info": {
-    "title": "Web",
+    "title": "FileServe.Api.Web",
     "version": "1.0"
   },
   "paths": {
@@ -11,6 +11,15 @@
           "PublicFiles"
         ],
         "operationId": "GetFiles",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -19,7 +28,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FileModel"
+                    "$ref": "#/components/schemas/FileData"
                   }
                 }
               },
@@ -27,7 +36,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FileModel"
+                    "$ref": "#/components/schemas/FileData"
                   }
                 }
               }
@@ -48,6 +57,7 @@
                 "required": [
                   "file",
                   "filename",
+                  "hidden",
                   "location"
                 ],
                 "properties": {
@@ -60,6 +70,9 @@
                   "file": {
                     "type": "string",
                     "format": "binary"
+                  },
+                  "hidden": {
+                    "type": "boolean"
                   }
                 }
               },
@@ -72,6 +85,9 @@
                 },
                 "file": {
                   "style": "form"
+                },
+                "hidden": {
+                  "style": "form"
                 }
               }
             }
@@ -79,16 +95,16 @@
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               }
             }
@@ -108,7 +124,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -139,7 +156,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -169,7 +187,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -195,7 +214,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -205,12 +225,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               }
             }
@@ -228,7 +248,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -252,7 +273,55 @@
         ],
         "responses": {
           "204": {
-            "description": "Success"
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/files/public/{id}/visibility": {
+      "put": {
+        "tags": [
+          "PublicFiles"
+        ],
+        "operationId": "ToggleVisibility",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "authentication-token",
+            "in": "header",
+            "allowEmptyValue": true,
+            "description": "Authentication Token",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authentication-token",
+            "in": "cookie",
+            "allowEmptyValue": true,
+            "description": "Authentication Token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
           },
           "401": {
             "description": "Unauthorized"
@@ -270,6 +339,13 @@
         ],
         "operationId": "GetFiles2",
         "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "authentication-token",
             "in": "header",
@@ -297,7 +373,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FileModel"
+                    "$ref": "#/components/schemas/FileData"
                   }
                 }
               },
@@ -305,7 +381,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FileModel"
+                    "$ref": "#/components/schemas/FileData"
                   }
                 }
               }
@@ -352,6 +428,7 @@
                 "required": [
                   "file",
                   "filename",
+                  "hidden",
                   "location"
                 ],
                 "properties": {
@@ -364,6 +441,9 @@
                   "file": {
                     "type": "string",
                     "format": "binary"
+                  },
+                  "hidden": {
+                    "type": "boolean"
                   }
                 }
               },
@@ -376,6 +456,9 @@
                 },
                 "file": {
                   "style": "form"
+                },
+                "hidden": {
+                  "style": "form"
                 }
               }
             }
@@ -383,16 +466,16 @@
         },
         "responses": {
           "201": {
-            "description": "Success",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               }
             }
@@ -418,7 +501,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -473,7 +557,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -527,7 +612,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -577,7 +663,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -605,7 +692,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileModel"
+                  "$ref": "#/components/schemas/FileData"
                 }
               }
             }
@@ -629,7 +716,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -653,7 +741,55 @@
         ],
         "responses": {
           "204": {
-            "description": "Success"
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/files/user/{id}/visibility": {
+      "put": {
+        "tags": [
+          "UserFiles"
+        ],
+        "operationId": "ToggleVisibility2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "authentication-token",
+            "in": "header",
+            "allowEmptyValue": true,
+            "description": "Authentication Token",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authentication-token",
+            "in": "cookie",
+            "allowEmptyValue": true,
+            "description": "Authentication Token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
           },
           "401": {
             "description": "Unauthorized"
@@ -667,12 +803,14 @@
   },
   "components": {
     "schemas": {
-      "FileModel": {
+      "FileData": {
         "type": "object",
         "additionalProperties": false,
         "required": [
           "filename",
+          "hidden",
           "id",
+          "idGridFs",
           "location",
           "mime",
           "size",
@@ -680,23 +818,35 @@
         ],
         "properties": {
           "id": {
-            "type": "string"
-          },
-          "filename": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "username": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
+          },
+          "filename": {
+            "type": "string",
+            "minLength": 1
           },
           "mime": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "location": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "size": {
             "type": "integer",
             "format": "int64"
+          },
+          "idGridFs": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hidden": {
+            "type": "boolean"
           }
         }
       }

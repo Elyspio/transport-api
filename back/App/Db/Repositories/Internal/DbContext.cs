@@ -3,7 +3,6 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using Transport.Api.Abstractions.Helpers;
 using Transport.Api.Db.Configs;
 
 namespace Transport.Api.Db.Repositories.Internal;

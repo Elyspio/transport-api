@@ -4,3 +4,6 @@ back/Tools/Core.Merge/*.json
 back/Tools/Db.Import/merged.json
 */node_modules
 back/Tools/Db.Cache
+.vs
+back/Tools/Db.Cache/cache.json
+back/Tools/Db.Cache/merged.json

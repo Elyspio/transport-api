@@ -9,12 +9,13 @@ AnsiConsole.Write(new FigletText("Database Updater").LeftAligned().Color(Color.S
 
 
 var host = Host.CreateDefaultBuilder(args)
-	.ConfigureServices(service => {
-			service.AddHttpClient<FuelStationClient>();
-			service.AddSingleton<PriceUpdateService>();
-			service.AddSingleton<FuelStationRepository>();
-			service.AddSingleton<PriceRepository>();
-		}
+	.ConfigureServices(service =>
+	{
+		service.AddHttpClient<FuelStationClient>();
+		service.AddSingleton<PriceUpdateService>();
+		service.AddSingleton<FuelStationRepository>();
+		service.AddSingleton<PriceRepository>();
+	}
 	)
 	.Build();
 
@@ -25,7 +26,8 @@ var service = scope.ServiceProvider.GetRequiredService<PriceUpdateService>();
 
 Console.WriteLine("");
 
-var years = Enumerable.Range(2007, DateTime.Now.Year - 2007 + 1);
+//var years = Enumerable.Range(2007, DateTime.Now.Year - 2007 + 1);
+var years = Enumerable.Range(2007, 2);
 
 
 var reset = AnsiConsole.Confirm("Reset all?", false);

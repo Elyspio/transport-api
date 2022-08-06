@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Transports;
