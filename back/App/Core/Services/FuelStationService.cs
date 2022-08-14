@@ -54,17 +54,13 @@ public class FuelStationService : IFuelStationService
 			var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
 
 			foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-				data.Prices[fuel]
-					.AddRange(prices.Where(p => p.Fuel == fuel)
-						.Select(p => new FuelPriceHistory
-						{
-							Date = p.Date,
-							Value = p.Value
-						}
-						)
-						.ToList()
-					);
+			{
+				foreach(var price in prices.Where(p => p.Fuel == fuel))
+				{
+					data.Prices[fuel].Add(new FuelPriceHistory { Date = price.Date, Value = price.Value });
+				}
 
+			}
 
 			datas.Add(data);
 		}

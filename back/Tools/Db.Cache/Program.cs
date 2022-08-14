@@ -17,7 +17,7 @@ AnsiConsole.Write(new FigletText("Database Cache").LeftAligned().Color(Color.Sea
 
 
 
-string token = "";
+var token = "";
 
 var host = Host.CreateDefaultBuilder(args)
 	.ConfigureServices((context, service) =>
@@ -63,7 +63,6 @@ var service = scope.ServiceProvider.GetRequiredService<PriceCacheService>();
 
 
 var years = Enumerable.Range(2007, DateTime.Now.Year - 2007).ToList();
-// var years = Enumerable.Range(2007, 2).ToList();
 
 
 Console.WriteLine($"Years to put in cache: {string.Join(", ", years)}");

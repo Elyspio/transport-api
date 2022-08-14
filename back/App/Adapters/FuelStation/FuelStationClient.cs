@@ -18,7 +18,7 @@ internal struct FuelStationCache
 
 public class FuelStationClient
 {
-	private readonly FuelStationAssembler assembler = new();
+	private readonly FuelStationApiAssembler assembler = new();
 	private readonly HttpClient client;
 	private readonly ILogger<FuelStationClient> logger;
 
@@ -147,7 +147,7 @@ public class FuelStationClient
 				var xml = await GetFuelStationsXml();
 
 				cache.DailyRefresh = DateTime.Now;
-				cache.DailyData = new FuelStationAssembler().Convert(Parse(xml));
+				cache.DailyData = new FuelStationApiAssembler().Convert(Parse(xml));
 			}
 
 			return cache.DailyData;

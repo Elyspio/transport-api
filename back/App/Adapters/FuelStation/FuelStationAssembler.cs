@@ -5,7 +5,7 @@ using Transport.Api.Abstractions.Transports.FuelStation;
 
 namespace Transport.Api.Adapters.FuelStation;
 
-public class FuelStationAssembler : BaseAssembler<FuelStations, List<FuelStationData>>
+public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStationData>>
 {
 	public override List<FuelStationData> Convert(FuelStations obj)
 	{

@@ -6,7 +6,7 @@ namespace Transport.Api.Abstractions.Interfaces.Repositories;
 
 public interface IPriceRepository
 {
-	Task<PriceEntity> Add(long idStation, Fuel fuel, DateTime date, double value);
+	Task<List<PriceEntity>> Add(long idStation, Fuel fuel, IEnumerable<DateTime> dates, List<double> values);
 	Task<List<PriceEntity>> Add(IEnumerable<FuelStationData> stations);
 	Task Clear();
 	Task<long> Clear(int year);

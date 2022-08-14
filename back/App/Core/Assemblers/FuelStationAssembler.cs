@@ -1,4 +1,5 @@
-﻿using Transport.Api.Abstractions.Models;
+﻿using Transport.Api.Abstractions.Common.Assemblers;
+using Transport.Api.Abstractions.Models;
 using Transport.Api.Abstractions.Transports.FuelStation;
 
 namespace Transport.Api.Core.Assemblers;

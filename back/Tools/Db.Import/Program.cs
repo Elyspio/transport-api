@@ -1,68 +1,45 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Authentication.CLI.Extensions;
+using Authentication.CLI.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
-using Transport.Api.Abstractions.Transports.FuelStation;
+using Transport.Api.Adapters;
+using Transport.Api.Db.Cache.Configs;
+using Transport.Api.Db.Cache.Services;
 using Transport.Api.Db.Repositories;
 
-IHost host = Host.CreateDefaultBuilder(args)
-	.ConfigureServices((_, services) =>
+
+var token = "";
+
+var host = Host.CreateDefaultBuilder(args)
+	.ConfigureServices((context, services) =>
 	{
 		services.AddSingleton<IFuelStationRepository, FuelStationRepository>();
 		services.AddSingleton<IPriceRepository, PriceRepository>();
+		services.AddSingleton<DbImportService>();
+
+		var config = new DbCacheEndpoint();
+		context.Configuration.GetSection(DbCacheEndpoint.Section).Bind(config);
+
+		services.UseCustomAuthentication(config.AuthenticationApi);
+
+		services.AddHttpClient<PublicFilesClient>((_, client) =>
+		{
+			client.BaseAddress = new Uri(config.FilesApi);
+			client.DefaultRequestHeaders.Add("authentication-token", token);
+		});
 	})
 	.Build();
 
 
 var scope = host.Services.CreateScope();
 
-var repoStations = scope.ServiceProvider.GetRequiredService<IFuelStationRepository>();
-var repoPrices = scope.ServiceProvider.GetRequiredService<IPriceRepository>();
+var authCli = scope.ServiceProvider.GetRequiredService<AuthenticationCliService>();
 
-Console.WriteLine("Database Import: starting");
+token = await authCli.Login();
 
-await repoStations.Clear();
-await repoPrices.Clear();
-
-Console.WriteLine("Database Import: database cleared");
-
-FuelStationData[] Parse()
-{
-	using var stream = File.OpenText("merged.json");
-
-	var serializer = new JsonSerializer();
-
-	using var jsonTextReader = new JsonTextReader(stream);
-
-	return serializer.Deserialize<FuelStationData[]>(jsonTextReader);
-}
-
-var data = Parse();
+var importService = scope.ServiceProvider.GetRequiredService<DbImportService>();
 
 
-async Task Add(FuelStationData station)
-{
-	var tasks = new List<Task>();
-	foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-	{
-		foreach (var price in station.Prices[fuel])
-		{
-			tasks.Add(repoPrices.Add(station.Id, fuel, price.Date, price.Value));
-		}
-	}
-
-	tasks.Add(repoStations.Add(station.Id, station.Location, station.Services));
-
-	await Task.WhenAll(tasks.ToArray());
-}
-
-
-Task.WaitAll(data.Select(station => Add(station)).ToArray());
-
-Console.WriteLine($"Database Import: {data.Length} stations inserted");
-
-
-
-
-
+await importService.Import();

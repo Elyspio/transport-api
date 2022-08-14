@@ -112,4 +112,28 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 		CreateIndexIfMissing(nameof(PriceEntity.IdStation));
 		CreateIndexIfMissing(nameof(PriceEntity.Date));
 	}
+
+	public async Task<List<PriceEntity>> Add(long idStation, Fuel fuel, IEnumerable<DateTime> dates, List<double> values)
+	{
+		if (dates.Count() != values.Count()) throw new InvalidOperationException("dates.Count must be equal to values.Count");
+
+
+		var entities = dates.Select((date, i) =>
+		{
+			return new PriceEntity
+			{
+				Date = date,
+				Fuel = fuel,
+				IdStation = idStation,
+				Value = values[i]
+			};
+		}).ToList();
+
+
+		await EntityCollection.InsertManyAsync(entities, new InsertManyOptions { IsOrdered = false });
+
+
+		return entities;
+
+	}
 }

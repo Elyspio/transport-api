@@ -16,7 +16,7 @@ namespace Transport.Api.Db.Cache.Services
 		private readonly FuelStationClient fuelStationClient;
 		private readonly PublicFilesClient publicFiles;
 		private readonly ILogger<PriceCacheService> logger;
-		private readonly FuelStationAssembler stationAssembler = new();
+		private readonly FuelStationApiAssembler stationAssembler = new();
 		public PriceCacheService(FuelStationClient fuelStationClient, PublicFilesClient publicFiles, ILogger<PriceCacheService> logger)
 		{
 			this.fuelStationClient = fuelStationClient;
@@ -30,14 +30,14 @@ namespace Transport.Api.Db.Cache.Services
 			var xml = await fuelStationClient.Download(year);
 			task.Description = $"{year} - Fetched ";
 
-			task.Description = ($"{year} - Parsing ");
+			task.Description = $"{year} - Parsing ";
 			var data = fuelStationClient.Parse(xml);
 			xml = null;
 			GC.Collect();
 			task.Description = $"{year} - Parsed";
 
 
-			task.Description = ($"{year} - Converting");
+			task.Description = $"{year} - Converting";
 			var converted = stationAssembler.Convert(data);
 			data = null;
 			GC.Collect();
