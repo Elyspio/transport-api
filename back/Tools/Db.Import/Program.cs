@@ -9,7 +9,6 @@ using Transport.Api.Db.Cache.Configs;
 using Transport.Api.Db.Cache.Services;
 using Transport.Api.Db.Repositories;
 
-
 var token = "";
 
 var host = Host.CreateDefaultBuilder(args)

@@ -48,22 +48,17 @@ public class FuelStationService : IFuelStationService
 		var datas = new ConcurrentBag<FuelStationData>();
 
 		Parallel.ForEach(stations, station =>
-		{
-			var data = fuelStationAssembler.Convert(station);
-
-			var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
-
-			foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
 			{
-				foreach(var price in prices.Where(p => p.Fuel == fuel))
-				{
-					data.Prices[fuel].Add(new FuelPriceHistory { Date = price.Date, Value = price.Value });
-				}
+				var data = fuelStationAssembler.Convert(station);
 
+				var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
+
+				foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+				foreach (var price in prices.Where(p => p.Fuel == fuel))
+					data.Prices[fuel].Add(new FuelPriceHistory {Date = price.Date, Value = price.Value});
+
+				datas.Add(data);
 			}
-
-			datas.Add(data);
-		}
 		);
 
 

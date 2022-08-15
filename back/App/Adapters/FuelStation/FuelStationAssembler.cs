@@ -12,30 +12,30 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 		var list = new List<FuelStationData>();
 
 		var pdvs = obj.PdvListe.Pdv.Select(pdv =>
-		{
-			try
-			{
-				return new FuelStationData
 				{
-					Id = pdv.Id,
-					Location = new Location
+					try
 					{
-						Address = pdv.Adresse,
-						Latitude = (double) decimal.Parse(pdv.Latitude, CultureInfo.InvariantCulture) / 100000.0,
-						City = pdv.Ville,
-						Longitude = (double) decimal.Parse(pdv.Longitude, CultureInfo.InvariantCulture) / 100000.0,
-						PostalCode = pdv.Cp
-					},
-					Services = GetServices(pdv),
-					Prices = GetPrices(pdv)
-				};
-			}
-			catch (Exception e)
-			{
-				//Console.Error.WriteLine(e);
-				return null;
-			}
-		}
+						return new FuelStationData
+						{
+							Id = pdv.Id,
+							Location = new Location
+							{
+								Address = pdv.Adresse,
+								Latitude = (double) decimal.Parse(pdv.Latitude, CultureInfo.InvariantCulture) / 100000.0,
+								City = pdv.Ville,
+								Longitude = (double) decimal.Parse(pdv.Longitude, CultureInfo.InvariantCulture) / 100000.0,
+								PostalCode = pdv.Cp
+							},
+							Services = GetServices(pdv),
+							Prices = GetPrices(pdv)
+						};
+					}
+					catch (Exception e)
+					{
+						//Console.Error.WriteLine(e);
+						return null;
+					}
+				}
 			)
 			.Where(pdv => pdv != null);
 		return pdvs.ToList();
@@ -46,61 +46,61 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 		var prices = new Prices();
 		if (pdv.Prix.HasValue)
 			pdv.Prix.Value.PrixElementArray?.ForEach(prix =>
-			{
-				var val = ((double) decimal.Parse(prix.Valeur, CultureInfo.InvariantCulture)) / 1000;
-				var date = prix.Maj.DateTime;
-				switch (prix.Nom)
 				{
-					case FuelType.E10:
-						prices.E10.Add(new FuelPriceHistory
-						{
-							Date = date,
-							Value = val
-						}
-						);
-						break;
-					case FuelType.E85:
-						prices.E85.Add(new FuelPriceHistory
-						{
-							Date = date,
-							Value = val
-						}
-						);
-						break;
-					case FuelType.Gazole:
-						prices.Gazole.Add(new FuelPriceHistory
-						{
-							Date = date,
-							Value = val
-						}
-						);
-						break;
-					case FuelType.GpLc:
-						prices.GpLc.Add(new FuelPriceHistory
-						{
-							Date = date,
-							Value = val
-						}
-						);
-						break;
-					case FuelType.Sp95:
-						prices.Sp95.Add(new FuelPriceHistory
-						{
-							Date = date,
-							Value = val
-						}
-						);
-						break;
-					case FuelType.Sp98:
-						prices.Sp98.Add(new FuelPriceHistory
-						{
-							Date = date,
-							Value = val
-						}
-						);
-						break;
+					var val = (double) decimal.Parse(prix.Valeur, CultureInfo.InvariantCulture) / 1000;
+					var date = prix.Maj.DateTime;
+					switch (prix.Nom)
+					{
+						case FuelType.E10:
+							prices.E10.Add(new FuelPriceHistory
+								{
+									Date = date,
+									Value = val
+								}
+							);
+							break;
+						case FuelType.E85:
+							prices.E85.Add(new FuelPriceHistory
+								{
+									Date = date,
+									Value = val
+								}
+							);
+							break;
+						case FuelType.Gazole:
+							prices.Gazole.Add(new FuelPriceHistory
+								{
+									Date = date,
+									Value = val
+								}
+							);
+							break;
+						case FuelType.GpLc:
+							prices.GpLc.Add(new FuelPriceHistory
+								{
+									Date = date,
+									Value = val
+								}
+							);
+							break;
+						case FuelType.Sp95:
+							prices.Sp95.Add(new FuelPriceHistory
+								{
+									Date = date,
+									Value = val
+								}
+							);
+							break;
+						case FuelType.Sp98:
+							prices.Sp98.Add(new FuelPriceHistory
+								{
+									Date = date,
+									Value = val
+								}
+							);
+							break;
+					}
 				}
-			}
 			);
 
 		return prices;

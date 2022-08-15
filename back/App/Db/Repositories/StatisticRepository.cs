@@ -11,7 +11,9 @@ namespace Transport.Api.Db.Repositories;
 
 internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatisticRepository
 {
-	public StatisticRepository(IConfiguration configuration, ILogger<BaseRepository<StatisticEntity>> logger) : base(configuration, logger) { }
+	public StatisticRepository(IConfiguration configuration, ILogger<BaseRepository<StatisticEntity>> logger) : base(configuration, logger)
+	{
+	}
 
 
 	public async Task<StatisticEntity> Add(StatisticInfo data, DateTime startDate, DateTime endDate, StatisticTimeType timeType)
@@ -49,7 +51,7 @@ internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatistic
 		};
 
 
-		var targetType = new List<StatsTimeType> { StatsTimeType.Month, StatsTimeType.Week }.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
+		var targetType = new List<StatsTimeType> {StatsTimeType.Month, StatsTimeType.Week}.Contains(type) ? StatisticTimeType.Day : StatisticTimeType.Week;
 
 
 		return await EntityCollection.AsQueryable().Where(stat => stat.Time.Type == targetType && stat.Time.Start >= startDate && stat.Time.End <= DateTime.Now).ToListAsync();

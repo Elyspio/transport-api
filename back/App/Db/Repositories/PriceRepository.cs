@@ -19,22 +19,6 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 	}
 
 
-	public async Task<PriceEntity> Add(long idStation, Fuel fuel, DateTime date, double value)
-	{
-		var elem = new PriceEntity
-		{
-			IdStation = idStation,
-			Fuel = fuel,
-			Date = date,
-			Value = value
-		};
-
-		await EntityCollection.InsertOneAsync(elem);
-
-		return elem;
-	}
-
-
 	public async Task<PriceEntity> GetById(string id)
 	{
 		return await EntityCollection.AsQueryable().Where(price => price.Id == new ObjectId(id)).FirstAsync();
@@ -78,20 +62,20 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 		var entities = new List<PriceEntity>();
 
 		foreach (var station in stations)
-			foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-			{
-				var prices = station.Prices[fuel];
+		foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+		{
+			var prices = station.Prices[fuel];
 
-				foreach (var price in prices)
-					entities.Add(new PriceEntity
+			foreach (var price in prices)
+				entities.Add(new PriceEntity
 					{
 						IdStation = station.Id,
 						Fuel = fuel,
 						Value = price.Value / 1000,
 						Date = price.Date
 					}
-					);
-			}
+				);
+		}
 
 		await EntityCollection.InsertManyAsync(entities);
 
@@ -104,13 +88,6 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 		var result = await EntityCollection.DeleteManyAsync(price => price.Date >= new DateTime(year, 1, 1) && price.Date <= new DateTime(year, 12, 30));
 
 		return result.DeletedCount;
-	}
-
-
-	private void InitIndexes()
-	{
-		CreateIndexIfMissing(nameof(PriceEntity.IdStation));
-		CreateIndexIfMissing(nameof(PriceEntity.Date));
 	}
 
 	public async Task<List<PriceEntity>> Add(long idStation, Fuel fuel, IEnumerable<DateTime> dates, List<double> values)
@@ -130,10 +107,32 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 		}).ToList();
 
 
-		await EntityCollection.InsertManyAsync(entities, new InsertManyOptions { IsOrdered = false });
+		await EntityCollection.InsertManyAsync(entities, new InsertManyOptions {IsOrdered = false});
 
 
 		return entities;
+	}
 
+
+	public async Task<PriceEntity> Add(long idStation, Fuel fuel, DateTime date, double value)
+	{
+		var elem = new PriceEntity
+		{
+			IdStation = idStation,
+			Fuel = fuel,
+			Date = date,
+			Value = value
+		};
+
+		await EntityCollection.InsertOneAsync(elem);
+
+		return elem;
+	}
+
+
+	private void InitIndexes()
+	{
+		CreateIndexIfMissing(nameof(PriceEntity.IdStation));
+		CreateIndexIfMissing(nameof(PriceEntity.Date));
 	}
 }

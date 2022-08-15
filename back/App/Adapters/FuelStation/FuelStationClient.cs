@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Text;
 using System.Xml;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Transport.Api.Abstractions.Common.Helpers;
 using Transport.Api.Abstractions.Transports.FuelStation;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -105,7 +105,6 @@ public class FuelStationClient
 
 			using var sr = new StreamReader(stream);
 			using var jsonTextReader = new JsonTextReader(sr);
-
 
 
 			return serializer.Deserialize<List<FuelStationData>>(jsonTextReader);

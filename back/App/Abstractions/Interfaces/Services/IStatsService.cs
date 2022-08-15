@@ -1,4 +1,5 @@
-﻿using Transport.Api.Abstractions.Enums;
+﻿using Spectre.Console;
+using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Transports;
 
 namespace Transport.Api.Abstractions.Interfaces.Services;
@@ -7,7 +8,7 @@ public interface IStatsService
 {
 	public Task RefreshStats();
 
-	public Task RefreshWeeklyStats(bool clear = false, int? year = null);
+	public Task RefreshWeeklyStats(int year, ProgressTask task);
 
 
 	public Task RefreshDailyStats(bool clear = false);

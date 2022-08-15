@@ -1,61 +1,61 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Spectre.Console;
-using System.Collections.Concurrent;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Adapters;
 using Transport.Api.Adapters.FuelStation;
 
-namespace Transport.Api.Db.Cache.Services
+namespace Transport.Api.Db.Cache.Services;
+
+internal class PriceCacheService
 {
-	internal class PriceCacheService
+	private const string Location = "/internal/transport-api";
+	private const string Name = "merged.json";
+	private readonly FuelStationClient fuelStationClient;
+	private readonly ILogger<PriceCacheService> logger;
+	private readonly PublicFilesClient publicFiles;
+	private readonly FuelStationApiAssembler stationAssembler = new();
+
+	public PriceCacheService(FuelStationClient fuelStationClient, PublicFilesClient publicFiles, ILogger<PriceCacheService> logger)
 	{
-		private const string Location = "/internal/transport-api";
-		private const string Name = "merged.json";
-		private readonly FuelStationClient fuelStationClient;
-		private readonly PublicFilesClient publicFiles;
-		private readonly ILogger<PriceCacheService> logger;
-		private readonly FuelStationApiAssembler stationAssembler = new();
-		public PriceCacheService(FuelStationClient fuelStationClient, PublicFilesClient publicFiles, ILogger<PriceCacheService> logger)
-		{
-			this.fuelStationClient = fuelStationClient;
-			this.publicFiles = publicFiles;
-			this.logger = logger;
-		}
+		this.fuelStationClient = fuelStationClient;
+		this.publicFiles = publicFiles;
+		this.logger = logger;
+	}
 
-		private async Task<List<FuelStationData>> Fetch(ProgressContext ctx, int year)
-		{
-			var task = ctx.AddTask($"{year} - Fetching ");
-			var xml = await fuelStationClient.Download(year);
-			task.Description = $"{year} - Fetched ";
+	private async Task<List<FuelStationData>> Fetch(ProgressContext ctx, int year)
+	{
+		var task = ctx.AddTask($"{year} - Fetching ");
+		var xml = await fuelStationClient.Download(year);
+		task.Description = $"{year} - Fetched ";
 
-			task.Description = $"{year} - Parsing ";
-			var data = fuelStationClient.Parse(xml);
-			xml = null;
-			GC.Collect();
-			task.Description = $"{year} - Parsed";
+		task.Description = $"{year} - Parsing ";
+		var data = fuelStationClient.Parse(xml);
+		xml = null;
+		GC.Collect();
+		task.Description = $"{year} - Parsed";
 
 
-			task.Description = $"{year} - Converting";
-			var converted = stationAssembler.Convert(data);
-			data = null;
-			GC.Collect();
-			task.Description = $"{year} - Converted";
+		task.Description = $"{year} - Converting";
+		var converted = stationAssembler.Convert(data);
+		data = null;
+		GC.Collect();
+		task.Description = $"{year} - Converted";
 
-			task.StopTask();
+		task.StopTask();
 
-			return converted;
+		return converted;
+	}
 
-		}
 
-
-		public async Task<FileData> Create(List<int> years)
-		{
-
-			return await AnsiConsole.Progress()
+	public async Task<FileData> Create(List<int> years)
+	{
+		return await AnsiConsole.Progress()
 			.AutoClear(false)
-			.Columns(new TaskDescriptionColumn { Alignment = Justify.Left }, new ElapsedTimeColumn(), new SpinnerColumn())
+			.Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
 			.StartAsync(async ctx =>
 			{
 				List<List<FuelStationData>>? allRawStations;
@@ -63,7 +63,7 @@ namespace Transport.Api.Db.Cache.Services
 				{
 					var splitData = new ConcurrentBag<List<FuelStationData>>();
 
-					await Parallel.ForEachAsync(years, new ParallelOptions { MaxDegreeOfParallelism = 8 }, async (year, _) =>
+					await Parallel.ForEachAsync(years, new ParallelOptions {MaxDegreeOfParallelism = 8}, async (year, _) =>
 					{
 						var stations = await Fetch(ctx, year);
 						splitData.Add(stations);
@@ -90,12 +90,8 @@ namespace Transport.Api.Db.Cache.Services
 							if (allStations.TryGetValue(pdv.Id, out var item))
 							{
 								foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-								{
-									foreach (var price in pdv.Prices[fuel])
-									{
-										item.Prices[fuel].Add(price);
-									}
-								}
+								foreach (var price in pdv.Prices[fuel])
+									item.Prices[fuel].Add(price);
 								var set = new HashSet<FuelStationServiceType>();
 								item.Services.ForEach(service => set.Add(service));
 								pdv.Services.ForEach(service => set.Add(service));
@@ -105,12 +101,12 @@ namespace Transport.Api.Db.Cache.Services
 							{
 								item = pdv;
 							}
+
 							allStations[pdv.Id] = item;
 						});
 
 						concatTask.StopTask();
 						concatTask.Description = $"Concacted {year}";
-
 					});
 
 
@@ -121,29 +117,28 @@ namespace Transport.Api.Db.Cache.Services
 				allRawStations = null;
 
 
-				var serializeTask = ctx.AddTask($"Extracting");
+				var serializeTask = ctx.AddTask("Extracting");
 
 				var tempFile = "P:\\own\\mobile\\transport-api\\back\\Tools\\Db.Cache\\merged.json";
 
 				using (var fileTemp = File.CreateText(tempFile))
 				{
-					var serializer = new JsonSerializer() { Converters = { new Newtonsoft.Json.Converters.StringEnumConverter() }, };
+					var serializer = new JsonSerializer {Converters = {new StringEnumConverter()}};
 					serializer.Serialize(fileTemp, merged);
 				}
+
 				merged = null;
 				serializeTask.StopTask();
-				serializeTask.Description = $"Extracted";
+				serializeTask.Description = "Extracted";
 
 
-				var downloadTask = ctx.AddTask($"Uploading");
+				var downloadTask = ctx.AddTask("Uploading");
 				using var stream = File.OpenRead(tempFile);
 				var file = await publicFiles.AddFileAsync(Name, Location, new FileParameter(stream, Name, "application/json"), true);
 				downloadTask.StopTask();
-				downloadTask.Description = $"Uploaded";
+				downloadTask.Description = "Uploaded";
 
 				return file;
 			});
-
-		}
 	}
 }

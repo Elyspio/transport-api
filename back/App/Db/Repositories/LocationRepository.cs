@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.ComponentModel;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using System.ComponentModel;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Models;
@@ -12,7 +12,9 @@ namespace Transport.Api.Db.Repositories;
 
 public class LocationRepository : BaseRepository<LocationEntity>, ILocationRepository
 {
-	public LocationRepository(IConfiguration configuration, ILogger<BaseRepository<LocationEntity>> logger) : base(configuration, logger) { }
+	public LocationRepository(IConfiguration configuration, ILogger<BaseRepository<LocationEntity>> logger) : base(configuration, logger)
+	{
+	}
 
 	public async Task<LocationEntity> Add(string regionName, string regionCode, List<Departement> departements)
 	{

@@ -12,7 +12,9 @@ namespace Transport.Api.Db.Repositories;
 
 public class FuelStationRepository : BaseRepository<FuelStationEntity>, IFuelStationRepository
 {
-	public FuelStationRepository(IConfiguration configuration, ILogger<FuelStationRepository> logger) : base(configuration, logger) { }
+	public FuelStationRepository(IConfiguration configuration, ILogger<FuelStationRepository> logger) : base(configuration, logger)
+	{
+	}
 
 	public async Task<FuelStationEntity> Add(long id, Location location, List<FuelStationServiceType> services)
 	{
@@ -31,11 +33,11 @@ public class FuelStationRepository : BaseRepository<FuelStationEntity>, IFuelSta
 	public async Task<List<FuelStationEntity>> Add(IEnumerable<FuelStationData> stations)
 	{
 		var entities = stations.Select(s => new FuelStationEntity
-		{
-			Id = s.Id,
-			Location = s.Location,
-			Services = s.Services
-		}
+				{
+					Id = s.Id,
+					Location = s.Location,
+					Services = s.Services
+				}
 			)
 			.ToList();
 

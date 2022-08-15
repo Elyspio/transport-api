@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
+using Spectre.Console;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Interfaces.Services;
@@ -33,19 +34,25 @@ public class StatsService : IStatsService
 
 	public async Task RefreshStats()
 	{
-		await Task.WhenAll(RefreshDailyStats(true), RefreshWeeklyStats(true));
 	}
 
 
-	public async Task RefreshWeeklyStats(bool clear = false, int? year = null)
+	public async Task RefreshWeeklyStats(int year, ProgressTask ctx)
 	{
-		if (clear) await statisticRepository.ClearWeekly(year);
+		await statisticRepository.ClearWeekly(year);
 
-		if (year is null)
-			for (year = 2007; year <= DateTime.Now.Year; year++)
-				await Parallel.ForEachAsync(Enumerable.Range(1, 52), async (week, _) => await RefreshWeeklyStatsInternal(year.Value, week));
-		else
-			await Parallel.ForEachAsync(Enumerable.Range(1, 52), async (week, _) => await RefreshWeeklyStatsInternal(year.Value, week));
+		var locker = new object();
+		var progress = 0;
+
+		await Parallel.ForEachAsync(Enumerable.Range(1, 52), async (week, _) =>
+		{
+			await RefreshWeeklyStatsInternal(year, week);
+			lock (locker)
+			{
+				progress += 1;
+				ctx.Value = progress;
+			}
+		});
 	}
 
 
@@ -58,18 +65,18 @@ public class StatsService : IStatsService
 
 
 		await Parallel.ForEachAsync(Enumerable.Range(0, (now - lastMonth).Days - 1), async (day, _) =>
-		{
-			var startDate = lastMonth.AddDays(day);
-			var endDate = startDate.AddDays(1);
+			{
+				var startDate = lastMonth.AddDays(day);
+				var endDate = startDate.AddDays(1);
 
-			logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
+				logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
 
-			var infos = await CalculateBetweenDates(startDate, endDate);
+				var infos = await CalculateBetweenDates(startDate, endDate);
 
-			await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
+				await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
 
-			logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
-		}
+				logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
+			}
 		);
 	}
 
@@ -93,7 +100,7 @@ public class StatsService : IStatsService
 
 	private async Task RefreshWeeklyStatsInternal(int year, int week)
 	{
-		logger.LogInformation($"Calculating statistics for the week {week}/{year}");
+		// logger.LogInformation($"Calculating statistics for the week {week}/{year}");
 		var startDate = ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
 
 		var endDate = startDate.AddDays(7);
@@ -102,7 +109,7 @@ public class StatsService : IStatsService
 
 		await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Week);
 
-		logger.LogInformation($"Calculated statistics for the week {week}/{year}");
+		// logger.LogInformation("Calculated statistics for the week {Week}/{Year}", week, year);
 	}
 
 	/// <summary>
@@ -119,15 +126,15 @@ public class StatsService : IStatsService
 
 		var stations = await fuelStationRepository.GetById(prices.Select(p => p.IdStation).Distinct());
 
-		#region Cities
-
-		//var postalCodes = await locationRepository.GetPostalCodes();
-		//var postalCodeDict = new ConcurrentDictionary<string, StatisticData>();
-		//Parallel.ForEach(postalCodes, postalCode => { postalCodeDict[postalCode] = GetStatisticsByPostalCode(stations, prices, postalCode); });
-		//infos.Cities = new Dictionary<string, StatisticData>(postalCodeDict.ToList());
-		infos.Cities = new Dictionary<string, StatisticData>();
-
-		#endregion Cities
+		// #region Cities
+		//
+		// var postalCodes = await locationRepository.GetPostalCodes();
+		// var postalCodeDict = new ConcurrentDictionary<string, StatisticData>();
+		// Parallel.ForEach(postalCodes, postalCode => { postalCodeDict[postalCode] = GetStatisticsByPostalCode(stations, prices, postalCode); });
+		// infos.Cities = new Dictionary<string, StatisticData>(postalCodeDict.ToList());
+		// infos.Cities = new Dictionary<string, StatisticData>();
+		//
+		// #endregion Cities
 
 		#region Regions
 

@@ -24,6 +24,6 @@ public class CacheService : ICacheService
 	{
 		if (key == null) throw new ArgumentNullException(nameof(key));
 
-		cache.Set(key, value, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromHours(1) });
+		cache.Set(key, value, new CacheItemPolicy {SlidingExpiration = TimeSpan.FromHours(1)});
 	}
 }
