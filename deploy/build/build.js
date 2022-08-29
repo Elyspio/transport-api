@@ -7,7 +7,7 @@ function build(dockerfile = "Dockerfile", tag = "latest") {
 	try {
 		const dockerCommand = `docker buildx build --platform linux/amd64  -f ${__dirname}/${dockerfile}  -t elyspio/transport-api:${tag} --push .`
 			.split(" ")
-			.filter((str) => str.length);
+			.filter((str) => str.length > 0);
 
 		const { status, error: e } = spawnSync(dockerCommand[0], dockerCommand.slice(1), {
 			cwd: path.resolve(__dirname, "../../"),
@@ -15,16 +15,16 @@ function build(dockerfile = "Dockerfile", tag = "latest") {
 		});
 
 		if (status !== 0) {
-			error = false;
+			error = true;
 			console.error(e);
 		}
 	} catch (e) {
-		error = false;
+		error = true;
 	}
 }
 
 build();
-build("Dockerfile.Db", "db-update");
+//build("Dockerfile.Db", "db-update");
 
 if (error) {
 	console.error(`Spawn: error`, error);

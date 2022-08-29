@@ -9,7 +9,10 @@ COPY back/App/Abstractions/Transport.Api.Abstractions.csproj ./App/Abstractions/
 COPY back/App/Db/Transport.Api.Db.csproj ./App/Db/
 COPY back/App/Web/Transport.Api.Web.csproj ./App/Web/
 
-COPY back/Tools/Db.Update/Transport.Api.Db.Update.csproj ./Tools/Db.Update/
+COPY back/Tools/Core.Merge/Core.Merge.csproj ./Tools/Core.Merge/
+COPY back/Tools/Db.Update/Db.Update.Stats.csproj ./Tools/Db.Update/
+COPY back/Tools/Db.Cache/Db.Cache.csproj ./Tools/Db.Cache/
+COPY back/Tools/Db.Import/Db.Import.Cache.csproj ./Tools/Db.Import/
 
 RUN dotnet restore
 

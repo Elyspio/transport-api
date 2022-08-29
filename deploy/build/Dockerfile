@@ -9,27 +9,24 @@ COPY back/App/Abstractions/Transport.Api.Abstractions.csproj ./App/Abstractions/
 COPY back/App/Db/Transport.Api.Db.csproj ./App/Db/
 COPY back/App/Web/Transport.Api.Web.csproj ./App/Web/
 
-COPY back/Tools/Db.Update/Transport.Api.Db.Update.csproj ./Tools/Db.Update/
-
 
 RUN dotnet restore
 
 COPY back .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish TransportApi.sln -c Release -o out
 
 
 # Building front
 FROM --platform=linux/amd64 node:16 as builder-front
 
-COPY front/package.json /front/package.json
-COPY front/package-lock.json /front/package-lock.json
-RUN cd /front && npm install --legacy-peer-deps
+COPY front/package.json /front/
+COPY front/yarn.lock /front/
+RUN cd /front && yarn
 
 COPY front/tsconfig.json /front/
-COPY front/craco.config.js /front/
-COPY front/public /front/public
-COPY front/src /front/src
-RUN cd /front && npm run build
+COPY front/public/ /front/public
+COPY front/src/ /front/src
+RUN cd /front && yarn build
 
 
 # Running
