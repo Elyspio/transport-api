@@ -1,16 +1,15 @@
 import React from "react";
 import { FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select, Switch, Typography } from "@mui/material";
 import {
+	getLocations,
 	priceTypes,
-	setDepartements,
-	setRegions,
 	setSelectedDepartement,
 	setSelectedFuels,
 	setSelectedRegion,
 	setSelectedTimeInterval,
 	toggleSwitch,
 } from "../../../../store/module/statistics/statistics.action";
-import { Departement, StatsTimeType } from "../../../../core/apis/backend/generated";
+import { StatsTimeType } from "../../../../core/apis/backend/generated";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { bindActionCreators } from "redux";
 import { useInjection } from "inversify-react";
@@ -22,7 +21,7 @@ import { fuelsLabels, timeLabels, timeOrdered } from "./StatControls.constants";
 export function StatControls() {
 	const {
 		selected: { fuels, region, timeInterval, departement, switches },
-		regions,
+		locations,
 		departements,
 	} = useAppSelector((s) => s.statistic);
 
@@ -36,12 +35,11 @@ export function StatControls() {
 		() =>
 			bindActionCreators(
 				{
+					getLocations,
 					setSelectedRegion,
 					setSelectedFuels,
 					setSelectedTimeInterval,
 					setSelectedDepartement,
-					setDepartements,
-					setRegions,
 					toggleSwitch,
 				},
 				dispatch
@@ -50,25 +48,14 @@ export function StatControls() {
 	);
 
 	useAsyncEffect(async () => {
-		let departements: Departement[];
-		if (region === "all") {
-			departements = await services.locations.getAllDepartements();
-		} else {
-			departements = await services.locations.getDepartements(region);
-		}
-		update.setDepartements(departements);
-	}, [services.locations, region, update]);
-
-	useAsyncEffect(async () => {
-		const regions = await services.locations.getRegions();
-		update.setRegions(regions);
+		await update.getLocations();
 	}, [services.locations, update]);
 
 	const onRegionSelected = React.useCallback(
 		(e) => {
-			update.setSelectedRegion(regions.find((region) => region.id === e.target.value)?.id ?? "all");
+			update.setSelectedRegion(locations.find((region) => region.id === e.target.value)?.id ?? "all");
 		},
-		[update, regions]
+		[update, locations]
 	);
 	const onDepartementSelected = React.useCallback(
 		(e) => {
@@ -123,7 +110,7 @@ export function StatControls() {
 					<InputLabel id="demo-region-label">Région</InputLabel>
 					<Select fullWidth labelId="demo-region-label" id="demo-region-select" value={region} label="Région" onChange={onRegionSelected}>
 						<MenuItem value={"all"}>Toutes</MenuItem>
-						{regions.map((region) => (
+						{locations.map((region) => (
 							<MenuItem key={region.id} value={region.id}>
 								{region.label}
 							</MenuItem>

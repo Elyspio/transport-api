@@ -10,6 +10,9 @@ public class DatabaseModule : IDotnetModule
 	{
 		var nsp = typeof(DatabaseModule).Namespace!;
 		var baseNamespace = nsp[..nsp.LastIndexOf(".")];
+
+		services.AddMemoryCache();
+
 		services.Scan(scan =>
 			scan.FromAssemblyOf<DatabaseModule>()
 				.AddClasses(classes => classes.InNamespaces($"{baseNamespace}.Repositories", $"{baseNamespace}.Watchers"))

@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
 
 namespace Transport.Api.Abstractions.Models;
@@ -11,8 +11,8 @@ public class StatisticEntity
 	[BsonRepresentation(BsonType.ObjectId)]
 	public ObjectId Id { get; set; }
 
-	public TimeMetadata Time { get; set; }
-	public StatisticInfo Statistic { get; set; }
+	[Required] public TimeMetadata Time { get; set; } = null!;
+	[Required] public StatisticInfo Statistic { get; set; } = null!;
 }
 
 public class TimeMetadata
@@ -38,16 +38,16 @@ public class StatisticInfo
 
 	[Required] public Dictionary<string, StatisticData> Departements { get; set; } = new();
 
-	[Required] public Dictionary<Region, StatisticData> Regions { get; set; } = new();
+	[Required] public Dictionary<RegionId, StatisticData> Regions { get; set; } = new();
 }
 
 public class StatisticData
 {
-	[Required] public Dictionary<Fuel, double> Average { get; set; }
+	[Required] public Dictionary<Fuel, double> Average { get; set; } = new();
 
-	[Required] public Dictionary<Fuel, double> Max { get; set; }
+	[Required] public Dictionary<Fuel, double> Max { get; set; } = new();
 
-	[Required] public Dictionary<Fuel, double> Min { get; set; }
+	[Required] public Dictionary<Fuel, double> Min { get; set; } = new();
 
-	[Required] public Dictionary<Fuel, double>[] Deciles { get; set; }
+	[Required] public Dictionary<Fuel, double>[] Deciles { get; set; } = new Dictionary<Fuel, double>[10];
 }

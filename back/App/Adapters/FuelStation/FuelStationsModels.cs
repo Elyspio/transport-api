@@ -1,22 +1,22 @@
-﻿using System.Globalization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Globalization;
 
 namespace Transport.Api.Adapters.FuelStation;
 
 public partial class FuelStations
 {
 	[JsonProperty("?xml", Required = Required.Always)]
-	public Xml Xml { get; set; }
+	public Xml Xml { get; set; } = default!;
 
 	[JsonProperty("pdv_liste", Required = Required.Always)]
-	public PdvListe PdvListe { get; set; }
+	public PdvListe PdvListe { get; set; } = default!;
 }
 
 public class PdvListe
 {
 	[JsonProperty("pdv", Required = Required.Always)]
-	public List<Pdv> Pdv { get; set; }
+	public List<Pdv> Pdv { get; set; } = default!;
 }
 
 public class Pdv
@@ -26,27 +26,27 @@ public class Pdv
 	public long Id { get; set; }
 
 	[JsonProperty("@latitude", Required = Required.Always)]
-	public string Latitude { get; set; }
+	public string Latitude { get; set; } = default!;
 
 	[JsonProperty("@longitude", Required = Required.Always)]
-	public string Longitude { get; set; }
+	public string Longitude { get; set; } = default!;
 
 	[JsonProperty("@cp", Required = Required.Always)]
-	public string Cp { get; set; }
+	public string Cp { get; set; } = default!;
 
 	[JsonProperty("@pop", Required = Required.Always)]
 	public Pop Pop { get; set; }
 
 	[JsonProperty("adresse", Required = Required.Always)]
-	public string Adresse { get; set; }
+	public string Adresse { get; set; } = default!;
 
-	[JsonProperty("ville")] public string Ville { get; set; }
+	[JsonProperty("ville")] public string Ville { get; set; } = default!;
 
 	[JsonProperty("horaires", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-	public Horaires Horaires { get; set; }
+	public Horaires Horaires { get; set; } = default!;
 
 	[JsonProperty("services", Required = Required.AllowNull)]
-	public Services Services { get; set; }
+	public Services Services { get; set; } = default!;
 
 	[JsonProperty("prix", NullValueHandling = NullValueHandling.Ignore)]
 	public PrixUnion? Prix { get; set; }
@@ -55,10 +55,10 @@ public class Pdv
 public class Horaires
 {
 	[JsonProperty("@automate-24-24", Required = Required.Always)]
-	public string Automate2424 { get; set; }
+	public string Automate2424 { get; set; } = default!;
 
 	[JsonProperty("jour", Required = Required.Always)]
-	public List<Jour> Jour { get; set; }
+	public List<Jour> Jour { get; set; } = default!;
 }
 
 public class Jour
@@ -71,7 +71,7 @@ public class Jour
 	public JourNom Nom { get; set; }
 
 	[JsonProperty("@ferme", Required = Required.Always)]
-	public string Ferme { get; set; }
+	public string Ferme { get; set; } = default!;
 
 	[JsonProperty("horaire", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
 	public HoraireUnion? Horaire { get; set; }
@@ -80,10 +80,10 @@ public class Jour
 public class HoraireElement
 {
 	[JsonProperty("@ouverture", Required = Required.Always)]
-	public string Ouverture { get; set; }
+	public string Ouverture { get; set; } = default!;
 
 	[JsonProperty("@fermeture", Required = Required.Always)]
-	public string Fermeture { get; set; }
+	public string Fermeture { get; set; } = default!;
 }
 
 public class PrixElement
@@ -99,7 +99,7 @@ public class PrixElement
 	public DateTimeOffset Maj { get; set; }
 
 	[JsonProperty("@valeur", Required = Required.Always)]
-	public string Valeur { get; set; }
+	public string Valeur { get; set; } = default!;
 }
 
 public class Services
@@ -111,13 +111,13 @@ public class Services
 public class Xml
 {
 	[JsonProperty("@version", Required = Required.Always)]
-	public string Version { get; set; }
+	public string Version { get; set; } = default!;
 
 	[JsonProperty("@encoding", Required = Required.Always)]
-	public string Encoding { get; set; }
+	public string Encoding { get; set; } = default!;
 
 	[JsonProperty("@standalone", Required = Required.Always)]
-	public string Standalone { get; set; }
+	public string Standalone { get; set; } = default!;
 }
 
 public enum JourNom
@@ -187,12 +187,12 @@ public struct HoraireUnion
 
 	public static implicit operator HoraireUnion(HoraireElement HoraireElement)
 	{
-		return new HoraireUnion {HoraireElement = HoraireElement};
+		return new HoraireUnion { HoraireElement = HoraireElement };
 	}
 
 	public static implicit operator HoraireUnion(List<HoraireElement> HoraireElementArray)
 	{
-		return new HoraireUnion {HoraireElementArray = HoraireElementArray};
+		return new HoraireUnion { HoraireElementArray = HoraireElementArray };
 	}
 }
 
@@ -203,12 +203,12 @@ public struct PrixUnion
 
 	public static implicit operator PrixUnion(PrixElement PrixElement)
 	{
-		return new PrixUnion {PrixElement = PrixElement};
+		return new PrixUnion { PrixElement = PrixElement };
 	}
 
 	public static implicit operator PrixUnion(List<PrixElement> PrixElementArray)
 	{
-		return new PrixUnion {PrixElementArray = PrixElementArray};
+		return new PrixUnion { PrixElementArray = PrixElementArray };
 	}
 }
 
@@ -219,12 +219,12 @@ public struct ServiceUnion
 
 	public static implicit operator ServiceUnion(ServiceElement Enum)
 	{
-		return new ServiceUnion {Enum = Enum};
+		return new ServiceUnion { Enum = Enum };
 	}
 
 	public static implicit operator ServiceUnion(List<ServiceElement> StringArray)
 	{
-		return new ServiceUnion {StringArray = StringArray};
+		return new ServiceUnion { StringArray = StringArray };
 	}
 }
 
@@ -442,12 +442,12 @@ internal class HoraireUnionConverter : JsonConverter
 			case JsonToken.StartObject:
 				var objectValue = serializer.Deserialize<HoraireElement>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-				return new HoraireUnion {HoraireElement = objectValue};
+				return new HoraireUnion { HoraireElement = objectValue };
 #pragma warning restore CS8601 // Possible null reference assignment.
 			case JsonToken.StartArray:
 				var arrayValue = serializer.Deserialize<List<HoraireElement>>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-				return new HoraireUnion {HoraireElementArray = arrayValue};
+				return new HoraireUnion { HoraireElementArray = arrayValue };
 #pragma warning restore CS8601 // Possible null reference assignment.
 		}
 
@@ -491,12 +491,12 @@ internal class PrixUnionConverter : JsonConverter
 			case JsonToken.StartObject:
 				var objectValue = serializer.Deserialize<PrixElement>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-				return new PrixUnion {PrixElement = objectValue};
+				return new PrixUnion { PrixElement = objectValue };
 #pragma warning restore CS8601 // Possible null reference assignment.
 			case JsonToken.StartArray:
 				var arrayValue = serializer.Deserialize<List<PrixElement>>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-				return new PrixUnion {PrixElementArray = arrayValue};
+				return new PrixUnion { PrixElementArray = arrayValue };
 #pragma warning restore CS8601 // Possible null reference assignment.
 		}
 
@@ -611,70 +611,70 @@ internal class ServiceUnionConverter : JsonConverter
 				switch (stringValue)
 				{
 					case "Aire de camping-cars":
-						return new ServiceUnion {Enum = ServiceElement.AireDeCampingCars};
+						return new ServiceUnion { Enum = ServiceElement.AireDeCampingCars };
 					case "Automate CB 24/24":
-						return new ServiceUnion {Enum = ServiceElement.AutomateCb2424};
+						return new ServiceUnion { Enum = ServiceElement.AutomateCb2424 };
 					case "Bar":
-						return new ServiceUnion {Enum = ServiceElement.Bar};
+						return new ServiceUnion { Enum = ServiceElement.Bar };
 					case "Bornes électriques":
-						return new ServiceUnion {Enum = ServiceElement.BornesÉlectriques};
+						return new ServiceUnion { Enum = ServiceElement.BornesÉlectriques };
 					case "Boutique alimentaire":
-						return new ServiceUnion {Enum = ServiceElement.BoutiqueAlimentaire};
+						return new ServiceUnion { Enum = ServiceElement.BoutiqueAlimentaire };
 					case "Boutique non alimentaire":
-						return new ServiceUnion {Enum = ServiceElement.BoutiqueNonAlimentaire};
+						return new ServiceUnion { Enum = ServiceElement.BoutiqueNonAlimentaire };
 					case "Carburant additivé":
-						return new ServiceUnion {Enum = ServiceElement.CarburantAdditivé};
+						return new ServiceUnion { Enum = ServiceElement.CarburantAdditivé };
 					case "DAB (Distributeur automatique de billets)":
-						return new ServiceUnion {Enum = ServiceElement.DabDistributeurAutomatiqueDeBillets};
+						return new ServiceUnion { Enum = ServiceElement.DabDistributeurAutomatiqueDeBillets };
 					case "Douches":
-						return new ServiceUnion {Enum = ServiceElement.Douches};
+						return new ServiceUnion { Enum = ServiceElement.Douches };
 					case "Espace bébé":
-						return new ServiceUnion {Enum = ServiceElement.EspaceBébé};
+						return new ServiceUnion { Enum = ServiceElement.EspaceBébé };
 					case "GNV":
-						return new ServiceUnion {Enum = ServiceElement.Gnv};
+						return new ServiceUnion { Enum = ServiceElement.Gnv };
 					case "Lavage automatique":
-						return new ServiceUnion {Enum = ServiceElement.LavageAutomatique};
+						return new ServiceUnion { Enum = ServiceElement.LavageAutomatique };
 					case "Lavage manuel":
-						return new ServiceUnion {Enum = ServiceElement.LavageManuel};
+						return new ServiceUnion { Enum = ServiceElement.LavageManuel };
 					case "Laverie":
-						return new ServiceUnion {Enum = ServiceElement.Laverie};
+						return new ServiceUnion { Enum = ServiceElement.Laverie };
 					case "Location de véhicule":
-						return new ServiceUnion {Enum = ServiceElement.LocationDeVéhicule};
+						return new ServiceUnion { Enum = ServiceElement.LocationDeVéhicule };
 					case "Piste poids lourds":
-						return new ServiceUnion {Enum = ServiceElement.PistePoidsLourds};
+						return new ServiceUnion { Enum = ServiceElement.PistePoidsLourds };
 					case "Relais colis":
-						return new ServiceUnion {Enum = ServiceElement.RelaisColis};
+						return new ServiceUnion { Enum = ServiceElement.RelaisColis };
 					case "Restauration sur place":
-						return new ServiceUnion {Enum = ServiceElement.RestaurationSurPlace};
+						return new ServiceUnion { Enum = ServiceElement.RestaurationSurPlace };
 					case "Restauration à emporter":
-						return new ServiceUnion {Enum = ServiceElement.RestaurationÀEmporter};
+						return new ServiceUnion { Enum = ServiceElement.RestaurationÀEmporter };
 					case "Services réparation / entretien":
-						return new ServiceUnion {Enum = ServiceElement.ServicesRéparationEntretien};
+						return new ServiceUnion { Enum = ServiceElement.ServicesRéparationEntretien };
 					case "Station de gonflage":
-						return new ServiceUnion {Enum = ServiceElement.StationDeGonflage};
+						return new ServiceUnion { Enum = ServiceElement.StationDeGonflage };
 					case "Toilettes publiques":
-						return new ServiceUnion {Enum = ServiceElement.ToilettesPubliques};
+						return new ServiceUnion { Enum = ServiceElement.ToilettesPubliques };
 					case "Vente d'additifs carburants":
-						return new ServiceUnion {Enum = ServiceElement.VenteDAdditifsCarburants};
+						return new ServiceUnion { Enum = ServiceElement.VenteDAdditifsCarburants };
 					case "Vente de fioul domestique":
-						return new ServiceUnion {Enum = ServiceElement.VenteDeFioulDomestique};
+						return new ServiceUnion { Enum = ServiceElement.VenteDeFioulDomestique };
 					case "Vente de gaz domestique (Butane, Propane)":
-						return new ServiceUnion {Enum = ServiceElement.VenteDeGazDomestiqueButanePropane};
+						return new ServiceUnion { Enum = ServiceElement.VenteDeGazDomestiqueButanePropane };
 					case "Vente de pétrole lampant":
-						return new ServiceUnion {Enum = ServiceElement.VenteDePétroleLampant};
+						return new ServiceUnion { Enum = ServiceElement.VenteDePétroleLampant };
 					case "Wifi":
-						return new ServiceUnion {Enum = ServiceElement.Wifi};
+						return new ServiceUnion { Enum = ServiceElement.Wifi };
 				}
 
 				break;
 			case JsonToken.StartArray:
 				var arrayValue = serializer.Deserialize<List<ServiceElement>>(reader);
 #pragma warning disable CS8601 // Possible null reference assignment.
-				return new ServiceUnion {StringArray = arrayValue};
+				return new ServiceUnion { StringArray = arrayValue };
 #pragma warning restore CS8601 // Possible null reference assignment.
 		}
 
-		return new ServiceUnion {Enum = ServiceElement.Inconnu};
+		return new ServiceUnion { Enum = ServiceElement.Inconnu };
 	}
 
 	public override void WriteJson(JsonWriter writer, object? untypedValue, JsonSerializer serializer)

@@ -22,11 +22,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transport.Api.Db", "App\Db\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transport.Api.Web", "App\Web\Transport.Api.Web.csproj", "{0FF2058F-F09A-41DE-A77C-EAB037F2742D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Db.Update", "Tools\Db.Update\Db.Update.csproj", "{7AD5B121-6462-4983-8CBF-3CA065160C6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Db.Update.Stats", "Tools\Db.Update\Db.Update.Stats.csproj", "{7AD5B121-6462-4983-8CBF-3CA065160C6C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Db.Cache", "Tools\Db.Cache\Db.Cache.csproj", "{E14A5900-5C80-4FA8-94E5-954FFBAC98C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Db.Import", "Tools\Db.Import\Db.Import.csproj", "{358CB9BE-10EE-429F-AD91-202DDA8F5570}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Db.Import.Cache", "Tools\Db.Import\Db.Import.Cache.csproj", "{358CB9BE-10EE-429F-AD91-202DDA8F5570}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

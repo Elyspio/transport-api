@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Services;
-using Transport.Api.Abstractions.Models;
 using Transport.Api.Abstractions.Transports.Location;
 
 namespace Transport.Api.Web.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/locations")]
 [ApiController]
 public class LocationsController : ControllerBase
 {
@@ -21,27 +19,11 @@ public class LocationsController : ControllerBase
 		this.databaseUpdateService = databaseUpdateService;
 	}
 
-	[HttpGet("regions/{region}/departements")]
-	[SwaggerResponse(200, Type = typeof(List<Departement>))]
-	public async Task<IActionResult> GetDepartementsByRegion(Region region)
+	[HttpGet]
+	[SwaggerResponse(200, Type = typeof(List<Region>))]
+	public async Task<IActionResult> GetAll()
 	{
-		return Ok(await locationService.GetDepartements(region));
-	}
-
-
-	[HttpGet("departements")]
-	[SwaggerResponse(200, Type = typeof(List<Departement>))]
-	public async Task<IActionResult> GetAllDepartements()
-	{
-		return Ok(await locationService.GetAllDepartements());
-	}
-
-
-	[HttpGet("regions")]
-	[SwaggerResponse(200, Type = typeof(List<RegionTransport>))]
-	public async Task<IActionResult> GetRegions()
-	{
-		return Ok(await locationService.GetRegions());
+		return Ok(await locationService.GetMergedData());
 	}
 
 

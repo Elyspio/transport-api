@@ -3,7 +3,7 @@ using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Adapters.FuelStation;
 using Transport.Api.Db.Repositories;
 
-namespace Transport.Api.Db.Update.Services;
+namespace Db.Update.Stats.Services;
 
 internal class PriceUpdateService
 {
@@ -22,7 +22,7 @@ internal class PriceUpdateService
 	{
 		await AnsiConsole.Progress()
 			.AutoClear(false)
-			.Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+			.Columns(new TaskDescriptionColumn { Alignment = Justify.Left }, new ElapsedTimeColumn(), new SpinnerColumn())
 			.StartAsync(async ctx =>
 				{
 					var removeTask = ctx.AddTask($"Removing {year}'s prices");
@@ -78,7 +78,7 @@ internal class PriceUpdateService
 	{
 		await AnsiConsole.Progress()
 			.AutoClear(false)
-			.Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+			.Columns(new TaskDescriptionColumn { Alignment = Justify.Left }, new ElapsedTimeColumn(), new SpinnerColumn())
 			.StartAsync(async ctx =>
 				{
 					var clearTask = ctx.AddTask("Clearing fuel and station collections");

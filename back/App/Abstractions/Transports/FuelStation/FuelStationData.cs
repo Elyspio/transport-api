@@ -19,11 +19,11 @@ public class FuelStationData
 
 	[Required] public long Id { get; set; }
 
-	[Required] public Location Location { get; set; }
+	[Required] public FuelStationLocation Location { get; set; } = null!;
 
 
-	[Required] public Prices Prices { get; set; }
+	[Required] public Prices Prices { get; set; } = null!;
 
 
-	[Required] public List<FuelStationServiceType> Services { get; set; }
+	[Required] public List<FuelStationServiceType> Services { get; set; } = null!;
 }

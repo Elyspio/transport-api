@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Transport.Api.Abstractions.Interfaces.Repositories;
+using Transport.Api.Abstractions.Interfaces.Repositories.Location;
 using Transport.Api.Abstractions.Interfaces.Services;
-using Transport.Api.Abstractions.Models;
 using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Adapters.FuelStation;
 using Transport.Api.Adapters.Locations;
@@ -10,22 +10,26 @@ namespace Transport.Api.Core.Services;
 
 public class DatabaseUpdateService : IDatabaseUpdateService
 {
-	private readonly ILocationRepository departementRepository;
+	private readonly ICityRepository cityRepository;
+	private readonly IDepartementRepository departementRepository;
 	private readonly FuelStationClient fuelStationClient;
 	private readonly IFuelStationRepository fuelStationRepository;
 	private readonly LocationClient locationClient;
 	private readonly ILogger<DatabaseUpdateService> logger;
 	private readonly IPriceRepository priceRepository;
+	private readonly IRegionRepository regionRepository;
 
 	public DatabaseUpdateService(IPriceRepository priceRepository, IFuelStationRepository fuelStationRepository, FuelStationClient fuelStationClient,
-		ILogger<DatabaseUpdateService> logger, ILocationRepository departementRepository, LocationClient locationClient)
+		ILogger<DatabaseUpdateService> logger, IRegionRepository regionRepository, LocationClient locationClient, IDepartementRepository departementRepository, ICityRepository cityRepository)
 	{
 		this.priceRepository = priceRepository;
 		this.fuelStationRepository = fuelStationRepository;
 		this.fuelStationClient = fuelStationClient;
 		this.logger = logger;
-		this.departementRepository = departementRepository;
+		this.regionRepository = regionRepository;
 		this.locationClient = locationClient;
+		this.departementRepository = departementRepository;
+		this.cityRepository = cityRepository;
 	}
 
 	public async Task RefreshYearly(int year)
@@ -41,22 +45,27 @@ public class DatabaseUpdateService : IDatabaseUpdateService
 
 	public async Task RefreshLocations()
 	{
+		await regionRepository.Clear();
 		await departementRepository.Clear();
+		await cityRepository.Clear();
 
 		var regions = await locationClient.GetRegions();
 		var departements = await locationClient.GetDepartements();
+		var rawCities = await locationClient.GetCities();
 
-		await Task.WhenAll(regions.Select(region =>
-				{
-					var deps = departements.Where(departement => departement.CodeRegion == region.Code)
-						.Select(departement => new Departement {Code = departement.Code, Name = departement.Name})
-						.ToList();
 
-					return departementRepository.Add(region.Nom, region.Code, deps);
-				}
-			)
-			.ToArray()
-		);
+		var regionEntities = await regionRepository.Add(regions.Select(region => (region.Nom, region.Code)));
+		var departmentEntities = await departementRepository.Add(departements.Select(dep => (dep.Name, dep.Code, regionEntities.First(region => region.Code == dep.CodeRegion).Id)));
+
+		var cities = rawCities.Select(city =>
+		{
+			Console.WriteLine($"length {city.CodesPostaux.Count}");
+			var postaleCode = city.CodesPostaux.First();
+			return (city.Nom, postaleCode, departmentEntities.First(dep => postaleCode.StartsWith(dep.Code)).Id);
+		}).ToList();
+
+
+		await cityRepository.Add(cities);
 	}
 
 

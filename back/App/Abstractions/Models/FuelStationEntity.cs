@@ -6,9 +6,9 @@ namespace Transport.Api.Abstractions.Models;
 
 public class FuelStationEntity
 {
-	[BsonId] public long Id { get; set; }
+	[BsonId] public long Id { get; set; } = default!;
 
-	public Location Location { get; set; }
+	public FuelStationLocation Location { get; set; } = default!;
 
-	public List<FuelStationServiceType> Services { get; set; }
+	public List<FuelStationServiceType> Services { get; set; } = default!;
 }

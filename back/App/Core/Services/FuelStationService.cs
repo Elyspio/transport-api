@@ -54,8 +54,8 @@ public class FuelStationService : IFuelStationService
 				var prices = allPrices.Where(p => p.IdStation == station.Id).ToList();
 
 				foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-				foreach (var price in prices.Where(p => p.Fuel == fuel))
-					data.Prices[fuel].Add(new FuelPriceHistory {Date = price.Date, Value = price.Value});
+					foreach (var price in prices.Where(p => p.Fuel == fuel))
+						data.Prices[fuel].Add(new FuelPriceHistory { Date = price.Date, Value = price.Value });
 
 				datas.Add(data);
 			}

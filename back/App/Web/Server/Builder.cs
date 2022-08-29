@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
@@ -8,6 +6,8 @@ using Newtonsoft.Json.Converters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Net;
+using System.Text.Json.Serialization;
 using Transport.Api.Abstractions.Common.Helpers;
 using Transport.Api.Abstractions.Interfaces.Injections;
 using Transport.Api.Adapters.Injections;
@@ -49,11 +49,11 @@ public class ServerBuilder
 				);
 			}
 		);
-
 		// Inject Adapters
 		builder.Services.AddModule<AdapterModule>(builder.Configuration);
 		builder.Services.AddModule<CoreModule>(builder.Configuration);
 		builder.Services.AddModule<DatabaseModule>(builder.Configuration);
+
 
 		// Inject Services
 		builder.Services.Scan(scan => scan
@@ -77,9 +77,9 @@ public class ServerBuilder
 					o.OutputFormatters.RemoveType<StringOutputFormatter>();
 
 					o.CacheProfiles.Add("Default30", new CacheProfile
-						{
-							Duration = 30
-						}
+					{
+						Duration = 30
+					}
 					);
 				}
 			)
@@ -92,12 +92,12 @@ public class ServerBuilder
 			{
 				if (builder.Environment.IsProduction())
 					options.AddServer(new OpenApiServer
-						{
-							Url = "/transport"
-						}
+					{
+						Url = "/transport"
+					}
 					);
 
-				options.SwaggerDoc("v1", new OpenApiInfo {Title = "Transport API", Version = "1"});
+				options.SwaggerDoc("v1", new OpenApiInfo { Title = "Transport API", Version = "1" });
 
 				options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
 			}

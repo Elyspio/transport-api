@@ -16,28 +16,14 @@ public class FuelStationRepository : BaseRepository<FuelStationEntity>, IFuelSta
 	{
 	}
 
-	public async Task<FuelStationEntity> Add(long id, Location location, List<FuelStationServiceType> services)
-	{
-		var elem = new FuelStationEntity
-		{
-			Location = location,
-			Id = id,
-			Services = services
-		};
-
-		await EntityCollection.InsertOneAsync(elem);
-
-		return elem;
-	}
-
 	public async Task<List<FuelStationEntity>> Add(IEnumerable<FuelStationData> stations)
 	{
 		var entities = stations.Select(s => new FuelStationEntity
-				{
-					Id = s.Id,
-					Location = s.Location,
-					Services = s.Services
-				}
+		{
+			Id = s.Id,
+			Location = s.Location,
+			Services = s.Services
+		}
 			)
 			.ToList();
 
@@ -65,5 +51,19 @@ public class FuelStationRepository : BaseRepository<FuelStationEntity>, IFuelSta
 	public async Task Clear()
 	{
 		await EntityCollection.Database.DropCollectionAsync(CollectionName);
+	}
+
+	public async Task<FuelStationEntity> Add(long id, FuelStationLocation location, List<FuelStationServiceType> services)
+	{
+		var elem = new FuelStationEntity
+		{
+			Location = location,
+			Id = id,
+			Services = services
+		};
+
+		await EntityCollection.InsertOneAsync(elem);
+
+		return elem;
 	}
 }

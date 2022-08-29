@@ -1,12 +1,12 @@
 ﻿using Authentication.CLI.Extensions;
 using Authentication.CLI.Services;
+using Db.Import.Cache.Configs;
+using Db.Import.Cache.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Adapters;
-using Transport.Api.Db.Cache.Configs;
-using Transport.Api.Db.Cache.Services;
 using Transport.Api.Db.Repositories;
 
 var token = "";
@@ -33,6 +33,7 @@ var host = Host.CreateDefaultBuilder(args)
 
 
 var scope = host.Services.CreateScope();
+
 
 var authCli = scope.ServiceProvider.GetRequiredService<AuthenticationCliService>();
 

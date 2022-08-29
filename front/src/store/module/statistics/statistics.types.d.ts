@@ -1,4 +1,4 @@
-import { Departement, Prices, RegionTransport, Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
+import { City, Departement, Prices, Region, Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
 
 export type FuelTypes = keyof Prices;
 export type DataType = Record<FuelTypes, number> & {
@@ -7,7 +7,7 @@ export type DataType = Record<FuelTypes, number> & {
 
 export interface StatisticsTheme {
 	selected: {
-		region: RegionTransport["id"] | "all";
+		region: Region["id"] | "all";
 		fuels: FuelTypes[];
 		departement: Departement["code"] | "all";
 		timeInterval: StatsTimeType;
@@ -15,8 +15,9 @@ export interface StatisticsTheme {
 	};
 	raw: Statistic[];
 	data: DataType[];
-	regions: RegionTransport[];
+	locations: Region[];
 	departements: Departement[];
+	cities: City[];
 }
 
 export type SelectedSwitches = "yAxisFrom0";

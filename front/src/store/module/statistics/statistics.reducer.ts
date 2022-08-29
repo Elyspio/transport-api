@@ -1,14 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
-import {
-	getStatistics,
-	setDepartements,
-	setRegions,
-	setSelectedDepartement,
-	setSelectedFuels,
-	setSelectedRegion,
-	setSelectedTimeInterval,
-	toggleSwitch,
-} from "./statistics.action";
+import { getLocations, getStatistics, setSelectedDepartement, setSelectedFuels, setSelectedRegion, setSelectedTimeInterval, toggleSwitch } from "./statistics.action";
 import { Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
 import { DataType, StatisticsTheme } from "./statistics.types";
 
@@ -24,7 +15,8 @@ const defaultState: StatisticsTheme = {
 			yAxisFrom0: false,
 		},
 	},
-	regions: [],
+	cities: [],
+	locations: [],
 	departements: [],
 };
 
@@ -60,7 +52,7 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 		const {
 			selected: { fuels, region: selectedRegion, departement },
 			raw,
-			regions,
+			locations,
 		} = state;
 		let arr = [] as DataType[];
 		const statsSorted = [...raw].sort((s1, s2) => (new Date(s1.time).getTime() < new Date(s2.time).getTime() ? -1 : 1));
@@ -72,7 +64,7 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 				newData = getRegion(stat, fuels, selectedRegion, departement);
 			} else {
 				let newDatas: DataType[] = [];
-				regions.forEach((region) => newDatas.push(getRegion(stat, fuels, region.id, departement)));
+				locations.forEach((region) => newDatas.push(getRegion(stat, fuels, region.id, departement)));
 				newDatas = newDatas.filter((data) => fuels.every((fuel) => Object.keys(data).includes(fuel)));
 
 				newData = {
@@ -88,11 +80,7 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 				arr.push(newData);
 			}
 		});
-		//
-		// if(departement) {
-		// 	arr = arr.filter(data  => data.)
-		// }
-
+	
 		state.data = arr;
 	}
 
@@ -107,14 +95,20 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 		updateData(state);
 	});
 
+	addCase(getLocations.fulfilled, (state, action) => {
+		state.locations = action.payload;
+	});
+
 	addCase(setSelectedRegion, (state, { payload }) => {
 		state.selected.region = payload;
 		state.selected.departement = "all";
+		state.departements = state.locations.find((loc) => loc.id === payload)?.departements ?? [];
 		updateData(state);
 	});
 
 	addCase(setSelectedDepartement, (state, { payload }) => {
 		state.selected.departement = payload;
+		state.cities = state.departements.find((dep) => dep.code === payload)?.cities ?? [];
 		updateData(state);
 	});
 
@@ -126,15 +120,6 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 	addCase(setSelectedTimeInterval, (state, { payload }) => {
 		state.selected.timeInterval = payload;
 		updateData(state);
-	});
-
-	addCase(setDepartements, (state, { payload }) => {
-		state.departements = payload.sort((dep1, dep2) => dep1.code.localeCompare(dep2.code));
-		updateData(state);
-	});
-
-	addCase(setRegions, (state, { payload }) => {
-		state.regions = payload.sort((dep1, dep2) => dep1.label.localeCompare(dep2.label));
 	});
 
 	addCase(toggleSwitch, (state, { payload }) => {

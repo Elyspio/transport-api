@@ -8,7 +8,7 @@ public interface IStatsService
 {
 	public Task RefreshStats();
 
-	public Task RefreshWeeklyStats(int year, ProgressTask task);
+	public Task RefreshWeeklyStats(int year, ProgressTask? task = null);
 
 
 	public Task RefreshDailyStats(bool clear = false);

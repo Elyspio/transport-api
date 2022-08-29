@@ -1,6 +1,6 @@
 ﻿namespace Transport.Api.Abstractions.Enums;
 
-public enum Region
+public enum RegionId
 {
 	AuvergneRhoneAlpes,
 	BourgogneFrancheComte,

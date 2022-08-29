@@ -3,11 +3,17 @@ using Transport.Api.Abstractions.Enums;
 
 namespace Transport.Api.Abstractions.Transports.Location;
 
-public class RegionTransport
+public class Region
 {
-	[Required] public Region Id { get; set; }
+	[Required]
+	public RegionId Id { get; set; }
 
-	[Required] public string Code { get; set; }
+	[Required]
+	public string Code { get; set; }
 
-	[Required] public string Label { get; set; }
+	[Required]
+	public string Label { get; set; }
+
+	[Required]
+	public List<Departement> Departements { get; set; }
 }

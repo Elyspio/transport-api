@@ -18,7 +18,7 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 						return new FuelStationData
 						{
 							Id = pdv.Id,
-							Location = new Location
+							Location = new FuelStationLocation
 							{
 								Address = pdv.Adresse,
 								Latitude = (double) decimal.Parse(pdv.Latitude, CultureInfo.InvariantCulture) / 100000.0,
@@ -30,7 +30,7 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 							Prices = GetPrices(pdv)
 						};
 					}
-					catch (Exception e)
+					catch (Exception)
 					{
 						//Console.Error.WriteLine(e);
 						return null;
@@ -38,7 +38,7 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 				}
 			)
 			.Where(pdv => pdv != null);
-		return pdvs.ToList();
+		return pdvs.ToList()!;
 	}
 
 	private Prices GetPrices(Pdv pdv)
@@ -53,50 +53,50 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 					{
 						case FuelType.E10:
 							prices.E10.Add(new FuelPriceHistory
-								{
-									Date = date,
-									Value = val
-								}
+							{
+								Date = date,
+								Value = val
+							}
 							);
 							break;
 						case FuelType.E85:
 							prices.E85.Add(new FuelPriceHistory
-								{
-									Date = date,
-									Value = val
-								}
+							{
+								Date = date,
+								Value = val
+							}
 							);
 							break;
 						case FuelType.Gazole:
 							prices.Gazole.Add(new FuelPriceHistory
-								{
-									Date = date,
-									Value = val
-								}
+							{
+								Date = date,
+								Value = val
+							}
 							);
 							break;
 						case FuelType.GpLc:
 							prices.GpLc.Add(new FuelPriceHistory
-								{
-									Date = date,
-									Value = val
-								}
+							{
+								Date = date,
+								Value = val
+							}
 							);
 							break;
 						case FuelType.Sp95:
 							prices.Sp95.Add(new FuelPriceHistory
-								{
-									Date = date,
-									Value = val
-								}
+							{
+								Date = date,
+								Value = val
+							}
 							);
 							break;
 						case FuelType.Sp98:
 							prices.Sp98.Add(new FuelPriceHistory
-								{
-									Date = date,
-									Value = val
-								}
+							{
+								Date = date,
+								Value = val
+							}
 							);
 							break;
 					}

@@ -14,10 +14,10 @@ public abstract class BaseRepository<T>
 	protected readonly MongoContext context;
 	private readonly ILogger<BaseRepository<T>> logger;
 
-	protected BaseRepository(IConfiguration configuration, ILogger<BaseRepository<T>> logger)
+	protected BaseRepository(IConfiguration configuration, ILogger<BaseRepository<T>> logger, string name = null)
 	{
 		context = new MongoContext(configuration);
-		CollectionName = typeof(T).Name[..^"Entity".Length];
+		CollectionName = name ?? typeof(T).Name[..^"Entity".Length];
 		this.logger = logger;
 		var pack = new ConventionPack
 		{
@@ -31,19 +31,31 @@ public abstract class BaseRepository<T>
 	protected IMongoCollection<T> EntityCollection => context.MongoDatabase.GetCollection<T>(CollectionName);
 
 
-	protected void CreateIndexIfMissing(string property)
+	protected void CreateIndexIfMissing(ICollection<string> properties, bool unique = false)
 	{
+		var indexName = string.Join("-", properties);
 		var indexes = EntityCollection.Indexes.List().ToList();
-		var foundIndex = indexes.Any(index => index["key"].AsBsonDocument.Names.Contains(property));
+		var foundIndex = indexes.Any(index => index["key"].AsBsonDocument.Names.Contains(indexName));
 
-		var possibleIndexes = Builders<T>.IndexKeys;
-		var indexModel = new CreateIndexModel<T>(possibleIndexes.Ascending(property));
+		var indexBuilder = Builders<T>.IndexKeys;
+
+		var newIndex = indexBuilder.Combine(properties.Select(property => indexBuilder.Ascending(property)));
+
+
+		var options = new CreateIndexOptions
+		{
+			Unique = unique,
+			Name = indexName
+		};
+
+		var indexModel = new CreateIndexModel<T>(newIndex, options);
+
 
 		if (!foundIndex)
 		{
-			logger.LogWarning($"Property {CollectionName}.{property} is not indexed, creating one");
+			logger.LogWarning($"Property {CollectionName}.{indexName} is not indexed, creating one");
 			EntityCollection.Indexes.CreateOne(indexModel);
-			logger.LogWarning($"Property {CollectionName}.{property} is now indexed");
+			logger.LogWarning($"Property {CollectionName}.{indexName} is now indexed");
 		}
 	}
 }
@@ -55,8 +67,8 @@ public class EnumAsStringSerializationProvider : BsonSerializationProviderBase
 		if (!type.IsEnum) return null;
 
 		var enumSerializerType = typeof(EnumSerializer<>).MakeGenericType(type);
-		var enumSerializerConstructor = enumSerializerType.GetConstructor(new[] {typeof(BsonType)});
-		var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[] {BsonType.String});
+		var enumSerializerConstructor = enumSerializerType.GetConstructor(new[] { typeof(BsonType) });
+		var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[] { BsonType.String });
 
 		return enumSerializer;
 	}

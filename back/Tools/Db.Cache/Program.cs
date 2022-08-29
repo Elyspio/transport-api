@@ -2,6 +2,8 @@
 
 using Authentication.CLI.Extensions;
 using Authentication.CLI.Services;
+using Db.Cache.Configs;
+using Db.Cache.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,8 +13,6 @@ using Newtonsoft.Json;
 using Spectre.Console;
 using Transport.Api.Adapters;
 using Transport.Api.Adapters.FuelStation;
-using Transport.Api.Db.Cache.Configs;
-using Transport.Api.Db.Cache.Services;
 using Transport.Api.Db.Repositories;
 
 AnsiConsole.Write(new FigletText("Database Cache").LeftAligned().Color(Color.SeaGreen1_1));

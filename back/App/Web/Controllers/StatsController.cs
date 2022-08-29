@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Transports;
@@ -29,18 +29,18 @@ public class StatisticsController : ControllerBase
 
 	[HttpPatch("refresh/weekly/")]
 	[SwaggerResponse(204)]
-	public async Task<IActionResult> RefreshWeeklyStats([Required] bool clear = true, int? year = null)
+	public async Task<IActionResult> RefreshWeeklyStats([Required] int year)
 	{
-		await statsService.RefreshWeeklyStats(clear, year);
+		await statsService.RefreshWeeklyStats(year);
 		return NoContent();
 	}
 
 
 	[HttpPatch("refresh/daily")]
 	[SwaggerResponse(204)]
-	public async Task<IActionResult> RefreshDailyStats([Required] bool clear = true)
+	public async Task<IActionResult> RefreshDailyStats()
 	{
-		await statsService.RefreshDailyStats(clear);
+		await statsService.RefreshDailyStats();
 		return NoContent();
 	}
 

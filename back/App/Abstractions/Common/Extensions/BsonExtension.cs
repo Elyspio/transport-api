@@ -6,7 +6,7 @@ public static class BsonExtension
 {
 	public static Guid AsGuid(this ObjectId oid)
 	{
-		var bytes = oid.ToByteArray().Concat(new byte[] {5, 5, 5, 5}).ToArray();
+		var bytes = oid.ToByteArray().Concat(new byte[] { 5, 5, 5, 5 }).ToArray();
 		var gid = new Guid(bytes);
 		return gid;
 	}

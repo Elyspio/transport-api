@@ -62,20 +62,20 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 		var entities = new List<PriceEntity>();
 
 		foreach (var station in stations)
-		foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-		{
-			var prices = station.Prices[fuel];
+			foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
+			{
+				var prices = station.Prices[fuel];
 
-			foreach (var price in prices)
-				entities.Add(new PriceEntity
+				foreach (var price in prices)
+					entities.Add(new PriceEntity
 					{
 						IdStation = station.Id,
 						Fuel = fuel,
 						Value = price.Value / 1000,
 						Date = price.Date
 					}
-				);
-		}
+					);
+			}
 
 		await EntityCollection.InsertManyAsync(entities);
 
@@ -107,7 +107,7 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 		}).ToList();
 
 
-		await EntityCollection.InsertManyAsync(entities, new InsertManyOptions {IsOrdered = false});
+		await EntityCollection.InsertManyAsync(entities, new InsertManyOptions { IsOrdered = false });
 
 
 		return entities;
@@ -132,7 +132,7 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 
 	private void InitIndexes()
 	{
-		CreateIndexIfMissing(nameof(PriceEntity.IdStation));
-		CreateIndexIfMissing(nameof(PriceEntity.Date));
+		CreateIndexIfMissing(new List<string> { nameof(PriceEntity.IdStation), nameof(PriceEntity.Date) });
+		CreateIndexIfMissing(new List<string> { nameof(PriceEntity.Date) });
 	}
 }

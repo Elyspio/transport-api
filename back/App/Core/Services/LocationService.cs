@@ -1,41 +1,26 @@
-﻿using Transport.Api.Abstractions.Enums;
-using Transport.Api.Abstractions.Interfaces.Repositories;
+﻿using Transport.Api.Abstractions.Interfaces.Repositories.Location;
 using Transport.Api.Abstractions.Interfaces.Services;
-using Transport.Api.Abstractions.Models;
 using Transport.Api.Abstractions.Transports.Location;
+using Transport.Api.Core.Assemblers;
 
 namespace Transport.Api.Core.Services;
 
 public class LocationService : ILocationService
 {
-	private readonly ILocationRepository locationRepository;
+	private readonly LocationAssembler locationAssembler = new();
 
-	public LocationService(ILocationRepository locationRepository)
+	private readonly ILocationViewRepository locationViewRepository;
+
+
+	public LocationService(ILocationViewRepository locationViewRepository)
 	{
-		this.locationRepository = locationRepository;
+		this.locationViewRepository = locationViewRepository;
 	}
 
-	public async Task<List<Departement>> GetDepartements(Region region)
-	{
-		return await locationRepository.GetDepartements(region);
-	}
 
-	public async Task<List<Departement>> GetAllDepartements()
+	public async Task<List<Region>> GetMergedData()
 	{
-		return await locationRepository.GetAllDepartements();
-	}
-
-	public async Task<List<RegionTransport>> GetRegions()
-	{
-		var regions = await locationRepository.GetRegions();
-
-		return regions.Select(entity => new RegionTransport
-				{
-					Id = entity.Id,
-					Code = entity.Code,
-					Label = entity.Label
-				}
-			)
-			.ToList();
+		var data = await locationViewRepository.GetAll();
+		return locationAssembler.Convert(data);
 	}
 }

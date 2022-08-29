@@ -1,6 +1,5 @@
 import { inject, injectable } from "inversify";
 import { Log } from "../utils/decorators/logger";
-import { Region } from "../apis/backend/generated";
 import { getLogger } from "../utils/logger";
 import { BackendApiClient } from "../apis/backend";
 import { BaseService } from "./base.service";
@@ -13,17 +12,7 @@ export class LocationsService extends BaseService {
 	private client!: BackendApiClient;
 
 	@Log.service()
-	getRegions() {
-		return this.client.clients.locations.getRegions().then(this.extractData);
-	}
-
-	@Log.service()
-	getDepartements(region: Region) {
-		return this.client.clients.locations.getDepartementsByRegion(region).then(this.extractData);
-	}
-
-	@Log.service()
-	getAllDepartements() {
-		return this.client.clients.locations.getAllDepartements().then(this.extractData);
+	getLocations() {
+		return this.client.clients.locations.getAll().then(this.extractData);
 	}
 }

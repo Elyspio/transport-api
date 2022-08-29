@@ -6,7 +6,7 @@ namespace Transport.Api.Abstractions.Interfaces.Repositories;
 
 public interface IFuelStationRepository
 {
-	Task<FuelStationEntity> Add(long id, Location location, List<FuelStationServiceType> services);
+	Task<FuelStationEntity> Add(long id, FuelStationLocation location, List<FuelStationServiceType> services);
 	Task<List<FuelStationEntity>> Add(IEnumerable<FuelStationData> stations);
 	Task<List<long>> GetAllIds();
 

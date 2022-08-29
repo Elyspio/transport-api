@@ -1,14 +1,14 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Spectre.Console;
+using System.Collections.Concurrent;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Transports.FuelStation;
 using Transport.Api.Adapters;
 using Transport.Api.Adapters.FuelStation;
 
-namespace Transport.Api.Db.Cache.Services;
+namespace Db.Cache.Services;
 
 internal class PriceCacheService
 {
@@ -50,12 +50,15 @@ internal class PriceCacheService
 		return converted;
 	}
 
-
+	/// <summary>
+	/// </summary>
+	/// <param name="years"></param>
+	/// <returns></returns>
 	public async Task<FileData> Create(List<int> years)
 	{
 		return await AnsiConsole.Progress()
 			.AutoClear(false)
-			.Columns(new TaskDescriptionColumn {Alignment = Justify.Left}, new ElapsedTimeColumn(), new SpinnerColumn())
+			.Columns(new TaskDescriptionColumn { Alignment = Justify.Left }, new ElapsedTimeColumn(), new SpinnerColumn())
 			.StartAsync(async ctx =>
 			{
 				List<List<FuelStationData>>? allRawStations;
@@ -63,7 +66,7 @@ internal class PriceCacheService
 				{
 					var splitData = new ConcurrentBag<List<FuelStationData>>();
 
-					await Parallel.ForEachAsync(years, new ParallelOptions {MaxDegreeOfParallelism = 8}, async (year, _) =>
+					await Parallel.ForEachAsync(years, new ParallelOptions { MaxDegreeOfParallelism = 8 }, async (year, _) =>
 					{
 						var stations = await Fetch(ctx, year);
 						splitData.Add(stations);
@@ -90,8 +93,8 @@ internal class PriceCacheService
 							if (allStations.TryGetValue(pdv.Id, out var item))
 							{
 								foreach (Fuel fuel in Enum.GetValues(typeof(Fuel)))
-								foreach (var price in pdv.Prices[fuel])
-									item.Prices[fuel].Add(price);
+									foreach (var price in pdv.Prices[fuel])
+										item.Prices[fuel].Add(price);
 								var set = new HashSet<FuelStationServiceType>();
 								item.Services.ForEach(service => set.Add(service));
 								pdv.Services.ForEach(service => set.Add(service));
@@ -123,7 +126,7 @@ internal class PriceCacheService
 
 				using (var fileTemp = File.CreateText(tempFile))
 				{
-					var serializer = new JsonSerializer {Converters = {new StringEnumConverter()}};
+					var serializer = new JsonSerializer { Converters = { new StringEnumConverter() } };
 					serializer.Serialize(fileTemp, merged);
 				}
 

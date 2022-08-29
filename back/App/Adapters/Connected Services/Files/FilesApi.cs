@@ -21,9 +21,9 @@ using Newtonsoft.Json;
 #pragma warning disable 8073 // Disable "CS8073 The result of the expression is always 'false' since a value of type 'T' is never equal to 'null' of type 'T?'"
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 
-namespace Transport.Api.Adapters
-{
-	[GeneratedCode("NSwag", "13.14.8.0 (NJsonSchema v10.5.2.0 (Newtonsoft.Json v13.0.1.0))")]
+namespace Transport.Api.Adapters;
+
+[GeneratedCode("NSwag", "13.14.8.0 (NJsonSchema v10.5.2.0 (Newtonsoft.Json v13.0.1.0))")]
     public partial class PublicFilesClient 
     {
         private HttpClient _httpClient;
@@ -1737,7 +1737,6 @@ namespace Transport.Api.Adapters
         }
     }
 
-}
 
 #pragma warning restore 1591
 #pragma warning restore 1573

@@ -1,9 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System.Globalization;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Spectre.Console;
+using System.Collections.Concurrent;
+using System.Globalization;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Repositories;
+using Transport.Api.Abstractions.Interfaces.Repositories.Location;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Models;
 using Transport.Api.Abstractions.Transports;
@@ -14,30 +15,38 @@ namespace Transport.Api.Core.Services;
 public class StatsService : IStatsService
 {
 	private readonly ICacheService cacheService;
+	private readonly ICityRepository cityRepository;
+	private readonly IDepartementRepository departementRepository;
 	private readonly IFuelStationRepository fuelStationRepository;
-	private readonly ILocationRepository locationRepository;
 	private readonly ILogger<StatsService> logger;
 	private readonly IPriceRepository priceRepository;
+	private readonly IRegionRepository regionRepository;
 	private readonly IStatisticRepository statisticRepository;
+
 	private readonly StatsAssembler statsAssembler = new();
 
-	public StatsService(ILogger<StatsService> logger, IFuelStationRepository fuelStationRepository, ILocationRepository locationRepository, IPriceRepository priceRepository,
-		IStatisticRepository statisticRepository, ICacheService cacheService)
+	public StatsService(ILogger<StatsService> logger, IFuelStationRepository fuelStationRepository, IRegionRepository regionRepository,
+		IPriceRepository priceRepository,
+		IStatisticRepository statisticRepository, ICacheService cacheService, IDepartementRepository departementRepository, ICityRepository cityRepository)
 	{
 		this.fuelStationRepository = fuelStationRepository;
-		this.locationRepository = locationRepository;
+		this.regionRepository = regionRepository;
 		this.priceRepository = priceRepository;
 		this.statisticRepository = statisticRepository;
 		this.cacheService = cacheService;
+		this.departementRepository = departementRepository;
+		this.cityRepository = cityRepository;
 		this.logger = logger;
 	}
 
 	public async Task RefreshStats()
 	{
+		await Task.Delay(10);
+		throw new NotImplementedException();
 	}
 
 
-	public async Task RefreshWeeklyStats(int year, ProgressTask ctx)
+	public async Task RefreshWeeklyStats(int year, ProgressTask? ctx)
 	{
 		await statisticRepository.ClearWeekly(year);
 
@@ -50,7 +59,7 @@ public class StatsService : IStatsService
 			lock (locker)
 			{
 				progress += 1;
-				ctx.Value = progress;
+				if (ctx != default) ctx.Value = progress;
 			}
 		});
 	}
@@ -69,13 +78,13 @@ public class StatsService : IStatsService
 				var startDate = lastMonth.AddDays(day);
 				var endDate = startDate.AddDays(1);
 
-				logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
+				//logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
 
 				var infos = await CalculateBetweenDates(startDate, endDate);
 
 				await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
 
-				logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
+				//logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
 			}
 		);
 	}
@@ -95,6 +104,7 @@ public class StatsService : IStatsService
 
 	public async Task<List<Statistic>> GetDailyStats(StatsTimeType statsTimeType)
 	{
+		await Task.Delay(1);
 		throw new NotImplementedException();
 	}
 
@@ -118,7 +128,7 @@ public class StatsService : IStatsService
 	/// <returns></returns>
 	private async Task<StatisticInfo> CalculateBetweenDates(DateTime start, DateTime end)
 	{
-		logger.LogInformation($"Calculating statistics between {start.ToShortDateString()} and {end.ToShortDateString()}");
+		//logger.LogInformation("Calculating statistics between {Start} and {End}", start.ToShortDateString(), end.ToShortDateString());
 
 		var infos = new StatisticInfo();
 
@@ -126,37 +136,32 @@ public class StatsService : IStatsService
 
 		var stations = await fuelStationRepository.GetById(prices.Select(p => p.IdStation).Distinct());
 
-		// #region Cities
-		//
-		// var postalCodes = await locationRepository.GetPostalCodes();
-		// var postalCodeDict = new ConcurrentDictionary<string, StatisticData>();
-		// Parallel.ForEach(postalCodes, postalCode => { postalCodeDict[postalCode] = GetStatisticsByPostalCode(stations, prices, postalCode); });
-		// infos.Cities = new Dictionary<string, StatisticData>(postalCodeDict.ToList());
-		// infos.Cities = new Dictionary<string, StatisticData>();
-		//
-		// #endregion Cities
+		#region Cities
+
+		var postalCodes = await cityRepository.GetAllPostalCodes();
+		var postalCodeDict = new ConcurrentDictionary<string, StatisticData>();
+		await Parallel.ForEachAsync(postalCodes, async (postalCode, _) => { postalCodeDict[postalCode] = await GetStatisticsByPostalCode(stations, prices, postalCode); });
+		infos.Cities = new Dictionary<string, StatisticData>(postalCodeDict.ToList());
+
+		#endregion Cities
 
 		#region Regions
 
-		var regionDict = new ConcurrentDictionary<Region, StatisticData>();
-		var regionsIds = (await locationRepository.GetRegions()).Select(region => region.Id);
+		var regionDict = new ConcurrentDictionary<RegionId, StatisticData>();
+		var regionsIds = (await regionRepository.GetAll()).Select(region => region.Id);
 		await Parallel.ForEachAsync(regionsIds, async (region, _) => { regionDict[region] = await GetStatisticByRegion(stations, prices, region); });
-		infos.Regions = new Dictionary<Region, StatisticData>(regionDict.ToList());
+		infos.Regions = new Dictionary<RegionId, StatisticData>(regionDict.ToList());
 
 		#endregion
 
-		#region Depatements
+		#region Departements
 
 		var departementDict = new ConcurrentDictionary<string, StatisticData>();
-		var departements = await locationRepository.GetAllDepartements();
-		Parallel.ForEach(departements, departement => { departementDict[departement.Code] = GetStatisticByDepartement(stations, prices, departement.Code); });
+		var departements = await departementRepository.GetAll();
+		await Parallel.ForEachAsync(departements, async (departement, _) => { departementDict[departement.Code] = await GetStatisticByDepartement(stations, prices, departement.Code); });
 		infos.Departements = new Dictionary<string, StatisticData>(departementDict.ToList());
 
 		#endregion
-
-
-		logger.LogInformation($"Calculated statistics between {start.ToShortDateString()} and {end.ToShortDateString()}");
-
 
 		return infos;
 	}
@@ -201,9 +206,9 @@ public class StatsService : IStatsService
 	}
 
 
-	private async Task<StatisticData> GetStatisticByRegion(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, Region region)
+	private async Task<StatisticData> GetStatisticByRegion(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, RegionId regionId)
 	{
-		var departements = await locationRepository.GetDepartements(region);
+		var departements = await departementRepository.GetByRegion(regionId);
 
 		var stations = allStations.Where(s => departements.Any(departement => s.Location.PostalCode.StartsWith(departement.Code))).ToList();
 
@@ -213,21 +218,21 @@ public class StatsService : IStatsService
 		return CalculateStatistics(prices);
 	}
 
-	private StatisticData GetStatisticByDepartement(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string departement)
+	private Task<StatisticData> GetStatisticByDepartement(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string departement)
 	{
 		var stations = allStations.Where(s => s.Location.PostalCode.StartsWith(departement)).ToList();
 
 		var prices = allPrices.Where(p => stations.Select(s => s.Id).Contains(p.IdStation)).ToList();
 
-		return CalculateStatistics(prices);
+		return Task.Run(() => CalculateStatistics(prices));
 	}
 
 
-	private StatisticData GetStatisticsByPostalCode(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string postalCode)
+	private Task<StatisticData> GetStatisticsByPostalCode(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string postalCode)
 	{
 		var currentStations = allStations.Where(s => s.Location.PostalCode == postalCode).ToList();
 		var prices = allPrices.Where(p => currentStations.Select(s => s.Id).Contains(p.IdStation)).ToList();
 
-		return CalculateStatistics(prices);
+		return Task.Run(() => CalculateStatistics(prices));
 	}
 }

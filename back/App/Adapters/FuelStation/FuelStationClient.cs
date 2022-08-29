@@ -1,8 +1,8 @@
-﻿using System.IO.Compression;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.IO.Compression;
 using System.Text;
 using System.Xml;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Transport.Api.Abstractions.Common.Helpers;
 using Transport.Api.Abstractions.Transports.FuelStation;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -92,22 +92,9 @@ public class FuelStationClient
 
 		try
 		{
-			if (!useCache || year == 2022)
-			{
-				var xml = await Download(year);
-				var data = Parse(xml);
-				return assembler.Convert(data);
-			}
-
-			var cacheUrl = FuelStationsCache.Cache[year];
-			var stream = await client.GetStreamAsync(cacheUrl);
-			var serializer = new JsonSerializer();
-
-			using var sr = new StreamReader(stream);
-			using var jsonTextReader = new JsonTextReader(sr);
-
-
-			return serializer.Deserialize<List<FuelStationData>>(jsonTextReader);
+			var xml = await Download(year);
+			var data = Parse(xml);
+			return assembler.Convert(data);
 		}
 		finally
 		{
