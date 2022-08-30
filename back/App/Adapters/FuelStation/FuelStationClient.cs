@@ -13,7 +13,6 @@ internal struct FuelStationCache
 {
 	public List<FuelStationData> DailyData { get; set; }
 	public DateTime DailyRefresh { get; set; }
-	public List<FuelStationData> AllTimeData { get; set; }
 }
 
 public class FuelStationClient
@@ -40,13 +39,9 @@ public class FuelStationClient
 
 	public async Task<string> Download(string url)
 	{
+		var log = logger.Enter(Log.Format(url));
 		try
 		{
-			logger.Enter(Log.Format(url));
-
-
-			using var client = new HttpClient();
-
 			using var stream = await client.GetStreamAsync(url);
 
 			using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
@@ -67,28 +62,28 @@ public class FuelStationClient
 		}
 		finally
 		{
-			logger.Exit(Log.Format(url));
+			log.Exit();
 		}
 	}
 
 	private async Task<string> GetFuelStationsXml()
 	{
+		var log = logger.Enter();
 		try
 		{
-			logger.Enter();
 			return await Download("https://donnees.roulez-eco.fr/opendata/instantane");
 		}
 		finally
 		{
-			logger.Exit();
+			log.Exit();
 		}
 	}
 
-	public async Task<List<FuelStationData>> GetFuelStationsByYear(int year, bool useCache = true)
+	public async Task<List<FuelStationData>> GetFuelStationsByYear(int year)
 	{
-		var args = $"{Log.Format(year)} {Log.Format(useCache)}";
+		var args = $"{Log.Format(year)}";
 
-		logger.Enter(args);
+		var log = logger.Enter(args);
 
 		try
 		{
@@ -98,16 +93,16 @@ public class FuelStationClient
 		}
 		finally
 		{
-			logger.Exit(args);
+			log.Exit();
 		}
 	}
 
 
 	public FuelStations Parse(string xml)
 	{
+		var log = logger.Enter();
 		try
 		{
-			logger.Enter();
 			var doc = new XmlDocument();
 			doc.LoadXml(xml);
 			var json = JsonConvert.SerializeXmlNode(doc, Formatting.None);
@@ -117,16 +112,16 @@ public class FuelStationClient
 		}
 		finally
 		{
-			logger.Exit();
+			log.Exit();
 		}
 	}
 
 
 	public async Task<List<FuelStationData>> GetFuelStations(bool refresh = false)
 	{
+		var log = logger.Enter(Log.Format(refresh));
 		try
 		{
-			logger.Enter(Log.Format(refresh));
 			if (refresh || cache.DailyRefresh + TimeSpan.FromHours(6) < DateTime.Now)
 			{
 				logger.LogDebug($"Refresh fuel stations cache at {DateTime.Now.ToShortDateString()}");
@@ -140,7 +135,7 @@ public class FuelStationClient
 		}
 		finally
 		{
-			logger.Exit(Log.Format(refresh));
+			log.Exit();
 		}
 	}
 }

@@ -20,9 +20,9 @@ internal class LocationViewRepository : BaseRepository<LocationEntity>, ILocatio
 
 	public async Task<List<LocationEntity>> GetAll()
 	{
-		logger.Enter();
+		var log = logger.Enter();
 		var data = await EntityCollection.AsQueryable().ToListAsync();
-		logger.Exit();
+		log.Exit();
 		return data;
 	}
 }

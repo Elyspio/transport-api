@@ -11,7 +11,7 @@ public interface IStatsService
 	public Task RefreshWeeklyStats(int year, ProgressTask? task = null);
 
 
-	public Task RefreshDailyStats(bool clear = false);
+	public Task RefreshDailyStats(ProgressContext task);
 	public Task<List<Statistic>> GetWeeklyStats(StatsTimeType statsTimeType);
 	public Task<List<Statistic>> GetDailyStats(StatsTimeType statsTimeType);
 }

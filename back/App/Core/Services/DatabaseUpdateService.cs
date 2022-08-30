@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Spectre.Console;
+using Transport.Api.Abstractions.Common.Helpers;
 using Transport.Api.Abstractions.Interfaces.Repositories;
 using Transport.Api.Abstractions.Interfaces.Repositories.Location;
 using Transport.Api.Abstractions.Interfaces.Services;
@@ -18,9 +20,11 @@ public class DatabaseUpdateService : IDatabaseUpdateService
 	private readonly ILogger<DatabaseUpdateService> logger;
 	private readonly IPriceRepository priceRepository;
 	private readonly IRegionRepository regionRepository;
+	private readonly IStatsService statsService;
 
 	public DatabaseUpdateService(IPriceRepository priceRepository, IFuelStationRepository fuelStationRepository, FuelStationClient fuelStationClient,
-		ILogger<DatabaseUpdateService> logger, IRegionRepository regionRepository, LocationClient locationClient, IDepartementRepository departementRepository, ICityRepository cityRepository)
+		ILogger<DatabaseUpdateService> logger, IRegionRepository regionRepository, LocationClient locationClient, IDepartementRepository departementRepository, ICityRepository cityRepository,
+		IStatsService statsService)
 	{
 		this.priceRepository = priceRepository;
 		this.fuelStationRepository = fuelStationRepository;
@@ -30,21 +34,43 @@ public class DatabaseUpdateService : IDatabaseUpdateService
 		this.locationClient = locationClient;
 		this.departementRepository = departementRepository;
 		this.cityRepository = cityRepository;
+		this.statsService = statsService;
 	}
 
 	public async Task RefreshYearly(int year)
 	{
-		var nbRemoved = await priceRepository.Clear(year);
-		logger.LogInformation($"Removed {nbRemoved} prices for the year {year}");
+		await AnsiConsole.Progress()
+			.AutoClear(false) // Do not remove the task list when done
+			.Columns(new TaskDescriptionColumn(), new ProgressBarColumn(), new PercentageColumn(), new ElapsedTimeColumn(), new SpinnerColumn())
+			.StartAsync(async ctx =>
+			{
+				var task = ctx.AddTask($"Removing {year} prices");
+				var nbRemoved = await priceRepository.Clear(year);
+				task.Description += $" ({nbRemoved})";
+				task.StopTask();
 
-		var data = await fuelStationClient.GetFuelStationsByYear(year);
-		logger.LogInformation($"Received {data.Count} stations for the year {year}");
-		await Task.WhenAll(UpdatePriceEntities(data), UpdateStationEntities(data));
+
+				task = ctx.AddTask($"Fetching fuel stations for {year}");
+				var data = await fuelStationClient.GetFuelStationsByYear(year);
+				task.Description += $" ({data.Count})";
+				task.StopTask();
+
+				task = ctx.AddTask("Updating database");
+				await Task.WhenAll(UpdatePriceEntities(data), UpdateStationEntities(data));
+				task.StopTask();
+
+				task = ctx.AddTask("Refresh weekly statistics");
+				await statsService.RefreshWeeklyStats(year, task);
+				task.StopTask();
+
+				if (year == DateTime.Now.Year) await statsService.RefreshDailyStats(ctx);
+			});
 	}
 
 
 	public async Task RefreshLocations()
 	{
+		var log = logger.Enter();
 		await regionRepository.Clear();
 		await departementRepository.Clear();
 		await cityRepository.Clear();
@@ -59,13 +85,14 @@ public class DatabaseUpdateService : IDatabaseUpdateService
 
 		var cities = rawCities.Select(city =>
 		{
-			Console.WriteLine($"length {city.CodesPostaux.Count}");
 			var postaleCode = city.CodesPostaux.First();
 			return (city.Nom, postaleCode, departmentEntities.First(dep => postaleCode.StartsWith(dep.Code)).Id);
 		}).ToList();
 
 
 		await cityRepository.Add(cities);
+
+		log.Exit();
 	}
 
 

@@ -1,4 +1,6 @@
-﻿namespace Transport.Api.Web.Server;
+﻿using Transport.Api.Abstractions.Interfaces.Services;
+
+namespace Transport.Api.Web.Server;
 
 public static class ApplicationServer
 {
@@ -31,6 +33,19 @@ public static class ApplicationServer
 
 			application.UseEndpoints(endpoints => { endpoints.MapFallbackToFile("/index.html"); });
 		}
+
+
+		Task.Run(async () =>
+		{
+			var updateService = application.Services.GetService<IDatabaseUpdateService>();
+
+			var timer = new PeriodicTimer(TimeSpan.FromDays(1));
+
+			await updateService.RefreshYearly(DateTime.Now.Year);
+
+			while (await timer.WaitForNextTickAsync()) await updateService.RefreshYearly(DateTime.Now.Year);
+		});
+
 
 		return application;
 	}

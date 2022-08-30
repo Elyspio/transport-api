@@ -1,855 +1,855 @@
 ﻿{
-  "openapi": "3.0.1",
-  "info": {
-    "title": "FileServe.Api.Web",
-    "version": "1.0"
-  },
-  "paths": {
-    "/api/files/public": {
-      "get": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "GetFiles",
-        "parameters": [
-          {
-            "name": "location",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileData"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileData"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "AddFile",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "file",
-                  "filename",
-                  "hidden",
-                  "location"
-                ],
-                "properties": {
-                  "filename": {
-                    "type": "string"
-                  },
-                  "location": {
-                    "type": "string"
-                  },
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "hidden": {
-                    "type": "boolean"
-                  }
-                }
-              },
-              "encoding": {
-                "filename": {
-                  "style": "form"
-                },
-                "location": {
-                  "style": "form"
-                },
-                "file": {
-                  "style": "form"
-                },
-                "hidden": {
-                  "style": "form"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/files/public/{id}/binary": {
-      "get": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "GetFileContent",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/files/public/{id}/string": {
-      "get": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "GetFileContentAsString",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/files/public/{id}/stream": {
-      "get": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "GetFileContentAsStream",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "206": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/files/public/{id}": {
-      "get": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "GetFile",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "DeleteFile",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/public/{id}/visibility": {
-      "put": {
-        "tags": [
-          "PublicFiles"
-        ],
-        "operationId": "ToggleVisibility",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/user": {
-      "get": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "GetFiles2",
-        "parameters": [
-          {
-            "name": "location",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileData"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileData"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "AddFile2",
-        "parameters": [
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "file",
-                  "filename",
-                  "hidden",
-                  "location"
-                ],
-                "properties": {
-                  "filename": {
-                    "type": "string"
-                  },
-                  "location": {
-                    "type": "string"
-                  },
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "hidden": {
-                    "type": "boolean"
-                  }
-                }
-              },
-              "encoding": {
-                "filename": {
-                  "style": "form"
-                },
-                "location": {
-                  "style": "form"
-                },
-                "file": {
-                  "style": "form"
-                },
-                "hidden": {
-                  "style": "form"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/user/{id}/binary": {
-      "get": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "GetFileContent2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/user/{id}/string": {
-      "get": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "GetFileContentAsString2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/user/{id}/stream": {
-      "get": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "GetFileContentAsStream2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "206": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/user/{id}": {
-      "get": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "GetFile2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FileData"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "DeleteFile2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/api/files/user/{id}/visibility": {
-      "put": {
-        "tags": [
-          "UserFiles"
-        ],
-        "operationId": "ToggleVisibility2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "header",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authentication-token",
-            "in": "cookie",
-            "allowEmptyValue": true,
-            "description": "Authentication Token",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "FileData": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "filename",
-          "hidden",
-          "id",
-          "idGridFs",
-          "location",
-          "mime",
-          "size",
-          "username"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "username": {
-            "type": "string",
-            "minLength": 1
-          },
-          "filename": {
-            "type": "string",
-            "minLength": 1
-          },
-          "mime": {
-            "type": "string",
-            "minLength": 1
-          },
-          "location": {
-            "type": "string",
-            "minLength": 1
-          },
-          "size": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "idGridFs": {
-            "type": "string",
-            "minLength": 1
-          },
-          "hidden": {
-            "type": "boolean"
-          }
-        }
-      }
-    }
-  }
+	"openapi": "3.0.1",
+	"info": {
+		"title": "FileServe.Api.Web",
+		"version": "1.0"
+	},
+	"paths": {
+		"/api/files/public": {
+			"get": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "GetFiles",
+				"parameters": [
+					{
+						"name": "location",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/FileData"
+									}
+								}
+							},
+							"text/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/FileData"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "AddFile",
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"required": [
+									"file",
+									"filename",
+									"hidden",
+									"location"
+								],
+								"properties": {
+									"filename": {
+										"type": "string"
+									},
+									"location": {
+										"type": "string"
+									},
+									"file": {
+										"type": "string",
+										"format": "binary"
+									},
+									"hidden": {
+										"type": "boolean"
+									}
+								}
+							},
+							"encoding": {
+								"filename": {
+									"style": "form"
+								},
+								"location": {
+									"style": "form"
+								},
+								"file": {
+									"style": "form"
+								},
+								"hidden": {
+									"style": "form"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/files/public/{id}/binary": {
+			"get": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "GetFileContent",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/octet-stream": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/files/public/{id}/string": {
+			"get": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "GetFileContentAsString",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/files/public/{id}/stream": {
+			"get": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "GetFileContentAsStream",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"206": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/api/files/public/{id}": {
+			"get": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "GetFile",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "DeleteFile",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No Content"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/public/{id}/visibility": {
+			"put": {
+				"tags": [
+					"PublicFiles"
+				],
+				"operationId": "ToggleVisibility",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No Content"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/user": {
+			"get": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "GetFiles2",
+				"parameters": [
+					{
+						"name": "location",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/FileData"
+									}
+								}
+							},
+							"text/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/FileData"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "AddFile2",
+				"parameters": [
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"required": [
+									"file",
+									"filename",
+									"hidden",
+									"location"
+								],
+								"properties": {
+									"filename": {
+										"type": "string"
+									},
+									"location": {
+										"type": "string"
+									},
+									"file": {
+										"type": "string",
+										"format": "binary"
+									},
+									"hidden": {
+										"type": "boolean"
+									}
+								}
+							},
+							"encoding": {
+								"filename": {
+									"style": "form"
+								},
+								"location": {
+									"style": "form"
+								},
+								"file": {
+									"style": "form"
+								},
+								"hidden": {
+									"style": "form"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/user/{id}/binary": {
+			"get": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "GetFileContent2",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/octet-stream": {
+								"schema": {
+									"type": "string",
+									"format": "binary"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/user/{id}/string": {
+			"get": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "GetFileContentAsString2",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/user/{id}/stream": {
+			"get": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "GetFileContentAsStream2",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"206": {
+						"description": "Success"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/user/{id}": {
+			"get": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "GetFile2",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FileData"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "DeleteFile2",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No Content"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		},
+		"/api/files/user/{id}/visibility": {
+			"put": {
+				"tags": [
+					"UserFiles"
+				],
+				"operationId": "ToggleVisibility2",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "header",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "authentication-token",
+						"in": "cookie",
+						"allowEmptyValue": true,
+						"description": "Authentication Token",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "No Content"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"FileData": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": [
+					"filename",
+					"hidden",
+					"id",
+					"idGridFs",
+					"location",
+					"mime",
+					"size",
+					"username"
+				],
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"username": {
+						"type": "string",
+						"minLength": 1
+					},
+					"filename": {
+						"type": "string",
+						"minLength": 1
+					},
+					"mime": {
+						"type": "string",
+						"minLength": 1
+					},
+					"location": {
+						"type": "string",
+						"minLength": 1
+					},
+					"size": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"idGridFs": {
+						"type": "string",
+						"minLength": 1
+					},
+					"hidden": {
+						"type": "boolean"
+					}
+				}
+			}
+		}
+	}
 }

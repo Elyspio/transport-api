@@ -47,7 +47,7 @@ public class FuelStationApiAssembler : BaseAssembler<FuelStations, List<FuelStat
 		if (pdv.Prix.HasValue)
 			pdv.Prix.Value.PrixElementArray?.ForEach(prix =>
 				{
-					var val = (double) decimal.Parse(prix.Valeur, CultureInfo.InvariantCulture) / 1000;
+					var val = (double) decimal.Parse(prix.Valeur, CultureInfo.InvariantCulture);
 					var date = prix.Maj.DateTime;
 					switch (prix.Nom)
 					{

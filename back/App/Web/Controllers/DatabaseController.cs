@@ -15,7 +15,7 @@ public class DatabaseController : ControllerBase
 	}
 
 	[HttpPut("prices/{year:int}/refresh")]
-	public async Task<IActionResult> UpdateYearly(int year)
+	public async Task<IActionResult> UpdateYearly(int year = 2022)
 	{
 		await databaseUpdateService.RefreshYearly(year);
 		return NoContent();

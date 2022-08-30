@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
+using Transport.Api.Abstractions.Common.Helpers;
 using Transport.Api.Abstractions.Enums;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Transports;
@@ -40,7 +41,8 @@ public class StatisticsController : ControllerBase
 	[SwaggerResponse(204)]
 	public async Task<IActionResult> RefreshDailyStats()
 	{
-		await statsService.RefreshDailyStats();
+		var logging = Log.CreateProgress();
+		await logging.StartAsync(ctx => statsService.RefreshDailyStats(ctx));
 		return NoContent();
 	}
 

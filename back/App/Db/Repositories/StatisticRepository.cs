@@ -13,6 +13,8 @@ internal class StatisticRepository : BaseRepository<StatisticEntity>, IStatistic
 {
 	public StatisticRepository(IConfiguration configuration, ILogger<BaseRepository<StatisticEntity>> logger) : base(configuration, logger)
 	{
+		CreateIndexIfMissing(new List<string> { nameof(StatisticEntity.Time.Type) });
+		CreateIndexIfMissing(new List<string> { nameof(StatisticEntity.Time.Type), nameof(StatisticEntity.Time.Start), nameof(StatisticEntity.Time.End) });
 	}
 
 

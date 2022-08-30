@@ -1,42 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
 
-  </PropertyGroup>
+	</PropertyGroup>
 
 
-  <ItemGroup>
-    <None Remove="appsettings.json"/>
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="appsettings.json"/>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Authentication.CLI" Version="1.0.6"/>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-    <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0"/>
-    <PackageReference Include="Spectre.Console" Version="0.44.0"/>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
-    <PackageReference Include="System.Net.Http" Version="4.3.4"/>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Authentication.CLI" Version="1.0.6"/>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+		<PackageReference Include="Scrutor.AspNetCore" Version="3.3.0"/>
+		<PackageReference Include="Spectre.Console" Version="0.44.0"/>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+		<PackageReference Include="System.Net.Http" Version="4.3.4"/>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\App\Abstractions\Transport.Api.Abstractions.csproj"/>
-    <ProjectReference Include="..\..\App\Adapters\Transport.Api.Adapters.csproj"/>
-    <ProjectReference Include="..\..\App\Db\Transport.Api.Db.csproj"/>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\App\Abstractions\Transport.Api.Abstractions.csproj"/>
+		<ProjectReference Include="..\..\App\Adapters\Transport.Api.Adapters.csproj"/>
+		<ProjectReference Include="..\..\App\Db\Transport.Api.Db.csproj"/>
+	</ItemGroup>
 
 </Project>

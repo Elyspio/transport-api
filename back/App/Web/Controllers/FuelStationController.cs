@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Transport.Api.Abstractions.Common.Helpers;
 using Transport.Api.Abstractions.Interfaces.Services;
 using Transport.Api.Abstractions.Transports.FuelStation;
 
@@ -10,10 +11,12 @@ namespace Transport.Api.Web.Controllers;
 public class FuelStationController : ControllerBase
 {
 	private readonly IFuelStationService client;
+	private readonly ILogger<FuelStationLocation> logger;
 
-	public FuelStationController(IFuelStationService client)
+	public FuelStationController(IFuelStationService client, ILogger<FuelStationLocation> logger)
 	{
 		this.client = client;
+		this.logger = logger;
 	}
 
 	/// <summary>
@@ -26,17 +29,33 @@ public class FuelStationController : ControllerBase
 	[ProducesResponseType(typeof(List<FuelStationDataDistance>), 200)]
 	public async Task<IActionResult> GetFuelStationsNear([Required] double latitude, [Required] double longitude, long radius = 10)
 	{
-		return Ok(await client.GetFuelStations(latitude, longitude, radius));
+		var log = logger.Enter($"{Log.Format(latitude)} {Log.Format(longitude)} {Log.Format(radius)}");
+		try
+		{
+			return Ok(await client.GetFuelStations(latitude, longitude, radius));
+		}
+		finally
+		{
+			log.Exit();
+		}
 	}
 
 
 	/// <summary>
-	///     Get All fuel stations around a point
+	///     Get All fuel stations data between dates
 	/// </summary>
 	[HttpGet("history")]
 	[ProducesResponseType(typeof(List<FuelStationData>), 200)]
 	public async Task<IActionResult> GetFuelStationsBetweenDates(DateTime? minDate = null, DateTime? maxDate = null)
 	{
-		return Ok(await client.GetBetweenDates(minDate, maxDate));
+		var log = logger.Enter($"{Log.Format(minDate)} {Log.Format(maxDate)}");
+		try
+		{
+			return Ok(await client.GetBetweenDates(minDate, maxDate));
+		}
+		finally
+		{
+			log.Exit();
+		}
 	}
 }

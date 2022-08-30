@@ -46,47 +46,49 @@ public class StatsService : IStatsService
 	}
 
 
-	public async Task RefreshWeeklyStats(int year, ProgressTask? ctx)
+	public async Task RefreshWeeklyStats(int year, ProgressTask? task)
 	{
 		await statisticRepository.ClearWeekly(year);
 
-		var locker = new object();
-		var progress = 0;
-
-		await Parallel.ForEachAsync(Enumerable.Range(1, 52), async (week, _) =>
+		await Parallel.ForEachAsync(Enumerable.Range(1, 52), new ParallelOptions { MaxDegreeOfParallelism = 1 }, async (week, _) =>
 		{
 			await RefreshWeeklyStatsInternal(year, week);
-			lock (locker)
-			{
-				progress += 1;
-				if (ctx != default) ctx.Value = progress;
-			}
+			if (task != default) task.Increment(1);
 		});
 	}
 
 
-	public async Task RefreshDailyStats(bool clear)
+	public async Task RefreshDailyStats(ProgressContext ctx)
 	{
-		if (clear) await statisticRepository.ClearDaily();
+		var task = ctx.AddTask("Deleting daily statistics");
+
+		await statisticRepository.ClearDaily();
+
+		task.StopTask();
 
 		var now = DateTime.Now;
 		var lastMonth = now.AddMonths(-1);
 
 
-		await Parallel.ForEachAsync(Enumerable.Range(0, (now - lastMonth).Days - 1), async (day, _) =>
+		var days = Enumerable.Range(0, (now - lastMonth).Days - 1).ToList();
+
+
+		task = ctx.AddTask("Calculating daily statistics", maxValue: days.Count);
+
+		await Parallel.ForEachAsync(days, async (day, _) =>
 			{
 				var startDate = lastMonth.AddDays(day);
 				var endDate = startDate.AddDays(1);
 
-				//logger.LogInformation($"Calculating statistics for day {startDate.ToShortDateString()}");
-
 				var infos = await CalculateBetweenDates(startDate, endDate);
 
 				await statisticRepository.Add(infos, startDate, endDate, StatisticTimeType.Day);
-
-				//logger.LogInformation($"Calculated statistics for day {startDate.ToShortDateString()}");
+				if (ctx != default) task.Increment(1);
 			}
 		);
+
+
+		task.StopTask();
 	}
 
 	public async Task<List<Statistic>> GetWeeklyStats(StatsTimeType statsTimeType)
@@ -140,7 +142,13 @@ public class StatsService : IStatsService
 
 		var postalCodes = await cityRepository.GetAllPostalCodes();
 		var postalCodeDict = new ConcurrentDictionary<string, StatisticData>();
-		await Parallel.ForEachAsync(postalCodes, async (postalCode, _) => { postalCodeDict[postalCode] = await GetStatisticsByPostalCode(stations, prices, postalCode); });
+
+		Parallel.ForEach(postalCodes, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (postalCode, _) =>
+		{
+			var data = GetStatisticsByPostalCode(stations, prices, postalCode);
+			// Keep only if contains at least one fuel
+			if (data.Average.Keys.Any()) postalCodeDict[postalCode] = data;
+		});
 		infos.Cities = new Dictionary<string, StatisticData>(postalCodeDict.ToList());
 
 		#endregion Cities
@@ -158,7 +166,7 @@ public class StatsService : IStatsService
 
 		var departementDict = new ConcurrentDictionary<string, StatisticData>();
 		var departements = await departementRepository.GetAll();
-		await Parallel.ForEachAsync(departements, async (departement, _) => { departementDict[departement.Code] = await GetStatisticByDepartement(stations, prices, departement.Code); });
+		Parallel.ForEach(departements, departement => { departementDict[departement.Code] = GetStatisticByDepartement(stations, prices, departement.Code); });
 		infos.Departements = new Dictionary<string, StatisticData>(departementDict.ToList());
 
 		#endregion
@@ -202,6 +210,7 @@ public class StatsService : IStatsService
 			}
 		}
 
+
 		return data;
 	}
 
@@ -211,28 +220,28 @@ public class StatsService : IStatsService
 		var departements = await departementRepository.GetByRegion(regionId);
 
 		var stations = allStations.Where(s => departements.Any(departement => s.Location.PostalCode.StartsWith(departement.Code))).ToList();
-
-		var prices = allPrices.Where(p => stations.Select(s => s.Id).Contains(p.IdStation)).ToList();
-
+		var stationsIds = stations.Select(s => s.Id).ToList();
+		var prices = allPrices.Where(p => stationsIds.Contains(p.IdStation)).ToList();
 
 		return CalculateStatistics(prices);
 	}
 
-	private Task<StatisticData> GetStatisticByDepartement(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string departement)
+	private StatisticData GetStatisticByDepartement(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string departement)
 	{
 		var stations = allStations.Where(s => s.Location.PostalCode.StartsWith(departement)).ToList();
+		var stationsIds = stations.Select(s => s.Id).ToList();
+		var prices = allPrices.Where(p => stationsIds.Contains(p.IdStation)).ToList();
 
-		var prices = allPrices.Where(p => stations.Select(s => s.Id).Contains(p.IdStation)).ToList();
-
-		return Task.Run(() => CalculateStatistics(prices));
+		return CalculateStatistics(prices);
 	}
 
 
-	private Task<StatisticData> GetStatisticsByPostalCode(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string postalCode)
+	private StatisticData GetStatisticsByPostalCode(IEnumerable<FuelStationEntity> allStations, IEnumerable<PriceEntity> allPrices, string postalCode)
 	{
-		var currentStations = allStations.Where(s => s.Location.PostalCode == postalCode).ToList();
-		var prices = allPrices.Where(p => currentStations.Select(s => s.Id).Contains(p.IdStation)).ToList();
+		var stations = allStations.Where(s => s.Location.PostalCode == postalCode).ToList();
+		var stationsIds = stations.Select(s => s.Id).ToList();
+		var prices = allPrices.Where(p => stationsIds.Contains(p.IdStation)).ToList();
 
-		return Task.Run(() => CalculateStatistics(prices));
+		return CalculateStatistics(prices);
 	}
 }

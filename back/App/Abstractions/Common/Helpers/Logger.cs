@@ -3,11 +3,13 @@ using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
+using Spectre.Console;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Transport.Api.Abstractions.Common.Helpers;
 
@@ -51,7 +53,6 @@ public static class LoggerCallerEnrichmentConfiguration
 	}
 }
 
-
 public static class Log
 {
 	private static readonly JsonSerializerOptions options = new()
@@ -68,14 +69,49 @@ public static class Log
 	}
 
 
-	public static void Enter<T>(this ILogger<T> logger, string arguments = "", LogLevel level = LogLevel.Debug, [CallerMemberName] string method = "")
+	public static MethodLogger Enter<T>(this ILogger<T> logger, string arguments = "", LogLevel level = LogLevel.Debug, [CallerMemberName] string method = "")
 	{
-		logger.Log(level, $"Entering - {method}{(arguments.Any() ? ": " : "")}{arguments}");
+		return new MethodLogger(method, arguments, level, logger);
+	}
+
+	public static Progress CreateProgress()
+	{
+		return AnsiConsole.Progress()
+			.AutoRefresh(true) // Turn off auto refresh
+			.AutoClear(false) // Do not remove the task list when done
+			.HideCompleted(false) // Hide tasks as they are completed
+			.Columns(new TaskDescriptionColumn(), new ProgressBarColumn(), new PercentageColumn(), new ElapsedTimeColumn(), new SpinnerColumn());
+	}
+}
+
+public class MethodLogger
+{
+	private readonly string arguments;
+	private readonly Guid id;
+	private readonly LogLevel level;
+	private readonly ILogger logger;
+	private readonly string method;
+
+	public MethodLogger(string method, string arguments, LogLevel level, ILogger logger)
+	{
+		this.method = method;
+		this.arguments = arguments;
+		this.level = level;
+		this.logger = logger;
+		id = Guid.NewGuid();
+
+
+		Enter();
 	}
 
 
-	public static void Exit<T>(this ILogger<T> logger, string arguments = "", LogLevel level = LogLevel.Debug, [CallerMemberName] string method = "")
+	private void Enter()
 	{
-		logger.Log(level, $"Exiting - {method}{(arguments.Any() ? ": " : "")}{arguments}");
+		logger.Log(level, $"[{id}] Entering - {method}{(arguments.Any() ? ": " : "")}{arguments}");
+	}
+
+	public void Exit()
+	{
+		logger.Log(level, $"[{id}] Exiting - {method}{(arguments.Any() ? ": " : "")}{arguments}");
 	}
 }
