@@ -37,11 +37,9 @@ public static class ApplicationServer
 
 		Task.Run(async () =>
 		{
-			var updateService = application.Services.GetService<IDatabaseUpdateService>();
+			var updateService = application.Services.GetService<IDatabaseUpdateService>()!;
 
 			var timer = new PeriodicTimer(TimeSpan.FromDays(1));
-
-			await updateService.RefreshYearly(DateTime.Now.Year);
 
 			while (await timer.WaitForNextTickAsync()) await updateService.RefreshYearly(DateTime.Now.Year);
 		});

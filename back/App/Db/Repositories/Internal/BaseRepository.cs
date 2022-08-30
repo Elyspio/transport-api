@@ -35,7 +35,15 @@ public abstract class BaseRepository<T>
 	{
 		var indexName = string.Join("-", properties);
 		var indexes = EntityCollection.Indexes.List().ToList();
-		var foundIndex = indexes.Any(index => index["key"].AsBsonDocument.Names.Contains(indexName));
+		var foundIndex = indexes.Any(index =>
+		{
+			var element = index["key"].AsBsonDocument;
+			if(!element.TryGetValue("name", out BsonValue val))
+			{
+				return false;
+			}
+			else return val.AsString.Contains(indexName);
+		});
 
 		var indexBuilder = Builders<T>.IndexKeys;
 

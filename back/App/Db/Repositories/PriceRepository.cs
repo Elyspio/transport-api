@@ -71,7 +71,7 @@ public class PriceRepository : BaseRepository<PriceEntity>, IPriceRepository
 					{
 						IdStation = station.Id,
 						Fuel = fuel,
-						Value = price.Value / 1000,
+						Value = price.Value,
 						Date = price.Date
 					}
 					);

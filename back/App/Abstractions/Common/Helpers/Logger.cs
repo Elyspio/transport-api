@@ -80,7 +80,7 @@ public static class Log
 			.AutoRefresh(true) // Turn off auto refresh
 			.AutoClear(false) // Do not remove the task list when done
 			.HideCompleted(false) // Hide tasks as they are completed
-			.Columns(new TaskDescriptionColumn(), new ProgressBarColumn(), new PercentageColumn(), new ElapsedTimeColumn(), new SpinnerColumn());
+			.Columns(new TaskDescriptionColumn() {Alignment = Justify.Left}, new ProgressBarColumn(), new PercentageColumn(), new ElapsedTimeColumn(), new SpinnerColumn());
 	}
 }
 

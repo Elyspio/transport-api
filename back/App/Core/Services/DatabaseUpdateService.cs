@@ -47,19 +47,22 @@ public class DatabaseUpdateService : IDatabaseUpdateService
 				var task = ctx.AddTask($"Removing {year} prices");
 				var nbRemoved = await priceRepository.Clear(year);
 				task.Description += $" ({nbRemoved})";
+				task.Value = 100;
 				task.StopTask();
 
 
 				task = ctx.AddTask($"Fetching fuel stations for {year}");
 				var data = await fuelStationClient.GetFuelStationsByYear(year);
 				task.Description += $" ({data.Count})";
+				task.Value = 100;
 				task.StopTask();
 
 				task = ctx.AddTask("Updating database");
 				await Task.WhenAll(UpdatePriceEntities(data), UpdateStationEntities(data));
+				task.Value = 100;
 				task.StopTask();
 
-				task = ctx.AddTask("Refresh weekly statistics");
+				task = ctx.AddTask("Refresh weekly statistics", new ProgressTaskSettings { MaxValue = 52}) ;
 				await statsService.RefreshWeeklyStats(year, task);
 				task.StopTask();
 
