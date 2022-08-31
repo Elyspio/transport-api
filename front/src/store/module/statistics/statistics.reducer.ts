@@ -1,5 +1,14 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { getLocations, getStatistics, setSelectedDepartement, setSelectedFuels, setSelectedRegion, setSelectedTimeInterval, toggleSwitch } from "./statistics.action";
+import {
+	getLocations,
+	getStatistics,
+	setSelectedCity,
+	setSelectedDepartement,
+	setSelectedFuels,
+	setSelectedRegion,
+	setSelectedTimeInterval,
+	toggleSwitch,
+} from "./statistics.action";
 import { Statistic, StatsTimeType } from "../../../core/apis/backend/generated";
 import { DataType, StatisticsTheme } from "./statistics.types";
 
@@ -11,6 +20,7 @@ const defaultState: StatisticsTheme = {
 		region: "all",
 		fuels: ["gazole", "e10"],
 		timeInterval: StatsTimeType.Month3,
+		city: "all",
 		switches: {
 			yAxisFrom0: false,
 		},
@@ -25,13 +35,20 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 		stat: Statistic,
 		fuels: StatisticsTheme["selected"]["fuels"],
 		region: StatisticsTheme["selected"]["region"],
-		department: StatisticsTheme["selected"]["departement"]
+		department: StatisticsTheme["selected"]["departement"],
+		city: StatisticsTheme["selected"]["city"]
 	) {
 		const newData = {
 			date: new Date(stat.time).toLocaleDateString(),
 		} as DataType;
 
-		if (department !== "all") {
+		if (city !== "all") {
+			Object.entries(stat.data.cities[city].average).forEach(([fuel, val]) => {
+				if (fuels.map((x) => x.toLocaleLowerCase()).includes(fuel.toLocaleLowerCase())) {
+					newData[fuel.toLocaleLowerCase()] = val;
+				}
+			});
+		} else if (department !== "all") {
 			Object.entries(stat.data.departements[department].average).forEach(([fuel, val]) => {
 				if (fuels.map((x) => x.toLocaleLowerCase()).includes(fuel.toLocaleLowerCase())) {
 					newData[fuel.toLocaleLowerCase()] = val;
@@ -50,7 +67,7 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 
 	function updateData(state: StatisticsTheme) {
 		const {
-			selected: { fuels, region: selectedRegion, departement },
+			selected: { fuels, region: selectedRegion, departement, city },
 			raw,
 			locations,
 		} = state;
@@ -61,10 +78,10 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 			let newData: DataType;
 
 			if (selectedRegion !== "all") {
-				newData = getRegion(stat, fuels, selectedRegion, departement);
+				newData = getRegion(stat, fuels, selectedRegion, departement, city);
 			} else {
 				let newDatas: DataType[] = [];
-				locations.forEach((region) => newDatas.push(getRegion(stat, fuels, region.id, departement)));
+				locations.forEach((region) => newDatas.push(getRegion(stat, fuels, region.id, departement, city)));
 				newDatas = newDatas.filter((data) => fuels.every((fuel) => Object.keys(data).includes(fuel)));
 
 				newData = {
@@ -80,7 +97,7 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 				arr.push(newData);
 			}
 		});
-	
+
 		state.data = arr;
 	}
 
@@ -124,5 +141,9 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 
 	addCase(toggleSwitch, (state, { payload }) => {
 		state.selected.switches[payload] = !state.selected.switches[payload];
+	});
+
+	addCase(setSelectedCity, (state, action) => {
+		state.selected.city = action.payload;
 	});
 });

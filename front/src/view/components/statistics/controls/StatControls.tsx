@@ -1,28 +1,30 @@
 import React from "react";
-import { FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select, Switch, Typography } from "@mui/material";
+import { Autocomplete, FormControl, FormControlLabel, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Switch, TextField, Typography } from "@mui/material";
 import {
 	getLocations,
 	priceTypes,
+	setSelectedCity,
 	setSelectedDepartement,
 	setSelectedFuels,
 	setSelectedRegion,
 	setSelectedTimeInterval,
 	toggleSwitch,
 } from "../../../../store/module/statistics/statistics.action";
-import { StatsTimeType } from "../../../../core/apis/backend/generated";
+import { City, Departement, Region, StatsTimeType } from "../../../../core/apis/backend/generated";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { bindActionCreators } from "redux";
 import { useInjection } from "inversify-react";
 import { LocationsService } from "../../../../core/services/locations.service";
 import { useAsyncEffect } from "../../../hooks/useAsyncEffect";
-import { SelectedSwitches } from "../../../../store/module/statistics/statistics.types";
 import { fuelsLabels, timeLabels, timeOrdered } from "./StatControls.constants";
+import { SelectedSwitches } from "../../../../store/module/statistics/statistics.types";
 
 export function StatControls() {
 	const {
-		selected: { fuels, region, timeInterval, departement, switches },
+		selected: { fuels, region, timeInterval, departement, switches, city },
 		locations,
 		departements,
+		cities,
 	} = useAppSelector((s) => s.statistic);
 
 	const dispatch = useAppDispatch();
@@ -38,6 +40,7 @@ export function StatControls() {
 					getLocations,
 					setSelectedRegion,
 					setSelectedFuels,
+					setSelectedCity,
 					setSelectedTimeInterval,
 					setSelectedDepartement,
 					toggleSwitch,
@@ -51,17 +54,36 @@ export function StatControls() {
 		await update.getLocations();
 	}, [services.locations, update]);
 
-	const onRegionSelected = React.useCallback(
-		(e) => {
-			update.setSelectedRegion(locations.find((region) => region.id === e.target.value)?.id ?? "all");
+	const onSelected = React.useCallback(
+		(type: "region" | "city" | "departement") => (e: SelectChangeEvent) => {
+			const funcs: Record<typeof type, any> = {
+				city: update.setSelectedCity,
+				departement: update.setSelectedDepartement,
+				region: update.setSelectedRegion,
+			};
+			funcs[type](e.target.value);
 		},
-		[update, locations]
+		[update]
 	);
-	const onDepartementSelected = React.useCallback(
-		(e) => {
-			update.setSelectedDepartement(departements.find((region) => region.code === e.target.value)?.code ?? "all");
+
+	const onCitySelected = React.useCallback(
+		(e: any, city: City | null) => {
+			update.setSelectedCity(city?.postalCode ?? "all");
 		},
-		[update, departements]
+		[update]
+	);
+
+	const onDepartementSelected = React.useCallback(
+		(e: any, city: Departement | null) => {
+			update.setSelectedDepartement(city?.code ?? "all");
+		},
+		[update]
+	);
+	const onRegionSelected = React.useCallback(
+		(e: any, region: Region | null) => {
+			update.setSelectedRegion(region?.id ?? "all");
+		},
+		[update]
 	);
 
 	const onSwitchSelected = React.useCallback(
@@ -72,75 +94,84 @@ export function StatControls() {
 	);
 
 	return (
-		<Grid container direction={"column"} spacing={4} p={2}>
-			<Grid item>
-				<FormControl fullWidth>
-					<InputLabel id="fuel-label">Fuels</InputLabel>
-					<Select fullWidth multiple labelId="fuels-label" id="fuels-select" value={fuels} label="Fuels" onChange={(e) => update.setSelectedFuels(e.target.value as any)}>
-						{priceTypes.map((val) => (
-							<MenuItem value={val} key={val}>
-								{fuelsLabels[val]}
-							</MenuItem>
-						))}
-					</Select>
-				</FormControl>
-			</Grid>
+		<Stack direction={"column"} spacing={4} p={2}>
+			<FormControl fullWidth>
+				<InputLabel id="fuel-label">Fuels</InputLabel>
+				<Select fullWidth multiple labelId="fuels-label" id="fuels-select" value={fuels} label="Fuels" onChange={(e) => update.setSelectedFuels(e.target.value as any)}>
+					{priceTypes.map((val) => (
+						<MenuItem value={val} key={val}>
+							{fuelsLabels[val]}
+						</MenuItem>
+					))}
+				</Select>
+			</FormControl>
 
-			<Grid item>
-				<FormControl fullWidth>
-					<InputLabel id="time-interval-label">Depuis</InputLabel>
-					<Select
-						labelId="time-interval-label"
-						id="time-interval-select"
-						value={timeInterval}
-						label="Time Interval"
-						fullWidth
-						onChange={(e) => update.setSelectedTimeInterval(e.target.value as StatsTimeType)}
-					>
-						{timeOrdered.map((fuel) => (
-							<MenuItem value={fuel} key={fuel}>
-								{timeLabels[fuel]}
-							</MenuItem>
-						))}
-					</Select>
-				</FormControl>
-			</Grid>
-			<Grid item>
-				<FormControl fullWidth>
-					<InputLabel id="demo-region-label">Région</InputLabel>
-					<Select fullWidth labelId="demo-region-label" id="demo-region-select" value={region} label="Région" onChange={onRegionSelected}>
-						<MenuItem value={"all"}>Toutes</MenuItem>
-						{locations.map((region) => (
-							<MenuItem key={region.id} value={region.id}>
-								{region.label}
-							</MenuItem>
-						))}
-					</Select>
-				</FormControl>
-			</Grid>
+			<FormControl fullWidth>
+				<InputLabel id="time-interval-label">Depuis</InputLabel>
+				<Select
+					labelId="time-interval-label"
+					id="time-interval-select"
+					value={timeInterval}
+					label="Depuis"
+					fullWidth
+					onChange={(e) => update.setSelectedTimeInterval(e.target.value as StatsTimeType)}
+				>
+					{timeOrdered.map((fuel) => (
+						<MenuItem value={fuel} key={fuel}>
+							{timeLabels[fuel]}
+						</MenuItem>
+					))}
+				</Select>
+			</FormControl>
 
-			<Grid item>
-				<FormControl fullWidth>
-					<InputLabel id="demo-region-label">Département</InputLabel>
-					<Select fullWidth labelId="demo-region-label" id="demo-region-select" value={departement} label="Département" onChange={onDepartementSelected}>
-						<MenuItem value={"all"}>Tous</MenuItem>
-						{departements.map((departement) => (
-							<MenuItem key={departement.code} value={departement.code}>
-								{departement.name} ({departement.code})
-							</MenuItem>
-						))}
-					</Select>
-				</FormControl>
-			</Grid>
+			<FormControl fullWidth>
+				<Autocomplete
+					disablePortal
+					fullWidth
+					id="select-region"
+					options={locations}
+					sx={{ width: 300 }}
+					getOptionLabel={(option) => `${option.label}`}
+					onChange={onRegionSelected}
+					renderInput={(params) => <TextField {...params} autoComplete="off" data-lpignore="true" data-form-type="other" label="Régions" />}
+				/>
+			</FormControl>
 
-			<Grid item>
+			<FormControl fullWidth>
+				<Autocomplete
+					disablePortal
+					fullWidth
+					id="select-departement"
+					disabled={region === "all"}
+					options={departements}
+					sx={{ width: 300 }}
+					getOptionLabel={(option) => `${option.name} (${option.code})`}
+					onChange={onDepartementSelected}
+					renderInput={(params) => <TextField {...params} autoComplete="off" data-lpignore="true" data-form-type="other" label="Département" />}
+				/>
+			</FormControl>
+
+			<FormControl fullWidth>
+				<Autocomplete
+					disablePortal
+					fullWidth
+					disabled={departement === "all"}
+					id="select-city"
+					options={cities}
+					sx={{ width: 300 }}
+					getOptionLabel={(option) => `${option.name} ${option.postalCode}`}
+					onChange={onCitySelected}
+					renderInput={(params) => <TextField {...params} autoComplete="off" data-lpignore="true" data-form-type="other" label="Commune" />}
+				/>
+			</FormControl>
+
+			<FormControl fullWidth>
 				<FormControlLabel
-					sx={{ width: "100%" }}
 					labelPlacement={"start"}
 					control={<Switch value={!switches.yAxisFrom0} sx={{ marginLeft: "auto", marginRight: "1rem" }} color={"primary"} onChange={onSwitchSelected("yAxisFrom0")} />}
 					label={<Typography variant={"overline"}>Échelle à 0 </Typography>}
 				/>
-			</Grid>
-		</Grid>
+			</FormControl>
+		</Stack>
 	);
 }

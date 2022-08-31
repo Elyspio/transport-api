@@ -9,7 +9,8 @@ export interface StatisticsTheme {
 	selected: {
 		region: Region["id"] | "all";
 		fuels: FuelTypes[];
-		departement: Departement["code"] | "all";
+		departement: Departement["id"] | "all";
+		city: City["id"] | "all";
 		timeInterval: StatsTimeType;
 		switches: Record<SelectedSwitches, boolean>;
 	};

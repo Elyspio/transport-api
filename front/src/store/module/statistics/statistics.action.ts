@@ -1,7 +1,7 @@
 import { createAction as _createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { container } from "../../../core/di";
 import { StatisticsService } from "../../../core/services/statistics.service";
-import { Departement, Region, StatsTimeType } from "../../../core/apis/backend/generated";
+import { City, Departement, Region, StatsTimeType } from "../../../core/apis/backend/generated";
 import { FuelTypes, SelectedSwitches } from "./statistics.types";
 import { LocationsService } from "../../../core/services/locations.service";
 
@@ -14,6 +14,7 @@ const createAction = <T>(name: string) => _createAction<T>(`statistics/${name}`)
 export const setSelectedFuels = createAction<typeof priceTypes>("setSelectedFuels");
 export const setSelectedRegion = createAction<Region["id"] | "all">("setSelectedRegion");
 export const setSelectedDepartement = createAction<Departement["code"] | "all">("setSelectedDepartement");
+export const setSelectedCity = createAction<City["postalCode"] | "all">("setSelectedCity");
 export const setSelectedTimeInterval = createAction<StatsTimeType>("setSelectedTimeInterval");
 
 export const toggleSwitch = createAction<SelectedSwitches>("toggleSwitch");
