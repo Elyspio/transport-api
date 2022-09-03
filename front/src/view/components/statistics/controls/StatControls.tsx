@@ -130,7 +130,6 @@ export function StatControls() {
 					fullWidth
 					id="select-region"
 					options={locations}
-					sx={{ width: 300 }}
 					getOptionLabel={(option) => `${option.label}`}
 					onChange={onRegionSelected}
 					renderInput={(params) => <TextField {...params} autoComplete="off" data-lpignore="true" data-form-type="other" label="Régions" />}
@@ -144,7 +143,6 @@ export function StatControls() {
 					id="select-departement"
 					disabled={region === "all"}
 					options={departements}
-					sx={{ width: 300 }}
 					getOptionLabel={(option) => `${option.name} (${option.code})`}
 					onChange={onDepartementSelected}
 					renderInput={(params) => <TextField {...params} autoComplete="off" data-lpignore="true" data-form-type="other" label="Département" />}
@@ -158,7 +156,6 @@ export function StatControls() {
 					disabled={departement === "all"}
 					id="select-city"
 					options={cities}
-					sx={{ width: 300 }}
 					getOptionLabel={(option) => `${option.name} ${option.postalCode}`}
 					onChange={onCitySelected}
 					renderInput={(params) => <TextField {...params} autoComplete="off" data-lpignore="true" data-form-type="other" label="Commune" />}

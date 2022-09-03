@@ -6,7 +6,7 @@ import "./index.scss";
 import { Provider } from "react-redux";
 import store, { useAppSelector } from "./store";
 import Application from "./view/components/Application";
-import { StyledEngineProvider, Theme, ThemeProvider } from "@mui/material";
+import { CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from "@mui/material";
 import { themes } from "./config/theme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -30,6 +30,7 @@ function Wrapper() {
 	return (
 		<StyledEngineProvider injectFirst>
 			<ThemeProvider theme={theme}>
+				<CssBaseline enableColorScheme />
 				<BrowserRouter basename={basename}>
 					<Application />
 				</BrowserRouter>

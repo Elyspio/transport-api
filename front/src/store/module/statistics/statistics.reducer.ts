@@ -114,6 +114,27 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 
 	addCase(getLocations.fulfilled, (state, action) => {
 		state.locations = action.payload;
+		for (const region of state.locations) {
+			for (const dep of region.departements) {
+				dep.cities.sort((city, city2) => city.name.localeCompare(city2.name));
+			}
+			region.departements.sort((dep, dep2) => dep.name.localeCompare(dep2.name));
+		}
+		state.locations.sort((region, region2) => region.label.localeCompare(region2.label));
+	});
+
+	addCase(setSelectedTimeInterval, (state, { payload }) => {
+		state.selected.timeInterval = payload;
+		updateData(state);
+	});
+
+	addCase(toggleSwitch, (state, { payload }) => {
+		state.selected.switches[payload] = !state.selected.switches[payload];
+	});
+
+	addCase(setSelectedCity, (state, action) => {
+		state.selected.city = action.payload;
+		updateData(state);
 	});
 
 	addCase(setSelectedRegion, (state, { payload }) => {
@@ -132,18 +153,5 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 	addCase(setSelectedFuels, (state, { payload }) => {
 		state.selected.fuels = payload;
 		updateData(state);
-	});
-
-	addCase(setSelectedTimeInterval, (state, { payload }) => {
-		state.selected.timeInterval = payload;
-		updateData(state);
-	});
-
-	addCase(toggleSwitch, (state, { payload }) => {
-		state.selected.switches[payload] = !state.selected.switches[payload];
-	});
-
-	addCase(setSelectedCity, (state, action) => {
-		state.selected.city = action.payload;
 	});
 });

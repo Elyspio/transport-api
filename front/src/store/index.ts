@@ -9,6 +9,7 @@ const store = configureStore({
 		statistic: statisticsReducer,
 	},
 	devTools: process.env.NODE_ENV !== "production",
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export type StoreState = ReturnType<typeof store.getState>;
