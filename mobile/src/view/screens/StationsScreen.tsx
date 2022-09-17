@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
 import { Divider, Paragraph, Surface, Title, ToggleButton } from "react-native-paper";
 import { getFuelStationsNow } from "../../store/stations/stations.action";
 import Slider from "@react-native-community/slider";

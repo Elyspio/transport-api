@@ -146,6 +146,7 @@ export const statisticsReducer = createReducer(defaultState, ({ addCase }) => {
 
 	addCase(setSelectedDepartement, (state, { payload }) => {
 		state.selected.departement = payload;
+		state.selected.city = "all";
 		state.cities = state.departements.find((dep) => dep.code === payload)?.cities ?? [];
 		updateData(state);
 	});
