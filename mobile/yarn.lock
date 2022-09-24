@@ -1293,20 +1293,20 @@
     tmp "^0.0.33"
     tslib "^1.10.0"
 
-"@expo/eas-build-job@0.2.85":
-  version "0.2.85"
-  resolved "https://registry.yarnpkg.com/@expo/eas-build-job/-/eas-build-job-0.2.85.tgz#b5dd12a23943b67139dc47322428b9e1958f6804"
-  integrity sha512-iPvj8ntlevBwaHw00Qj+36L1MDZk6GygjPcV8QldaWeDVjdypu9ZcX+UqYoFmQFiLZYEfwm2s89MDEwQJvNn+A==
+"@expo/eas-build-job@0.2.90":
+  version "0.2.90"
+  resolved "https://registry.yarnpkg.com/@expo/eas-build-job/-/eas-build-job-0.2.90.tgz#9d2b25a79d44cb9532b08a67caa13cb9529a9deb"
+  integrity sha512-gCWcfSsg4O+Ua1xt6JA2Himzlj1LBes8mEhbcm1vu1kgg15QP62Aer4ck/B2vxiox9ZqYxK2ZvEdyZ7SI+GNGQ==
   dependencies:
     joi "^17.4.2"
     semver "^7.3.5"
 
-"@expo/eas-json@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@expo/eas-json/-/eas-json-1.2.0.tgz#719db3151969eacfe6918b443aa1c85ee9ba3b27"
-  integrity sha512-3SLqH7RC0ql/JVxKkkhvgBhomMURkGzAwB33OZ7Fe4Y7jgP5+STdyFfWqXJxF7neyHb8Awhirm/kaUknz3886A==
+"@expo/eas-json@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@expo/eas-json/-/eas-json-2.1.0.tgz#a4797f906ba130c5d590ad8abdcf97741c350135"
+  integrity sha512-TriBBP03CH8vE6fvQlC/bv3FeGf+BMXpcyiqhJ+FsJb9bEToA6enWBZpz4UKgeXo7nJ8MEDJzngla72j1ZZgqQ==
   dependencies:
-    "@expo/eas-build-job" "0.2.85"
+    "@expo/eas-build-job" "0.2.90"
     "@expo/json-file" "8.2.36"
     chalk "4.1.2"
     env-string "1.0.1"
@@ -1415,10 +1415,10 @@
     debug "^4.3.4"
     fs-extra "^10.1.0"
 
-"@expo/plugin-help@5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@expo/plugin-help/-/plugin-help-5.2.0.tgz#c73dab76c7e95f82efc0ed8055c6ad1c291f82a2"
-  integrity sha512-YOI+D93hqAQHxOhlbGXXeQZX8FwWE338vk22GQNmVdVEBafrBHqvCWm0uEQKorf1mNwl8p0hcb/9NrGov5p5Lw==
+"@expo/plugin-help@5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@expo/plugin-help/-/plugin-help-5.3.0.tgz#e6ca5acc63c7fb5248c3a74bf70c50efd9a3d69f"
+  integrity sha512-dgh5zo2E2hOQ+5vCRWdrPRDp/omnDdTWpMcxFmco5CkCaRX21FRzMFEZdJVhoLlEeavDgX98VyzqWslJxXHn3w==
   dependencies:
     "@oclif/core" "^1.9.0"
 
@@ -2719,7 +2719,7 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
-better-opn@~3.0.2:
+better-opn@3.0.2, better-opn@~3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/better-opn/-/better-opn-3.0.2.tgz#f96f35deaaf8f34144a4102651babcf00d1d8817"
   integrity sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==
@@ -3553,25 +3553,25 @@ domino@^2.1.6:
   resolved "https://registry.yarnpkg.com/domino/-/domino-2.1.6.tgz#fe4ace4310526e5e7b9d12c7de01b7f485a57ffe"
   integrity sha512-3VdM/SXBZX2omc9JF9nOPCtDaYQ67BGp5CoLpIQlO2KCAPETs8TcDHacF26jXadGbvUteZzRTeos2fhID5+ucQ==
 
-eas-cli@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eas-cli/-/eas-cli-1.2.0.tgz#183ba89a34761a9617314ee6cbe2e5b33045a5f2"
-  integrity sha512-BzGRxdIrHNvjPqTgALAaKyjoimH6E41367SEmkRfjhFuUONu0DEW0fvRkllSYTletUDzXCG+elK9qG6nQEX3tQ==
+eas-cli@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/eas-cli/-/eas-cli-2.1.0.tgz#50567c7d92253e4c63373978d8806468e69ea2df"
+  integrity sha512-DQAfc7TYZoRn8XHCi4FzOR5X3p0TDDZ2CoAv1OxR0GXOcB0QOI6nihqw7FZ6U3Y61jMliaVIrZUJcJcI2en/xw==
   dependencies:
     "@expo/apple-utils" "0.0.0-alpha.34"
     "@expo/code-signing-certificates" "0.0.2"
     "@expo/config" "7.0.1"
     "@expo/config-plugins" "5.0.1"
     "@expo/config-types" "46.0.2"
-    "@expo/eas-build-job" "0.2.85"
-    "@expo/eas-json" "1.2.0"
+    "@expo/eas-build-job" "0.2.90"
+    "@expo/eas-json" "2.1.0"
     "@expo/json-file" "8.2.36"
     "@expo/multipart-body-parser" "1.1.0"
     "@expo/package-manager" "0.0.56"
     "@expo/pkcs12" "0.0.8"
     "@expo/plist" "0.0.18"
     "@expo/plugin-autocomplete" "1.4.0"
-    "@expo/plugin-help" "5.2.0"
+    "@expo/plugin-help" "5.3.0"
     "@expo/plugin-warn-if-update-available" "2.3.0"
     "@expo/prebuild-config" "5.0.3"
     "@expo/results" "1.0.0"
@@ -3582,6 +3582,7 @@ eas-cli@^1.2.0:
     "@urql/core" "2.6.1"
     "@urql/exchange-retry" "0.3.3"
     ajv "^6.12.6"
+    better-opn "3.0.2"
     chalk "4.1.2"
     cli-progress "3.11.2"
     cli-table3 "0.6.2"

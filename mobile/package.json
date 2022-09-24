@@ -55,7 +55,7 @@
 		"@types/react-native": "~0.69.1",
 		"@types/redux-logger": "^3.0.9",
 		"@types/semver": "^7.3.12",
-		"eas-cli": "^1.2.0",
+		"eas-cli": "^2.1.0",
 		"jest-expo": "^46.0.0",
 		"prettier": "^2.7.1",
 		"semver": "^7.3.7",

@@ -17,15 +17,17 @@ const setAppJson = (conf: any) => {
 	fs.writeFileSync(path.resolve(__dirname, "..", "app.json"), JSON.stringify({ expo: conf }, null, 4).replaceAll("    ", "\t"));
 };
 
+const now = new Date();
+
 try {
 	config.android.versionCode++;
 	const version = semver.parse(config.version)!;
 	version.inc("patch", "1");
 	config.version = version.toString();
 	setAppJson(config);
-	const output = spawnSync(getNodeModulesBin("eas"), ["build", "-p", "android"], {
+	const output = spawnSync("docker", ["compose", "up", "--build"], {
+		cwd: path.resolve(__dirname, "..", "..", "deploy", "build", "mobile"),
 		stdio: "inherit",
-		cwd: path.resolve(__dirname, ".."),
 	});
 	if (output.error) throw output.error;
 	console.log(output.output?.toString());

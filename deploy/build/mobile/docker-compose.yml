@@ -1,0 +1,11 @@
+version: "3"
+services:
+    mobile:
+        image: elyspio/transport-api-mobile
+        build:
+            context: ../../..
+            dockerfile: deploy/build/mobile/Dockerfile.mobile
+        volumes:
+            - "./out:/out"
+        env_file:
+            - .env

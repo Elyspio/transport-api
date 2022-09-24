@@ -8,3 +8,5 @@ back/Tools/Db.Cache
 back/Tools/Db.Cache/cache.json
 back/Tools/Db.Cache/merged.json
 deploy/prod/config/back/appsettings.json
+/deploy/build/mobile/.env
+deploy/build/mobile/out/

@@ -1,0 +1,17 @@
+FROM androidsdk/android-31
+
+RUN apt update && apt install npm git -y && npm install -g n && n lts
+
+RUN npm i -g eas-cli yarn
+
+COPY ./mobile /app
+
+WORKDIR /app
+
+RUN git init
+
+RUN mkdir /out
+
+ENV EXPO_TOKEN MIkZxMvqDmp-X1AdrsF_c6ztYCkZHL_FEu42NSEC
+
+CMD ["eas", "build",  "--local",  "--non-interactive",  "--platform",  "android", "--output", "/out/elytransport.aab"]
