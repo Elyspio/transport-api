@@ -9,6 +9,7 @@ import { Services } from "../../core/services";
 import { Station } from "../components/fuel/Station";
 import { PriceSortSelector } from "../components/fuel/PriceSortSelector";
 import { useDispatch } from "react-redux";
+import { addDeveloperInput } from "../../store/global/global.action";
 
 export function StationsScreen() {
 	const coords = useAppSelector((s) => s.location.data?.coords);
@@ -26,6 +27,8 @@ export function StationsScreen() {
 		});
 		return ret;
 	}, [sortBy, allData]);
+
+	const addDeveloperTouch = React.useCallback(() => dispatch(addDeveloperInput()), [dispatch]);
 
 	React.useEffect(() => {
 		if (coords) {
@@ -52,7 +55,7 @@ export function StationsScreen() {
 	return (
 		<Surface style={styles.container}>
 			<View style={{ paddingTop: 30 }}>
-				<Title>Stations</Title>
+				<Title onPress={addDeveloperTouch}>Stations</Title>
 				<Divider style={styles.separator} />
 			</View>
 

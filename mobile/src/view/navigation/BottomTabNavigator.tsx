@@ -1,18 +1,20 @@
 import "react-native-gesture-handler";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import * as React from "react";
-
 import StationsScreen from "../screens/StationsScreen";
 import StoreScreen from "../screens/StoreScreen";
 import { theme } from "../constants/Colors";
 import linkingConfiguration from "./LinkingConfiguration";
+import { useAppSelector } from "../../store";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 export type Routes = typeof linkingConfiguration["config"]["screens"]["Root"]["screens"];
 
 const BottomTab = createMaterialTopTabNavigator<Routes>();
 
 export default function BottomTabNavigator() {
+	const { developerMode } = useAppSelector((s) => s.globals);
+
 	return (
 		<BottomTab.Navigator
 			initialRouteName="Fuel"
@@ -27,23 +29,19 @@ export default function BottomTabNavigator() {
 				name="Fuel"
 				component={StationsScreen}
 				options={{
-					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name={"map-marked"} color={color} />,
+					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name={"map-marked-alt"} color={color} />,
 				}}
 			/>
-			{/*<BottomTab.Screen*/}
-			{/*	name="Location"*/}
-			{/*	component={LocationScreen}*/}
-			{/*	options={{*/}
-			{/*		tabBarIcon: ({ color }) => <MaterialIcons size={24} name="place" color={color} />,*/}
-			{/*	}}*/}
-			{/*/>*/}
-			<BottomTab.Screen
-				name="Data"
-				component={StoreScreen}
-				options={{
-					tabBarIcon: ({ color }) => <FontAwesome5 size={24} name="database" color={color} />,
-				}}
-			/>
+
+			{developerMode && (
+				<BottomTab.Screen
+					name="Debug"
+					component={StoreScreen}
+					options={{
+						tabBarIcon: ({ color }) => <FontAwesome5 size={24} name="database" color={color} />,
+					}}
+				/>
+			)}
 		</BottomTab.Navigator>
 	);
 }
