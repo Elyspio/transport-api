@@ -1,6 +1,7 @@
 version: "3"
 services:
     mobile:
+        container_name: transport-api-mobile-builder
         image: elyspio/transport-api-mobile
         build:
             context: ../../..
