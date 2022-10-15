@@ -1,4 +1,4 @@
-import { PriceValues } from "../components/fuel/PriceSortSelector";
+import { Prices } from "../../core/apis/backend/generated";
 
 export const fuelsLabels: Record<PriceValues, string> = {
 	e10: "E10",
@@ -8,3 +8,5 @@ export const fuelsLabels: Record<PriceValues, string> = {
 	sp95: "SP95",
 	sp98: "SP98",
 };
+
+export type PriceValues = keyof Prices;

@@ -4,3 +4,6 @@ back/**/obj
 back/**/bin
 back/Tools/Core.Merge/*.json
 deploy
+mobile/out
+mobile/.expo
+mobile/.expo-shared

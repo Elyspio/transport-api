@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "ElyTransport",
 		"slug": "ely-transport",
-		"version": "1.0.14",
+		"version": "1.0.19",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
 		"scheme": "ely-transport",
@@ -28,7 +28,7 @@
 				"READ_PHONE_STATE"
 			],
 			"package": "fr.elyspio.transport",
-			"versionCode": 25
+			"versionCode": 30
 		},
 		"androidNavigationBar": {
 			"visible": "immersive",

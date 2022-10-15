@@ -1,8 +1,7 @@
 import React from "react";
 import { Paragraph, Surface, useTheme } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import { fuelsLabels } from "../../constants/stations";
-import { PriceValues } from "./PriceSortSelector";
+import { fuelsLabels, PriceValues } from "../../constants/stations";
 
 const styles = StyleSheet.create({
 	innerContainer: { marginBottom: "auto", display: "flex", flexDirection: "row", alignItems: "center" },

@@ -6,9 +6,10 @@ import Navigation from "./src/view/navigation";
 import { Provider } from "react-redux";
 import { store } from "./src/store";
 import { Provider as PaperProvider } from "react-native-paper";
-import { theme } from "./src/view/constants/Colors";
+import { nativeBaseTheme, theme } from "./src/view/constants/Colors";
 import { useColorScheme } from "react-native";
 import "react-native-url-polyfill/auto";
+import { NativeBaseProvider } from "native-base";
 
 export default function App() {
 	const isLoadingComplete = useCachedResources();
@@ -20,10 +21,12 @@ export default function App() {
 		return (
 			<Provider store={store}>
 				<SafeAreaProvider>
-					<PaperProvider theme={theme}>
-						<Navigation colorScheme={colorScheme} />
-						<StatusBar hidden={true} />
-					</PaperProvider>
+					<NativeBaseProvider theme={nativeBaseTheme}>
+						<PaperProvider theme={theme}>
+							<Navigation colorScheme={colorScheme} />
+							<StatusBar hidden={true} />
+						</PaperProvider>
+					</NativeBaseProvider>
 				</SafeAreaProvider>
 			</Provider>
 		);

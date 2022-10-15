@@ -1,6 +1,7 @@
 import { DarkTheme } from "react-native-paper";
 import type { Theme } from "react-native-paper/src/types";
 import { Appearance } from "react-native";
+import { extendTheme } from "native-base";
 
 export const theme: Theme = {
 	...DarkTheme,
@@ -13,3 +14,10 @@ export const theme: Theme = {
 		background: "#191919",
 	},
 };
+
+export const nativeBaseTheme = extendTheme({
+	config: {
+		initialColorMode: "dark",
+		useSystemColorMode: false,
+	},
+});

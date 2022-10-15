@@ -1,19 +1,18 @@
 import * as React from "react";
 import { Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
 import { useAppSelector } from "../../store";
-import { Divider, Paragraph, Surface, Title } from "react-native-paper";
+import { Paragraph, Surface, Title } from "react-native-paper";
 import { getFuelStationsNow } from "../../store/stations/stations.action";
-import { FuelStationDataDistance, Prices } from "../../core/apis/backend/generated";
-import { Services } from "../../core/services";
-import { Station } from "../components/fuel/Station";
+import { FuelStationDataDistance } from "../../core/apis/backend/generated";
+import { Station } from "../components/fuel/station/Station";
 import { useDispatch } from "react-redux";
 import { addDeveloperInput } from "../../store/global/global.action";
 import MultiSlider, { MarkerProps } from "@ptomasroos/react-native-multi-slider";
 
 import { theme } from "../constants/Colors";
-import { Picker } from "@react-native-picker/picker";
-import { fuelsLabels } from "../constants/stations";
+import { fuelsLabels, PriceValues } from "../constants/stations";
 import { NoStationFound } from "../components/fuel/NoStationFound";
+import { CheckIcon, Divider, Select, Stack } from "native-base";
 
 export function StationsScreen() {
 	const coords = useAppSelector((s) => s.location.data?.coords);
@@ -22,7 +21,7 @@ export function StationsScreen() {
 	const dispatch = useDispatch();
 
 	const [radius, setRadius] = React.useState(2);
-	const [sortBy, setSortBy] = React.useState<keyof Prices>("e10");
+	const [sortBy, setSortBy] = React.useState<PriceValues>("e10");
 
 	const data = React.useMemo(() => {
 		let ret = [...allData].filter((a) => a.prices[sortBy]?.length > 0);
@@ -46,16 +45,6 @@ export function StationsScreen() {
 		}
 	}, [dispatch, coords, radius]);
 
-	const onFuelStationClick = React.useCallback(
-		(station: FuelStationDataDistance) => () => {
-			return Services.waze.openWaze({
-				longitude: station.location.longitude,
-				latitude: station.location.latitude,
-			});
-		},
-		[]
-	);
-
 	const onRangeChange = React.useCallback(([x]: number[]) => setRadius(x), []);
 
 	return (
@@ -72,30 +61,18 @@ export function StationsScreen() {
 				</View>
 				<View style={styles.innerContainer}>
 					<Paragraph style={{ paddingRight: 30 }}>Fuel:</Paragraph>
-					<Picker
-						enabled
+
+					<Select
+						minW={100}
+						_selectedItem={{ endIcon: <CheckIcon size="5" /> }}
 						selectedValue={sortBy}
-						dropdownIconColor={"white"}
-						style={{
-							height: 15,
-							width: "38%",
-							backgroundColor: theme.colors.surface,
-							color: "white",
-						}}
-						onValueChange={(itemValue) => setSortBy(itemValue)}
+						accessibilityLabel="Choose Fuel"
+						onValueChange={(itemValue) => setSortBy(itemValue as PriceValues)}
 					>
 						{Object.entries(fuelsLabels).map(([key, val], index) => (
-							<Picker.Item
-								label={val}
-								value={key}
-								color={key === sortBy ? theme.colors.primary : undefined}
-								style={{
-									backgroundColor: theme.colors.surface,
-									color: "white",
-								}}
-							/>
+							<Select.Item key={val} label={val} value={key} />
 						))}
-					</Picker>
+					</Select>
 				</View>
 			</View>
 
@@ -105,7 +82,12 @@ export function StationsScreen() {
 				<VirtualizedList
 					data={data}
 					initialNumToRender={4}
-					renderItem={({ item }) => <Station key={item.id} item={item} onLongPress={onFuelStationClick(item)} />}
+					renderItem={({ item, index, separators }) => (
+						<Stack alignItems={"center"}>
+							<Station key={item.id} data={item} />
+							{index < data.length - 1 ? <Divider width={"80%"} my={3} /> : null}
+						</Stack>
+					)}
 					keyExtractor={(item: FuelStationDataDistance) => item.id.toString()}
 					getItemCount={() => data.length}
 					getItem={(data, index) => data[index]}
